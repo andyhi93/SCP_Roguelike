@@ -10,7 +10,6 @@ class Player : public Util::GameObject {
 public:
     Player();
 
-    void Start();
 
     void Update();
 

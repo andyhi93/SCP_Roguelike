@@ -10,8 +10,7 @@
 void App::Start() {
     LOG_TRACE("Start");
 
-    m_Giraffe->SetDrawable(
-        std::make_shared<Util::Image>("../assets/sprites/giraffe.png"));
+    m_Giraffe->SetDrawable( std::make_shared<Util::Image>("../assets/sprites/giraffe.png"));
     m_Giraffe->SetZIndex(5);
     m_Giraffe->Start();
 

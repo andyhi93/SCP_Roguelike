@@ -11,8 +11,6 @@ class Hand : public Util::GameObject {
 public:
     Hand(std::shared_ptr<Player> player);
 
-    void Start();
-
     void Update();
 
 private:

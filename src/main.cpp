@@ -4,6 +4,7 @@
 
 int main(int, char**) {
     auto context = Core::Context::GetInstance();
+    context->SetWindowSize(1920, 1080);
     App app;
 
     while (!context->GetExit()) {

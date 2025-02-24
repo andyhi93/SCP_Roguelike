@@ -140,7 +140,12 @@ void Context::Setup() {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 }
-
+void Context::SetWindowSize(int width, int height) {
+    if (m_Window) {
+        SDL_SetWindowSize(m_Window, width, height);
+        glViewport(0, 0, width, height);
+    }
+}
 void Context::Update() {
     Util::Input::Update();
 

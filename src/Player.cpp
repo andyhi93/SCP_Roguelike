@@ -7,13 +7,11 @@
 Player::Player()
     : m_Animation(std::make_shared<Util::Animation>(
         std::vector<std::string>{
-    "C:/Users/lougan/Desktop/SCP Roguelike/Resources/Player/boy.png",
+    "../../../Resources/Player/boy.png",
 },
 true, 50, true, 1000)) {
     m_Transform.translation = { 0, 0 };
     SetDrawable(m_Animation);
-}
-void Player::Start() {
     m_Animation->Play();
     m_Transform.scale = { 3,3 };
 }

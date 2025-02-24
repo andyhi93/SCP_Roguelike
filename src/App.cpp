@@ -8,14 +8,20 @@
 void App::Start() {
     LOG_TRACE("Start");
 
-    m_Player->SetZIndex(1);
-    m_Hand->SetZIndex(2);
-    m_Root.AddChild(m_Player);
-    m_Root.AddChild(m_Hand);
+    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_Tilemap };
+    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Hand };
 
-    //Start Obj
-    m_Player->Start();
-    m_Hand->Start();
+    int i = 0;
+    for each (auto & obj in BackgroundLayer) {
+        obj->SetZIndex(i);
+        m_Root.AddChild(obj);
+        i++;
+    }
+    for each (auto& obj in PlayerLayer) {
+        obj->SetZIndex(i);
+        m_Root.AddChild(obj);
+        i++;
+    }
 
     m_CurrentState = State::UPDATE;
 }

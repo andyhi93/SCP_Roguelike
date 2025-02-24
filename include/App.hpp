@@ -6,6 +6,7 @@
 #include "Util/Renderer.hpp"
 #include "Player.hpp"
 #include "Hand.hpp"
+#include "Tilemap.hpp"
 class App {
 public:
     enum class State {
@@ -27,6 +28,7 @@ private:
 
 private:
     State m_CurrentState = State::START;
+    std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<Player> m_Player = std::make_shared<Player>();
     std::shared_ptr<Hand> m_Hand = std::make_shared<Hand>(m_Player);
     Util::Renderer m_Root;
