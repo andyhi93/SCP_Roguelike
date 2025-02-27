@@ -35,7 +35,7 @@ add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${SRC_FILES}
     ${HEADER_FILES}
- "src/Player.cpp" "src/Hand.cpp" "src/Tilemap.cpp")
+ "src/Player.cpp" "src/Hand.cpp" "src/Tilemap.cpp" "src/Bullet.cpp" "src/Bullet_Box.cpp")
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)

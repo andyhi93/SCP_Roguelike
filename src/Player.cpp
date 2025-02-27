@@ -13,7 +13,7 @@ true, 50, true, 1000)) {
     m_Transform.translation = { 0, 0 };
     SetDrawable(m_Animation);
     m_Animation->Play();
-    m_Transform.scale = { 3,3 };
+    m_Transform.scale = { 4,4 };
 }
 void Player::Update() {
     //Move

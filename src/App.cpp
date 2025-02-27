@@ -8,6 +8,7 @@
 void App::Start() {
     LOG_TRACE("Start");
 
+    //Layer
     std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_Tilemap };
     std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Hand };
 
