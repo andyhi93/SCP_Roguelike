@@ -5,17 +5,19 @@
 
 #include "Util/Animation.hpp"
 #include "Util/GameObject.hpp"
-#include "Player.hpp"
+
+class Player;
 
 class Hand : public Util::GameObject {
 public:
-    Hand(std::shared_ptr<Player> player);
+    Hand();
 
     void Update();
-
-private:
     std::shared_ptr<Util::Animation> m_Animation;
+    std::shared_ptr<Util::Animation> m_AnimationDash;
     std::shared_ptr<Player> m_Player;
+
+protected:
 };
 
 #endif

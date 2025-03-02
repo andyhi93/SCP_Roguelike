@@ -42,7 +42,8 @@ Context::Context() {
     }
 
     m_Window =
-        SDL_CreateWindow(TITLE, WINDOW_POS_X, WINDOW_POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+        SDL_CreateWindow(TITLE, WINDOW_POS_X, WINDOW_POS_Y, WINDOW_WIDTH,
+                         WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (m_Window == nullptr) {
         LOG_ERROR("Failed to create window");
@@ -111,60 +112,15 @@ Context::~Context() {
     Mix_Quit();
     SDL_Quit();
 }
-void Context::SetWindowMode(WindowMode mode) {
-    if (!m_Window)
-        return;
 
-    // screenMode switch
-    switch (mode) {
-    case WindowMode::Windowed:
-        SDL_SetWindowFullscreen(m_Window, 0); // 關閉全螢幕
-        SDL_SetWindowBordered(m_Window, SDL_TRUE);
-        SDL_SetWindowSize(m_Window, WINDOW_WIDTH, WINDOW_HEIGHT);
-        SDL_SetWindowPosition(m_Window, SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED);
-        break;
-
-    case WindowMode::Borderless:
-        SDL_SetWindowFullscreen(m_Window,
-                                SDL_WINDOW_FULLSCREEN_DESKTOP); // 無邊框全螢幕
-        break;
-
-    /* case WindowMode::Fullscreen:
-        SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN); // 傳統全螢幕
-        break*/
-    }
-}
 void Context::Setup() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 }
-void Context::SetWindowSize(int width, int height) {
-    if (m_Window) {
-        SDL_SetWindowSize(m_Window, width, height);
-        glViewport(0, 0, width, height);
-    }
-}
+
 void Context::Update() {
     Util::Input::Update();
-
-    //screenMode switch
-    if (Util::Input::IsKeyDown(Util::Keycode::F11)) {
-        static WindowMode currentMode = WindowMode::Windowed;
-
-        if (currentMode == WindowMode::Windowed) {
-            currentMode = WindowMode::Borderless;
-        } else if (currentMode == WindowMode::Borderless) {
-            //currentMode = WindowMode::Fullscreen;
-            currentMode = WindowMode::Windowed;
-        } else {
-            currentMode = WindowMode::Windowed;
-        }
-
-        SetWindowMode(currentMode);
-    }
-
     SDL_GL_SwapWindow(m_Window);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

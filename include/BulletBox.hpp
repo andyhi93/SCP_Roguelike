@@ -4,18 +4,19 @@
 #include "pch.hpp"
 
 #include "Util/GameObject.hpp"
+#include "Bullet.hpp"
 #include "Util/Image.hpp"
 
-class Bullet_Box : public Util::GameObject {
+class BulletBox : public Util::GameObject {
 public:
-    Bullet_Box();
+    BulletBox();
 
     void Update();
     void AutoRemove();
+    void AddBullet(std::shared_ptr<Bullet> bullet);
     void RemoveAll();
-    std::vector<GameObject> bullets;
 private:
-    float damage;
+    std::vector<std::shared_ptr<Bullet>> bullets;
 };
 
 #endif

@@ -4,33 +4,60 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include <iostream>
 
 void App::Start() {
     LOG_TRACE("Start");
 
     //Layer
-    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_Tilemap };
-    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Hand };
+    std::shared_ptr<Util::GameObject> empty;
+    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager , empty };
+    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
+    std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
+    m_Player->getLevelManager(m_LevelManager);
     int i = 0;
     for each (auto & obj in BackgroundLayer) {
-        obj->SetZIndex(i);
-        m_Root.AddChild(obj);
+        if (obj) {
+            obj->SetZIndex(i);
+            m_Root.AddChild(obj);
+        }
+        else { LOG_INFO("Error: Null GameObject:{}",i); }
         i++;
     }
     for each (auto& obj in PlayerLayer) {
-        obj->SetZIndex(i);
-        m_Root.AddChild(obj);
+        if (obj) {
+            obj->SetZIndex(i);
+            m_Root.AddChild(obj);
+        }
+        else { LOG_INFO("Error: Null GameObject:{}", i); }
+        i++;
+    }
+    for each (auto & obj in UILayer) {
+        if (obj) {
+            obj->SetZIndex(i);
+            m_Root.AddChild(obj);
+        }
+        else { LOG_INFO("Error: Null GameObject:{}", i); }
         i++;
     }
 
     m_CurrentState = State::UPDATE;
 }
-
+void App::FixedUpdate() {
+    m_Player->m_BulletBox->Update();
+}
+float App::GetDeltaTime() {
+    static Uint32 lastTime = SDL_GetTicks(); 
+    Uint32 currentTime = SDL_GetTicks(); 
+    float deltaTime = (currentTime - lastTime) / 1000.0f; 
+    lastTime = currentTime; 
+    return deltaTime;
+}
 void App::Update() {
     
     m_Player->Update();
-    m_Hand->Update();
+    m_Player->m_Hand->Update();
     m_Root.Update();
     
     /*
@@ -40,6 +67,14 @@ void App::Update() {
     if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) ||
         Util::Input::IfExit()) {
         m_CurrentState = State::END;
+    }
+    //FixedUpdate
+    float deltaTime = GetDeltaTime(); 
+    m_AccumulatedTime += deltaTime;
+
+    while (m_AccumulatedTime >= m_FixedDeltaTime) {
+        FixedUpdate(); 
+        m_AccumulatedTime -= m_FixedDeltaTime; 
     }
 }
 

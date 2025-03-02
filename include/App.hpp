@@ -7,6 +7,8 @@
 #include "Player.hpp"
 #include "Hand.hpp"
 #include "Tilemap.hpp"
+#include "BulletBox.hpp"
+#include "LevelManager.hpp"
 class App {
 public:
     enum class State {
@@ -20,6 +22,8 @@ public:
     void Start();
 
     void Update();
+    void FixedUpdate();
+    float GetDeltaTime();
 
     void End(); // NOLINT(readability-convert-member-functions-to-static)
 
@@ -28,10 +32,15 @@ private:
 
 private:
     State m_CurrentState = State::START;
-    std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
+    //std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<Player> m_Player = std::make_shared<Player>();
-    std::shared_ptr<Hand> m_Hand = std::make_shared<Hand>(m_Player);
+    std::shared_ptr<BulletBox> m_BulletBox = std::make_shared<BulletBox>();
+    std::shared_ptr<LevelManager> m_LevelManager = std::make_shared<LevelManager>();
     Util::Renderer m_Root;
+
+    //FixedUpdate
+    float m_FixedDeltaTime = 0.016f; 
+    float m_AccumulatedTime = 0.0f;  
 };
 
 #endif

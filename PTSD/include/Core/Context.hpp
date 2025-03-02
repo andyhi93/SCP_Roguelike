@@ -29,18 +29,12 @@ public:
     unsigned int GetWindowHeight() const { return m_WindowHeight; }
 
     void SetExit(bool exit) { m_Exit = exit; }
-    void SetWindowSize(int width, int height);
-
     void SetWindowWidth(unsigned int width) { m_WindowWidth = width; }
     void SetWindowHeight(unsigned int height) { m_WindowHeight = height; }
     void SetWindowIcon(const std::string &path);
 
     void Setup();
     void Update();
-
-    //Screnn Func
-    enum class WindowMode { Windowed, Borderless, Fullscreen };
-    void SetWindowMode(WindowMode mode);
 
 private:
     SDL_Window *m_Window;
