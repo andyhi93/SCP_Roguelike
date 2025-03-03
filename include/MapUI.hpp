@@ -5,6 +5,7 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+class Player;
 
 class MapUI : public Util::GameObject{
 public:
@@ -17,7 +18,8 @@ public:
     };
     void Update();
     void Init(std::vector<Room> _RoomData);
-    void SetMap(std::vector<Room> _RoomData, glm::vec2 direction);
+    void SetMap(std::vector<Room> _RoomData);
+    void GetPlayer(std::shared_ptr<Player> _player);
 
     enum RoomType {
         //func
@@ -27,7 +29,9 @@ public:
         BossRoom,
     };
     Room mapArray[3][3];
+    std::shared_ptr<Player> MapPlayer = std::make_shared<Player>();
     std::shared_ptr<GameObject> Background=std::make_shared<GameObject>();
+    std::shared_ptr<GameObject> PlayerPoint = std::make_shared<GameObject>();
     std::vector<std::shared_ptr<GameObject>> roomShape;
     std::vector<std::shared_ptr<GameObject>> roomColor;
 

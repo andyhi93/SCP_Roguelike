@@ -1,6 +1,7 @@
 #include "MapUI.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Image.hpp"
+#include "Player.hpp"
 #include <iostream>
 
 MapUI::MapUI() {
@@ -10,7 +11,13 @@ MapUI::MapUI() {
     Background->m_Transform.translation = { 637 ,330 };
     Background->SetDrawable(std::make_shared<Util::Image>("../../../Resources/Map/map_background.png"));
     Background->m_Transform.scale = { 6,6 };
-    std::cout << "Background zindex:" << Background->GetZIndex() << std::endl;
+
+    this->AddChild(PlayerPoint);
+    PlayerPoint->m_Transform.translation = { 637 ,330 };
+    PlayerPoint->SetDrawable(std::make_shared<Util::Image>("../../../Resources/Map/map_point.png"));
+    PlayerPoint->m_Transform.scale = { 6,6 };
+    PlayerPoint->SetZIndex(10.3);
+
     roomImages = { "../../../Resources/Map/map1.png" ,"../../../Resources/Map/map2.png" , 
     "../../../Resources/Map/map3.png" ,"../../../Resources/Map/map4.png" ,
     "../../../Resources/Map/map5.png" ,"../../../Resources/Map/map6.png" ,
@@ -56,7 +63,6 @@ void MapUI::Init(std::vector<Room> _RoomData) {
                 }
                 if (mapArray[x][y].roomType < 4) {
                     colorObject->SetDrawable(std::make_shared<Util::Image>(colorImages[mapArray[x][y].roomType]));
-                    roomColor.push_back(colorObject);
                 }
             }
             glm::vec2 position = { m_Transform.translation.x+ (x-1) * 110,m_Transform.translation.y+ (y-1) * 64 };  // 假設每個房間間距 64 像素
@@ -65,66 +71,16 @@ void MapUI::Init(std::vector<Room> _RoomData) {
         }
     }
 }
-void MapUI::SetMap(std::vector<Room> _RoomData, glm::vec2 direction) {
+void MapUI::SetMap(std::vector<Room> _RoomData) {
     if (!isInit) {
         isInit = true;
         Init(_RoomData);
     }
     else {
-        if (direction.y > 0) {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 3; x++) {
-                    if(y<2){
-                        mapArray[x][y] = mapArray[x][y + 1];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                    else {
-                        mapArray[x][y] = _RoomData[x];
-                        UpdateRoomDisplay(mapArray[x][y],x, y); 
-                    }
-                }
-            }
-        }
-        else if (direction.y < 0) {
-            for (int y = 2; y >-1; y--) {
-                for (int x = 0; x < 3; x++) {
-                    if (y > 0) {
-                        mapArray[x][y] = mapArray[x][y -1];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                    else {
-                        mapArray[x][y] = _RoomData[x];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                }
-            }
-        }
-        else if (direction.x < 0) {
-            for (int x = 2; x >-1; x--) {
-                for (int y = 0; y < 3; y++) {
-                    if (x>0) {
-                        mapArray[x][y] = mapArray[x-1][y];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                    else {
-                        mapArray[x][y] = _RoomData[x];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                }
-            }
-        }
-        else if (direction.x > 0) {
+        for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
-                for (int y = 0; y < 3; y++) {
-                    if (x<2) {
-                        mapArray[x][y] = mapArray[x + 1][y];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                    else {
-                        mapArray[x][y] = _RoomData[x];
-                        UpdateRoomDisplay(mapArray[x][y], x, y);
-                    }
-                }
+                mapArray[x][y] = _RoomData[x+y*3];
+                UpdateRoomDisplay(mapArray[x][y], x, y);
             }
         }
     }
@@ -156,5 +112,8 @@ void MapUI::UpdateRoomDisplay(Room roomData,int x, int y) {
         colorObject->SetDrawable(nullptr);
     }
 }
+void MapUI::GetPlayer(std::shared_ptr<Player> _player) { MapPlayer = _player; }
 void MapUI::Update() {
+    glm::vec2 zoomDiff = { 1631 / 79 ,650 / 30 };
+    PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer->m_Transform.translation.x/zoomDiff[0], MapPlayer->m_Transform.translation.y/zoomDiff[1] };
 }

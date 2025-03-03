@@ -16,6 +16,7 @@ void App::Start() {
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
     m_Player->getLevelManager(m_LevelManager);
+    m_LevelManager->m_MapUI->GetPlayer(m_Player);
     int i = 0;
     for each (auto & obj in BackgroundLayer) {
         if (obj) {
@@ -58,6 +59,7 @@ void App::Update() {
     
     m_Player->Update();
     m_Player->m_Hand->Update();
+    m_LevelManager->Update();
     m_Root.Update();
     
     /*

@@ -1,8 +1,12 @@
 #include "Collider.hpp"
+#include "LevelManager.hpp"
 
 Collider::Collider(glm::vec2 _pos, glm::vec2 _size){
     position = _pos;//Left Bottom
     size = _size;
+}
+void Collider::getLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
+    m_LevelManager = _LevelManager;
 }
 bool Collider::CheckCollision(const Collider& a, const Collider& b) {
     return (a.position.x < b.position.x + b.size.x &&
@@ -31,4 +35,40 @@ const std::vector<Collider>& Collider::GetWalls() {
 }
 const std::vector<Collider>& Collider::GetDoors() {
     return doors;
+}
+glm::vec2 Collider::blockDetect(glm::vec2& velocity) {
+    if (CheckCollision(*this, doors[0]) && velocity.x > 0) {
+        if (!m_LevelManager->m_Tilemap->doors[0]->isOpen) {
+            velocity.x = 0;
+        }
+    }
+    if (CheckCollision(*this, doors[1]) && velocity.y < 0) {
+        if (!m_LevelManager->m_Tilemap->doors[0]->isOpen) {
+            velocity.y = 0;
+        }
+    }
+    if (CheckCollision(*this, doors[2]) && velocity.x < 0) {
+        if (!m_LevelManager->m_Tilemap->doors[0]->isOpen) {
+            velocity.x = 0;
+        }
+    }
+    if (CheckCollision(*this, doors[3]) && velocity.y > 0) {
+        if (!m_LevelManager->m_Tilemap->doors[0]->isOpen) {
+            velocity.y = 0;
+        }
+    }
+    //wall
+    if ((CheckCollision(*this, walls[0]) || CheckCollision(*this, walls[1])) && velocity.x > 0) {
+        velocity.x = 0;
+    }
+    if ((CheckCollision(*this, walls[2]) || CheckCollision(*this, walls[3])) && velocity.y < 0) {
+        velocity.y = 0;
+    }
+    if ((CheckCollision(*this, walls[4]) || CheckCollision(*this, walls[5])) && velocity.x < 0) {
+        velocity.x = 0;
+    }
+    if ((CheckCollision(*this, walls[6]) || CheckCollision(*this, walls[7])) && velocity.y > 0) {
+        velocity.y = 0;
+    }
+    return velocity;
 }

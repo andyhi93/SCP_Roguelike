@@ -71,7 +71,6 @@ void Player::Move(glm::vec2& velocity) {
     const std::vector<Collider>& doors = Collider::GetDoors();//eswn
     glm::vec2 newPosition = m_Transform.translation + velocity;
 
-    //door 還沒弄開關門
     if (m_Collider->CheckCollision(*m_Collider, doors[0]) && velocity.x > 0) {
         if (m_LevelManager->m_Tilemap->doors[0]->isOpen) {
             m_LevelManager->ChangeRoom(glm::ivec2(1, 0));

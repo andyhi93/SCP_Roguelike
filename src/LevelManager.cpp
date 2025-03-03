@@ -21,6 +21,9 @@ bool LevelManager::IsValidRoom(int x, int y) {
 
     return (neighborCount <= 1);
 }
+void LevelManager::Update(){
+    m_MapUI->Update();
+}
 
 void LevelManager::AddRoom(int x, int y) {
     if (!IsValidRoom(x, y)) return;
@@ -34,29 +37,31 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         map[currentRoom.x][currentRoom.y].doors[2],
         map[currentRoom.x][currentRoom.y].doors[3]);
     std::vector<MapUI::Room> RoomForMap;
-    for (int i = -1; i < 2; i++) {
-        if (direction[0] != 0) {
-            if (currentRoom.x+direction[0] < 0 || currentRoom.x + direction[0] >= MAP_SIZE_WIDTH) {
+    std::cout << "===================================Push Romm======================================" << std::endl;
+    for (int y = -1; y < 2; y++) {
+        for (int x = -1; x < 2; x++) {
+            if (x + currentRoom.x < 0 || x + currentRoom.x >= MAP_SIZE_WIDTH || y + currentRoom.y < 0 || y + currentRoom.y >= MAP_SIZE_HEIGHT) {
                 MapUI::Room EmptyRoom;
                 EmptyRoom.exists = false;
                 RoomForMap.push_back(EmptyRoom);
             }
             else {
-                RoomForMap.push_back(map[currentRoom[0] + direction.x][currentRoom.y+i]);
+                RoomForMap.push_back(map[x + currentRoom.x][y + currentRoom.y]);
             }
-        }
-        else {
-            if (currentRoom.y + direction[1] < 0 || currentRoom.y + direction[1] >= MAP_SIZE_WIDTH) {
-                MapUI::Room EmptyRoom;
-                EmptyRoom.exists = false;
-                RoomForMap.push_back(EmptyRoom);
-            }
-            else {
-                RoomForMap.push_back(map[currentRoom[0] + i][currentRoom[1] + direction.y]);
-            }
+            std::cout << x + currentRoom.x << "," << y + currentRoom.y<<" ";
         }
     }
-    m_MapUI->SetMap(RoomForMap, direction);
+    std::cout << "\n";
+    std::cout << "====================================Room Data=====================================" << std::endl;
+    std::cout << "currentRoom"<<currentRoom.x <<" "<< currentRoom.y << std::endl;
+    for (int j = 2; j > -1; j--) {
+        for (int i = 0; i < 3; i++) {
+            if (!RoomForMap[i+j*3].exists) std::cout << "x ";
+            else std::cout << RoomForMap[i + j * 3].roomType << " ";
+        }
+        std::cout << "\n";
+    }
+    m_MapUI->SetMap(RoomForMap);
 }
 void LevelManager::GenerateLevel() {
     floor++;
@@ -206,7 +211,7 @@ void LevelManager::GenerateLevel() {
         std::cout << room.exists;
     }
     std::cout << std::endl;
-    m_MapUI->SetMap(RoomForMap, glm::vec2{ 0,0 });
+    m_MapUI->SetMap(RoomForMap);
     PrintMap();
 }
 
