@@ -13,8 +13,10 @@ void App::Start() {
     std::shared_ptr<Util::GameObject> empty;
     std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager , empty };
     std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
+    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { m_SCP610};
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
+    m_SCP610->GetPlayer(m_Player);
     m_Player->getLevelManager(m_LevelManager);
     m_LevelManager->m_MapUI->GetPlayer(m_Player);
     int i = 0;
@@ -27,6 +29,14 @@ void App::Start() {
         i++;
     }
     for each (auto& obj in PlayerLayer) {
+        if (obj) {
+            obj->SetZIndex(i);
+            m_Root.AddChild(obj);
+        }
+        else { LOG_INFO("Error: Null GameObject:{}", i); }
+        i++;
+    }
+    for each (auto & obj in EnemyLayer) {
         if (obj) {
             obj->SetZIndex(i);
             m_Root.AddChild(obj);
@@ -60,6 +70,7 @@ void App::Update() {
     m_Player->Update();
     m_Player->m_Hand->Update();
     m_LevelManager->Update();
+    m_SCP610->Update();
     m_Root.Update();
     
     /*

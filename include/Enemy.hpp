@@ -8,10 +8,12 @@
 #include "BulletBox.hpp"
 #include "Collider.hpp"
 class Player;
-class Enemy : public Util::GameObject {
+class Enemy : public Util::GameObject{
 public:
     virtual void Update()=0;
+    Enemy();
     void GetPlayer(std::shared_ptr<Player> _player);//child obj need add app
+    glm::vec2 normalize(glm::vec2 values);
 
 protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
@@ -20,8 +22,7 @@ protected:
 
     std::shared_ptr<BulletBox> m_BulletBox;
     std::shared_ptr<Collider> m_Collider;
-    std::shared_ptr<Player> m_Player = std::make_shared<Player>();
-private:
+    std::shared_ptr<Player> m_Player;
     void FlipControl();
 
     enum State
