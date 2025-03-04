@@ -5,6 +5,7 @@
 #include "Tilemap.hpp"
 #include "Util/GameObject.hpp"
 #include "MapUI.hpp"
+#include "Enemy.hpp"
 
 constexpr int MAP_SIZE_WIDTH = 5;
 constexpr int MAP_SIZE_HEIGHT = 6;
@@ -20,6 +21,7 @@ public:
 
     std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<MapUI> m_MapUI;
+    std::vector<std::shared_ptr<Enemy>> currentEnemies;
 
     void Update();
 

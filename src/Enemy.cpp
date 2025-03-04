@@ -1,7 +1,9 @@
 #include "Enemy.hpp"
 #include "Player.hpp"
 
-Enemy::Enemy(){}
+Enemy::Enemy(){
+    layer = GameObject::CollisionLayer::Enemy;
+}
 
 void Enemy::GetPlayer(std::shared_ptr<Player> _player) { m_Player = _player; }
 
@@ -22,4 +24,7 @@ void Enemy::FlipControl() {
         m_Transform.scale.x = -std::abs(m_Transform.scale.x);
         isFaceRight = false;
     }
+}
+void Enemy::SetHealth(float _health) {
+    health = _health;
 }

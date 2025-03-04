@@ -15,8 +15,12 @@ public:
     void AutoRemove();
     void AddBullet(std::shared_ptr<Bullet> bullet);
     void RemoveAll();
+    void getLevelManager(std::shared_ptr<LevelManager> _LevelManager);
+    void getPlayer(std::shared_ptr<Player> _Player);
 private:
     std::vector<std::shared_ptr<Bullet>> bullets;
+    std::shared_ptr<LevelManager> m_LevelManager;
+    std::shared_ptr<Player> m_Player;
 };
 
 #endif

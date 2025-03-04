@@ -7,6 +7,7 @@
 
 Player::Player()
     :m_BulletBox(std::make_shared<BulletBox>()){
+    layer = GameObject::CollisionLayer::Player;
 
     m_Collider = std::make_shared<Collider>(m_Transform.translation, glm::vec2{ 45,140 });
     m_Transform.translation = { 0, 0 };
@@ -60,7 +61,7 @@ void Player::PlayerControl() {
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
         glm::vec2 bulletDirection = glm::normalize(Util::Input::GetCursorPosition() - m_Transform.translation);
-        auto bullet = std::make_shared<Bullet>(1, 0, 20.0f, 0, bulletDirection);
+        auto bullet = std::make_shared<Bullet>(1, CollisionLayer::Player, 10.0f, 0, bulletDirection);
         bullet->m_Transform.translation = m_Hand->m_Transform.translation;
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;

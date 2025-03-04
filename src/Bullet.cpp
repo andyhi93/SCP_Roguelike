@@ -3,23 +3,30 @@
 #include "Util/Logger.hpp"
 #include <iostream>
 #include <SDL.h>
+#include "LevelManager.hpp"
+#include "Player.hpp"
 
-Bullet::Bullet(int _damage, int _team, float _speed, int _imageID, glm::vec2 _direction){
+Bullet::Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction){
 	m_Collider = std::make_shared<Collider>(m_Transform.translation,glm::vec2(2,2));
-	std::vector<std::string> bullet_images = { "../../../Resources/purple_ammo.png" };
+	std::vector<std::string> bullet_images = { "../../../Resources/purple_ammo.png","../../../Resources/red_ammo.png" };
 	m_Transform.scale = { 1,1 };
 	this->SetDrawable(std::make_shared<Util::Image>(bullet_images[_imageID]));
 	speed = _speed;
 	damage = _damage;
 	direction = _direction;
-	team = _team;
+	layer = _layer;
 
-	std::cout << "Bullet created with damage: " << damage
+	/*std::cout << "Bullet created with damage: " << damage
 		<< ", team: " << team
 		<< ", speed: " << speed
-		<< ", direction: (" << direction.x << ", " << direction.y << ")\n";
+		<< ", direction: (" << direction.x << ", " << direction.y << ")\n";*/
 }
-
+void Bullet::getLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
+	m_LevelManager = _LevelManager;
+}
+void Bullet::getPlayer(std::shared_ptr<Player> _Player) {
+	m_Player = _Player;
+}
 void Bullet::Update(){
 	Move();
 	Hit();
@@ -56,6 +63,17 @@ void Bullet::Hit(){
 			islive = false;
 			return;
 		}
+	}
+	//wtf
+	if (layer == CollisionLayer::Player) {
+		for (auto& enemyObj : m_LevelManager->currentEnemies) {
+			if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
+				enemyObj->SetHealth(enemyObj->GetHealth() - damage);
+			}
+		}
+	}
+	if (layer == CollisionLayer::Enemy && m_Collider->CheckCollision(*m_Collider, *m_Player->m_Collider)) {
+		m_Player->health -= damage;
 	}
 }
 bool Bullet::GetIslive() { return islive; }

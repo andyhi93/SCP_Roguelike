@@ -12,13 +12,14 @@ void App::Start() {
     //Layer
     std::shared_ptr<Util::GameObject> empty;
     std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager , empty };
-    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox,m_SCP610->m_BulletBox };
-    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { m_SCP610};
+    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
+    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { m_SCP610,m_SCP610->m_BulletBox };
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
     m_SCP610->GetPlayer(m_Player);
     m_Player->getLevelManager(m_LevelManager);
     m_LevelManager->m_MapUI->GetPlayer(m_Player);
+    m_LevelManager->currentEnemies.push_back(m_SCP610);
     int i = 0;
     for each (auto & obj in BackgroundLayer) {
         if (obj) {
@@ -57,6 +58,7 @@ void App::Start() {
 }
 void App::FixedUpdate() {
     m_Player->m_BulletBox->Update();
+    m_SCP610->Update();
 }
 float App::GetDeltaTime() {
     static Uint32 lastTime = SDL_GetTicks(); 
@@ -70,7 +72,6 @@ void App::Update() {
     m_Player->Update();
     m_Player->m_Hand->Update();
     m_LevelManager->Update();
-    m_SCP610->Update();
     m_Root.Update();
     
     /*

@@ -10,6 +10,7 @@ public:
     void Behavior();
 protected:
 private:
+    bool isFire = false;
 };
 
 #endif

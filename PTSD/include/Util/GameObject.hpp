@@ -155,11 +155,19 @@ public:
     void Draw();
 
 protected:
+    enum class CollisionLayer {
+        Player = 1,
+        Enemy = 2,
+        Environment = 4,
+    };
+    CollisionLayer layer;
+
     std::shared_ptr<Core::Drawable> m_Drawable = nullptr;
     std::vector<std::shared_ptr<GameObject>> m_Children;
 
     float m_ZIndex = 0;
     bool m_Visible = true;
+
     glm::vec2 m_Pivot = {0, 0};
 };
 } // namespace Util
