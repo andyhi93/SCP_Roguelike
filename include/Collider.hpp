@@ -18,6 +18,8 @@ public:
     static const std::vector<Collider>& GetWalls();
     static const std::vector<Collider>& GetDoors();
 
+    bool isStatic;
+
 private:
     std::shared_ptr<LevelManager> m_LevelManager;
     static std::vector<Collider> walls;

@@ -7,6 +7,7 @@ public:
     SCP610();
     void Update() override;
 
+    void Behavior();
 protected:
 private:
 };

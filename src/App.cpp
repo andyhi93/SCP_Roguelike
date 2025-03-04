@@ -12,7 +12,7 @@ void App::Start() {
     //Layer
     std::shared_ptr<Util::GameObject> empty;
     std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager , empty };
-    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
+    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox,m_SCP610->m_BulletBox };
     std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { m_SCP610};
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
