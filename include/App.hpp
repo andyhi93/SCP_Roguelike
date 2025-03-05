@@ -35,7 +35,6 @@ private:
     State m_CurrentState = State::START;
     //std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<Player> m_Player = std::make_shared<Player>();
-    std::shared_ptr<BulletBox> m_BulletBox = std::make_shared<BulletBox>();
     std::shared_ptr<LevelManager> m_LevelManager = std::make_shared<LevelManager>();
     std::shared_ptr<SCP610> m_SCP610 = std::make_shared<SCP610>();
     Util::Renderer m_Root;

@@ -25,6 +25,7 @@ Player::Player()
 }
 void Player::getLevelManager(std::shared_ptr<LevelManager> _LevelManager){
     m_LevelManager = _LevelManager;
+    m_BulletBox->getLevelManager(m_LevelManager);
 }
 void Player::PlayerControl() {
     //Move
@@ -173,6 +174,9 @@ void Player::HandControl() {
     m_Hand->m_Transform.rotation = isFaceRight ? angle + 90.0f : 180.0f - (angle + 90.0f);
 }
 void Player::Update() {
+    if (!m_BulletBox->m_LevelManager) {
+        
+    }
     PlayerControl();
     AnimationControl();
     HandControl();

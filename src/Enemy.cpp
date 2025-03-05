@@ -3,9 +3,13 @@
 
 Enemy::Enemy(){
     layer = GameObject::CollisionLayer::Enemy;
+    m_BulletBox = std::make_shared<BulletBox>();
 }
 
-void Enemy::GetPlayer(std::shared_ptr<Player> _player) { m_Player = _player; }
+void Enemy::GetPlayer(std::shared_ptr<Player> _player) { 
+    m_Player = _player; 
+    m_BulletBox->getPlayer(m_Player);
+}
 
 glm::vec2 Enemy::normalize(glm::vec2 values) {
     float sum =values[0]* values[0]+ values[1]* values[1];

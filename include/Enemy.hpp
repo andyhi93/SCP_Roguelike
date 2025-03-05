@@ -43,6 +43,7 @@ protected:
 
     float health = 10;
     float damage = 1;
+    bool isDead = false;
 };
 
 #endif

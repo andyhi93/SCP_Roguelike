@@ -23,9 +23,11 @@ Bullet::Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed, int
 }
 void Bullet::getLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
 	m_LevelManager = _LevelManager;
+	isGetLevelManager = true;
 }
 void Bullet::getPlayer(std::shared_ptr<Player> _Player) {
 	m_Player = _Player;
+	isGetPlayer = true;
 }
 void Bullet::Update(){
 	Move();
@@ -64,16 +66,62 @@ void Bullet::Hit(){
 			return;
 		}
 	}
-	//wtf
-	if (layer == CollisionLayer::Player) {
-		for (auto& enemyObj : m_LevelManager->currentEnemies) {
-			if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
-				enemyObj->SetHealth(enemyObj->GetHealth() - damage);
-			}
+	/*
+	if (!m_Collider) {
+		std::cerr << "Error: m_Collider is nullptr" << std::endl;
+		return;
+	}
+	if (!m_LevelManager) {
+		return;
+	}
+	if (m_LevelManager->currentEnemies.empty()) {
+		std::cerr << "Warning: currentEnemies is empty" << std::endl;
+	}
+	for (auto& enemyObj : m_LevelManager->currentEnemies) {
+		if (!enemyObj) {
+			std::cerr << "Error: enemyObj is nullptr" << std::endl;
+			continue;
 		}
+		if (!enemyObj->m_Collider) {
+			std::cerr << "Error: enemyObj->m_Collider is nullptr" << std::endl;
+			continue;
+		}
+
+		if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
+			enemyObj->SetHealth(enemyObj->GetHealth() - damage);
+			islive = false;
+		}
+	}
+
+	// ¿À¨d m_Player
+	if (!m_Player) {
+		std::cerr << "Error: m_Player is nullptr" << std::endl;
+		return;
+	}
+	if (!m_Player->m_Collider) {
+		std::cerr << "Error: m_Player->m_Collider is nullptr" << std::endl;
+		return;
 	}
 	if (layer == CollisionLayer::Enemy && m_Collider->CheckCollision(*m_Collider, *m_Player->m_Collider)) {
 		m_Player->health -= damage;
+		islive = false;
+	}
+	*/
+	//wtf
+	
+	if (layer == CollisionLayer::Player && isGetLevelManager && !m_LevelManager->currentEnemies.empty()) {
+		for (auto& enemyObj : m_LevelManager->currentEnemies) {
+			if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
+				enemyObj->SetHealth(enemyObj->GetHealth() - damage);
+				islive = false;
+				std::cout << "Bullet hit Enemy" <<std::endl;
+			}
+		}
+	}
+	if (layer == CollisionLayer::Enemy && isGetPlayer &&m_Collider->CheckCollision(*m_Collider, *m_Player->m_Collider)) {
+		m_Player->health -= damage;
+		islive = false;
+		std::cout << "Bullet hit Player" << std::endl;
 	}
 }
 bool Bullet::GetIslive() { return islive; }

@@ -2,8 +2,7 @@
 #include "Player.hpp"
 #include <iostream>
 SCP610::SCP610() : Enemy(){
-	m_BulletBox = std::make_shared<BulletBox>();
-	m_BulletBox->getPlayer(m_Player);
+	health = 1;
 	m_ShotInterval = 5;
 	speed = 2.0f;
 	m_Transform.translation = { 50,0 };
@@ -50,9 +49,11 @@ void SCP610::Behavior() {
 	}
 }
 void SCP610::Update() {
-	
-	FlipControl();
-	Behavior();
-	m_BulletBox->Update();
-	
+	if (health <= 0 && !isDead) {
+		isDead = true;
+	}
+	if (!isDead) {
+		FlipControl();
+		Behavior();
+	}
 }

@@ -19,7 +19,10 @@ public:
     bool GetIslive();
     bool IsOutOfBounds();
     void getLevelManager(std::shared_ptr<LevelManager> _LevelManager);
+    bool isGetLevelManager = false;
     void getPlayer(std::shared_ptr<Player> _Player);
+    bool isGetPlayer = false;
+    GameObject::CollisionLayer getLayer() { return layer; }
 private:
     float damage;
     float speed;

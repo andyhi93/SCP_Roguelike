@@ -18,7 +18,8 @@ void App::Start() {
 
     m_SCP610->GetPlayer(m_Player);
     m_Player->getLevelManager(m_LevelManager);
-    m_LevelManager->m_MapUI->GetPlayer(m_Player);
+
+    m_LevelManager->m_MapUI->GetPlayer(m_Player);//map point
     m_LevelManager->currentEnemies.push_back(m_SCP610);
     int i = 0;
     for each (auto & obj in BackgroundLayer) {
@@ -59,6 +60,7 @@ void App::Start() {
 void App::FixedUpdate() {
     m_Player->m_BulletBox->Update();
     m_SCP610->Update();
+    m_SCP610->m_BulletBox->Update();
 }
 float App::GetDeltaTime() {
     static Uint32 lastTime = SDL_GetTicks(); 
