@@ -7,6 +7,7 @@
 #include "Collider.hpp"
 #include "Door.hpp"
 
+class Enemy;
 class Tilemap : public Util::GameObject {
 public:
     Tilemap();
@@ -39,11 +40,7 @@ public:
         Room049_2_1048,
         Room553_610_743ant,
     };
-    struct RoomSetStru {
-        std::vector<std::shared_ptr<GameObject>> enemyObjs;
-        std::vector<glm::vec2> objPos;
-    };
-    RoomSetStru roomSet[RoomType::Room553_610_743ant];
+    std::vector<std::shared_ptr<Enemy>> InitRoom(RoomType _RoomType);
     std::vector<std::shared_ptr<Door>> doors;
 private:
     std::vector<std::string> roomImages;

@@ -2,6 +2,7 @@
 #include <queue>
 #include <random>
 #include <iostream>
+#include "Player.hpp"
 
 LevelManager::LevelManager() {
     m_MapUI= std::make_shared<MapUI>();
@@ -9,6 +10,16 @@ LevelManager::LevelManager() {
     this->AddChild(m_MapUI);
     m_MapUI->SetZIndex(10);
     GenerateLevel();
+}
+void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
+    m_Player = _player;
+    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room610);
+    currentEnemies.clear();
+    for (auto& obj : temp) {
+        obj->GetPlayer(m_Player);
+        this->AddChild(obj);
+        currentEnemies.push_back(obj);
+    }
 }
 bool LevelManager::IsValidRoom(int x, int y) {
     if (x < 0 || x >= MAP_SIZE_WIDTH || y < 0 || y >= MAP_SIZE_HEIGHT) return false;
@@ -23,6 +34,9 @@ bool LevelManager::IsValidRoom(int x, int y) {
 }
 void LevelManager::Update(){
     m_MapUI->Update();
+    for (auto& obj : currentEnemies) {
+        obj->Update();
+    }
 }
 
 void LevelManager::AddRoom(int x, int y) {

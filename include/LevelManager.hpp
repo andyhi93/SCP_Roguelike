@@ -7,6 +7,7 @@
 #include "MapUI.hpp"
 #include "Enemy.hpp"
 
+class Player;
 constexpr int MAP_SIZE_WIDTH = 5;
 constexpr int MAP_SIZE_HEIGHT = 6;
 constexpr int MIN_ROOMS = 7;
@@ -23,6 +24,8 @@ public:
     std::shared_ptr<MapUI> m_MapUI;
     std::vector<std::shared_ptr<Enemy>> currentEnemies = {};
 
+    void setPlayer(std::shared_ptr<Player> _player);
+
     void Update();
 
 private:
@@ -38,6 +41,7 @@ private:
     bool IsValidRoom(int x, int y);
     void AddRoom(int x, int y);
 
+    std::shared_ptr<Player> m_Player;
 };
 
 #endif

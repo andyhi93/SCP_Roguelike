@@ -4,6 +4,8 @@
 #include "Util/Image.hpp"
 #include <iostream>
 #include <cmath>
+#include "Enemy.hpp"
+#include "SCP610.hpp"
 
 Tilemap::Tilemap() {
     roomImages = { "../../../Resources/Room/room_0000.png" ,"../../../Resources/Room/room_0001.png" 
@@ -16,6 +18,24 @@ Tilemap::Tilemap() {
     ,"../../../Resources/Room/room_1110.png" ,"../../../Resources/Room/room_1111.png" };
     m_Transform.translation = { 0, 0 };
     m_Transform.scale = { 7, 7 };
+}
+std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
+    std::vector<std::shared_ptr<Enemy>> Objs;
+    std::vector<glm::vec2> objPos;
+    if (_RoomType == Room610) {
+        //std::cout<<"init Room610" << std::endl;
+        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
+        for (int i = 0; i < 4; i++) {
+            Objs.push_back(std::make_shared<SCP610>());
+        }
+        //std::cout << "insize of Ojbs: " << Objs.size() <<std::endl;
+        int i = 0;
+        for (auto& enemy : Objs) {
+            enemy->SetZIndex(this->GetZIndex() + 2);
+            enemy->m_Transform.translation = objPos[i++];
+        }
+        return Objs;
+    }
 }
 
 void Tilemap::Update() {

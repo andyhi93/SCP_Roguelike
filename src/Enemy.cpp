@@ -9,6 +9,7 @@ Enemy::Enemy(){
 void Enemy::GetPlayer(std::shared_ptr<Player> _player) { 
     m_Player = _player; 
     m_BulletBox->getPlayer(m_Player);
+    this->AddChild(m_BulletBox);
 }
 
 glm::vec2 Enemy::normalize(glm::vec2 values) {
