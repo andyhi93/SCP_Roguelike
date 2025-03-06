@@ -13,15 +13,9 @@ void App::Start() {
     std::shared_ptr<Util::GameObject> empty;
     std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager};
     std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { empty };
-    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
+    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_BulletBox };
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
-    //m_SCP610->GetPlayer(m_Player);
-    m_LevelManager->setPlayer(m_Player);
-    m_Player->setLevelManager(m_LevelManager);
-
-    m_LevelManager->m_MapUI->GetPlayer(m_Player);//map point
-    //m_LevelManager->currentEnemies.push_back(m_SCP610);
     int i = 0;
     for each (auto & obj in BackgroundLayer) {
         if (obj) {
@@ -56,6 +50,11 @@ void App::Start() {
         i++;
     }
 
+    m_LevelManager->setPlayer(m_Player);
+    m_Player->setLevelManager(m_LevelManager);
+
+    m_LevelManager->m_MapUI->GetPlayer(m_Player);
+
     m_CurrentState = State::UPDATE;
 }
 void App::FixedUpdate() {
@@ -73,7 +72,6 @@ float App::GetDeltaTime() {
 void App::Update() {
     
     m_Player->Update();
-    m_Player->m_Hand->Update();
     m_LevelManager->Update();
     m_Root.Update();
     

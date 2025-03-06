@@ -25,8 +25,11 @@ Player::Player()
     m_AnimationIdle->Play();
     m_Transform.scale = { 4,4 };
     m_Hand = std::make_shared<Hand>();
+    this->AddChild(m_Hand);
 }
 void Player::setLevelManager(std::shared_ptr<LevelManager> _LevelManager){
+    m_Hand->SetZIndex(this->GetZIndex() + 0.1f);
+    std::cout << "=================" << this->GetZIndex() << "," << m_Hand->GetZIndex() << "=========";
     m_LevelManager = _LevelManager;
     m_BulletBox->setLevelManager(m_LevelManager);
 }
@@ -181,8 +184,12 @@ void Player::HandControl() {
     m_Hand->m_Transform.rotation = isFaceRight ? angle + 90.0f : 180.0f - (angle + 90.0f);
 }
 void Player::Update() {
+    m_Hand->Update();
     //std::cout << "currentState: " << currentState<<std::endl;
-    if (health <= 0 && currentState!=Die) currentState = Die;
+    if (health <= 0 && currentState != Die) {
+        currentState = Die;
+        this->RemoveChild(m_Hand);
+    }
     if (currentState != Die) {
         PlayerControl();
         HandControl();
