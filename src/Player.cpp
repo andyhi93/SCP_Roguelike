@@ -18,40 +18,43 @@ Player::Player()
         "../../../Resources/Player/boy_walk5.png", "../../../Resources/Player/boy_walk6.png",
         "../../../Resources/Player/boy_walk7.png", "../../../Resources/Player/boy_walk8.png", },true,50,true,50);
     m_AnimationDash= std::make_shared<Util::Animation>( std::vector<std::string>{"../../../Resources/Player/boy_dash.png"}, true, 1000, true, 1000);
+    m_AnimationDie = std::make_shared<Util::Animation>(
+        std::vector<std::string>{"../../../Resources/die_animation1.png", "../../../Resources/die_animation2.png"}, true, 50, true, 50);
+    m_AnimationDie->SetLooping(false);
     SetDrawable(m_AnimationIdle);
     m_AnimationIdle->Play();
     m_Transform.scale = { 4,4 };
     m_Hand = std::make_shared<Hand>();
 }
-void Player::getLevelManager(std::shared_ptr<LevelManager> _LevelManager){
+void Player::setLevelManager(std::shared_ptr<LevelManager> _LevelManager){
     m_LevelManager = _LevelManager;
-    m_BulletBox->getLevelManager(m_LevelManager);
+    m_BulletBox->setLevelManager(m_LevelManager);
 }
 void Player::PlayerControl() {
     //Move
     glm::vec2 velocity(0.0f, 0.0f);
 
     if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
-        isMoving = true;
+        currentState = Walk;
         velocity.y += speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-        isMoving = true;
+        currentState = Walk;
         velocity.x -= speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
-        isMoving = true;
+        currentState = Walk;
         velocity.y -= speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-        isMoving = true;
+        currentState = Walk;
         velocity.x += speed;
     }
     if (!Util::Input::IsKeyPressed(Util::Keycode::W) && 
         !Util::Input::IsKeyPressed(Util::Keycode::A) && 
         !Util::Input::IsKeyPressed(Util::Keycode::S) && 
         !Util::Input::IsKeyPressed(Util::Keycode::D)) {
-        isMoving = false;
+        currentState = Idle;
     }
     Move(velocity);
     //get mousePos
@@ -61,7 +64,7 @@ void Player::PlayerControl() {
 
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
-        glm::vec2 bulletDirection = glm::normalize(Util::Input::GetCursorPosition() - m_Transform.translation);
+        glm::vec2 bulletDirection = Util::Input::GetCursorPosition() - m_Transform.translation;
         auto bullet = std::make_shared<Bullet>(1, CollisionLayer::Player, 10.0f, 0, bulletDirection);
         bullet->m_Transform.translation = m_Hand->m_Transform.translation;
         m_BulletBox->AddBullet(bullet);
@@ -140,11 +143,15 @@ void Player::Move(glm::vec2& velocity) {
 
 }
 void Player::AnimationControl() {
+    if (currentState == Die) {
+        SetDrawable(m_AnimationDie);
+        return;
+    }
     if (isDashing) {
         SetDrawable(m_AnimationDash);
         m_Hand->SetDrawable(m_Hand->m_AnimationDash);
     }
-    else if (isMoving) {
+    else if (currentState==Walk) {
         SetDrawable(m_AnimationWalk);
         m_Hand->SetDrawable(m_Hand->m_Animation);
     }
@@ -174,12 +181,13 @@ void Player::HandControl() {
     m_Hand->m_Transform.rotation = isFaceRight ? angle + 90.0f : 180.0f - (angle + 90.0f);
 }
 void Player::Update() {
-    if (!m_BulletBox->m_LevelManager) {
-        
+    //std::cout << "currentState: " << currentState<<std::endl;
+    if (health <= 0 && currentState!=Die) currentState = Die;
+    if (currentState != Die) {
+        PlayerControl();
+        HandControl();
     }
-    PlayerControl();
     AnimationControl();
-    HandControl();
     if (Util::Input::IsKeyPressed(Util::Keycode::SPACE)) {
         for (auto& door : m_LevelManager->m_Tilemap->doors) {
             door->DoorControl(true);

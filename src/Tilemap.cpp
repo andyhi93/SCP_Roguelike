@@ -6,6 +6,7 @@
 #include <cmath>
 #include "Enemy.hpp"
 #include "SCP610.hpp"
+#include "SCP049_2.hpp"
 
 Tilemap::Tilemap() {
     roomImages = { "../../../Resources/Room/room_0000.png" ,"../../../Resources/Room/room_0001.png" 
@@ -31,11 +32,25 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         //std::cout << "insize of Ojbs: " << Objs.size() <<std::endl;
         int i = 0;
         for (auto& enemy : Objs) {
-            enemy->SetZIndex(this->GetZIndex() + 2);
+            enemy->SetZIndex(this->GetZIndex() + 1);
             enemy->m_Transform.translation = objPos[i++];
         }
         return Objs;
     }
+    if (_RoomType == Room049_2) {
+        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
+        for (int i = 0; i < 4; i++) {
+            Objs.push_back(std::make_shared<SCP049_2>());
+        }
+        int i = 0;
+        for (auto& enemy : Objs) {
+            enemy->SetZIndex(this->GetZIndex() + 1);
+            enemy->m_Transform.translation = objPos[i++];
+        }
+        return Objs;
+    }
+    Objs = {};
+    return Objs;
 }
 
 void Tilemap::Update() {

@@ -13,10 +13,10 @@ LevelManager::LevelManager() {
 }
 void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
     m_Player = _player;
-    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room610);
+    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room049_2);
     currentEnemies.clear();
     for (auto& obj : temp) {
-        obj->GetPlayer(m_Player);
+        obj->SetPlayer(m_Player);
         this->AddChild(obj);
         currentEnemies.push_back(obj);
     }
@@ -50,6 +50,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         map[currentRoom.x][currentRoom.y].doors[1],
         map[currentRoom.x][currentRoom.y].doors[2],
         map[currentRoom.x][currentRoom.y].doors[3]);
+    //===============================================Map===================================================
     std::vector<MapUI::Room> RoomForMap;
     std::cout << "===================================Push Romm======================================" << std::endl;
     for (int y = -1; y < 2; y++) {
@@ -76,6 +77,16 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::cout << "\n";
     }
     m_MapUI->SetMap(RoomForMap);
+
+    for (auto& enemy : currentEnemies) {
+        this->RemoveChild(enemy);
+    }
+    currentEnemies.clear();
+    for (auto& enemy : map[currentRoom.x][currentRoom.y].roomobjs) {
+        enemy->SetPlayer(m_Player);
+        currentEnemies.push_back(enemy);//Enemy class add to Gameobject vector
+        this->AddChild(enemy);
+    }
 }
 void LevelManager::GenerateLevel() {
     floor++;
@@ -217,6 +228,18 @@ void LevelManager::GenerateLevel() {
             }
             else {
                 RoomForMap.push_back(map[x + startPos.x][y + startPos.y]);
+            }
+        }
+    }
+    for (int x = 0; x < MAP_SIZE_WIDTH; x++) {
+        for (int y = 0; y < MAP_SIZE_HEIGHT; y++) {
+            std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType);
+            if (!temp.empty()) {
+                for (auto& obj : temp) {
+                    obj->SetPlayer(m_Player);
+                    //this->AddChild(obj);  //Render
+                    map[x][y].roomobjs.push_back(obj);
+                }
             }
         }
     }

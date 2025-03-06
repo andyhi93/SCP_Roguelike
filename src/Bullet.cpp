@@ -14,6 +14,7 @@ Bullet::Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed, int
 	speed = _speed;
 	damage = _damage;
 	direction = _direction;
+	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
 	layer = _layer;
 
 	/*std::cout << "Bullet created with damage: " << damage
@@ -21,11 +22,11 @@ Bullet::Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed, int
 		<< ", speed: " << speed
 		<< ", direction: (" << direction.x << ", " << direction.y << ")\n";*/
 }
-void Bullet::getLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
+void Bullet::setLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
 	m_LevelManager = _LevelManager;
 	isGetLevelManager = true;
 }
-void Bullet::getPlayer(std::shared_ptr<Player> _Player) {
+void Bullet::setPlayer(std::shared_ptr<Player> _Player) {
 	m_Player = _Player;
 	isGetPlayer = true;
 }
@@ -66,52 +67,9 @@ void Bullet::Hit(){
 			return;
 		}
 	}
-	/*
-	if (!m_Collider) {
-		std::cerr << "Error: m_Collider is nullptr" << std::endl;
-		return;
-	}
-	if (!m_LevelManager) {
-		return;
-	}
-	if (m_LevelManager->currentEnemies.empty()) {
-		std::cerr << "Warning: currentEnemies is empty" << std::endl;
-	}
-	for (auto& enemyObj : m_LevelManager->currentEnemies) {
-		if (!enemyObj) {
-			std::cerr << "Error: enemyObj is nullptr" << std::endl;
-			continue;
-		}
-		if (!enemyObj->m_Collider) {
-			std::cerr << "Error: enemyObj->m_Collider is nullptr" << std::endl;
-			continue;
-		}
-
-		if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
-			enemyObj->SetHealth(enemyObj->GetHealth() - damage);
-			islive = false;
-		}
-	}
-
-	// ¿À¨d m_Player
-	if (!m_Player) {
-		std::cerr << "Error: m_Player is nullptr" << std::endl;
-		return;
-	}
-	if (!m_Player->m_Collider) {
-		std::cerr << "Error: m_Player->m_Collider is nullptr" << std::endl;
-		return;
-	}
-	if (layer == CollisionLayer::Enemy && m_Collider->CheckCollision(*m_Collider, *m_Player->m_Collider)) {
-		m_Player->health -= damage;
-		islive = false;
-	}
-	*/
-	//wtf
-	
 	if (layer == CollisionLayer::Player && isGetLevelManager && !m_LevelManager->currentEnemies.empty()) {
 		for (auto& enemyObj : m_LevelManager->currentEnemies) {
-			if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider)) {
+			if (m_Collider->CheckCollision(*m_Collider, *enemyObj->m_Collider) && !enemyObj->isDead) {
 				enemyObj->SetHealth(enemyObj->GetHealth() - damage);
 				islive = false;
 				std::cout << "Bullet hit Enemy" <<std::endl;

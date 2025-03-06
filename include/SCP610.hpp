@@ -2,15 +2,17 @@
 #define SCP610_HPP
 
 #include "Enemy.hpp"
-class SCP610 : public Enemy {
+#include "IRangedAttack.hpp"
+class SCP610 : public Enemy ,public IRangedAttack{
 public:
     SCP610();
     void Update() override;
 
     void Behavior();
+    void Shoot() override;
+    void SetPlayer(std::shared_ptr<Player> _player) override;
 protected:
 private:
-    bool isFire = false;
 };
 
 #endif

@@ -4,10 +4,10 @@
 BulletBox::BulletBox(){
 	
 }
-void BulletBox::getLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
+void BulletBox::setLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
 	m_LevelManager = _LevelManager;
 }
-void BulletBox::getPlayer(std::shared_ptr<Player> _Player) {
+void BulletBox::setPlayer(std::shared_ptr<Player> _Player) {
 	m_Player = _Player;
 }
 void BulletBox::Update(){
@@ -38,10 +38,10 @@ void BulletBox::RemoveAll() {
 void BulletBox::AddBullet(std::shared_ptr<Bullet> bullet) {
 	bullets.push_back(bullet);
 	if (bullet->getLayer() == GameObject::CollisionLayer::Player) {
-		bullet->getLevelManager(m_LevelManager);
+		bullet->setLevelManager(m_LevelManager);
 	}
 	if (bullet->getLayer() == GameObject::CollisionLayer::Enemy) {
-		bullet->getPlayer(m_Player);
+		bullet->setPlayer(m_Player);
 	}
 	this->AddChild(bullet);
 }

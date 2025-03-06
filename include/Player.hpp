@@ -22,7 +22,7 @@ public:
     void AnimationControl();
     void HandControl();
     void Move(glm::vec2& velocity);
-    void getLevelManager(std::shared_ptr<LevelManager> _LevelManager);
+    void setLevelManager(std::shared_ptr<LevelManager> _LevelManager);
 
     void Update();
 
@@ -39,8 +39,9 @@ private:
         Walk,
         Die,
     };
+    State currentState = Idle;
     bool isFaceRight = true;
-    bool isMoving = false;
+    //bool isMoving = false;
     float speed = 5;
     float m_LastShotTime=0;
     float m_ShotInterval=0.5f;

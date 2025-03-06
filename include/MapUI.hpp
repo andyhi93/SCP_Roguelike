@@ -5,6 +5,7 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include "Enemy.hpp"
 class Player;
 
 class MapUI : public Util::GameObject{
@@ -15,6 +16,7 @@ public:
         bool exists = false;
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
+        std::vector<std::shared_ptr<Enemy>> roomobjs = {};
     };
     void Update();
     void Init(std::vector<Room> _RoomData);

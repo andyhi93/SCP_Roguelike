@@ -11,14 +11,14 @@ void App::Start() {
 
     //Layer
     std::shared_ptr<Util::GameObject> empty;
-    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager ,  };
-    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { empty/*m_SCP610,m_SCP610->m_BulletBox*/ };
+    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager};
+    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { empty };
     std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_Hand, m_Player->m_BulletBox };
     std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
 
     //m_SCP610->GetPlayer(m_Player);
     m_LevelManager->setPlayer(m_Player);
-    m_Player->getLevelManager(m_LevelManager);
+    m_Player->setLevelManager(m_LevelManager);
 
     m_LevelManager->m_MapUI->GetPlayer(m_Player);//map point
     //m_LevelManager->currentEnemies.push_back(m_SCP610);

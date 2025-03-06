@@ -3,13 +3,10 @@
 
 Enemy::Enemy(){
     layer = GameObject::CollisionLayer::Enemy;
-    m_BulletBox = std::make_shared<BulletBox>();
 }
 
-void Enemy::GetPlayer(std::shared_ptr<Player> _player) { 
+void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
     m_Player = _player; 
-    m_BulletBox->getPlayer(m_Player);
-    this->AddChild(m_BulletBox);
 }
 
 glm::vec2 Enemy::normalize(glm::vec2 values) {

@@ -7,10 +7,11 @@ SCP610::SCP610() : Enemy(){
 	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
 	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
 
-	m_LastShotTime = dis(gen);
+	m_LastAttackTime = dis(gen);
+	m_BulletBox = std::make_shared<BulletBox>();
+	this->AddChild(m_BulletBox);
 
 	health = 1;
-	m_ShotInterval = 5;
 	speed = 2.0f;
 	//m_Transform.translation = { 50,0 };
 	m_Collider = std::make_shared<Collider>(m_Transform.translation, glm::vec2{ 45,150 });
@@ -28,6 +29,11 @@ SCP610::SCP610() : Enemy(){
 	m_AnimationWalk->Play();
 	m_Transform.scale = { 5,5 };
 }
+void SCP610::SetPlayer(std::shared_ptr<Player> _player) {
+	m_Player = _player;
+	m_BulletBox->setPlayer(m_Player);
+	this->AddChild(m_BulletBox);
+}
 void SCP610::Behavior() {
 	m_Collider->position = m_Transform.translation;
 
@@ -38,16 +44,18 @@ void SCP610::Behavior() {
 		velocity = { velocity.x * speed,velocity.y * speed };
 		m_Transform.translation += m_Collider->blockDetect(velocity);
 	}
-
+	Shoot();
+}
+void SCP610::Shoot() {
 	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastShotTime >= m_ShotInterval) {
+	if (currentTime - m_LastAttackTime >= attackSpeed) {
 		SetDrawable(m_AnimationAttack);
 		m_AnimationAttack->SetCurrentFrame(0);
 		m_AnimationAttack->Play();
-		m_LastShotTime = currentTime;
+		m_LastAttackTime = currentTime;
 	}
 	if (m_AnimationAttack->GetCurrentFrameIndex() == 2 && !isFire) {
-		glm::vec2 bulletDirection = glm::normalize(m_Player->m_Transform.translation - m_Transform.translation);
+		glm::vec2 bulletDirection = m_Player->m_Transform.translation - m_Transform.translation;
 		auto bullet = std::make_shared<Bullet>(damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection);
 		bullet->m_Transform.translation = m_Transform.translation;
 		m_BulletBox->AddBullet(bullet);
