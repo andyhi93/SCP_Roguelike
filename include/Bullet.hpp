@@ -3,15 +3,15 @@
 
 #include "pch.hpp"
 
-#include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include "Collider.hpp"
+#include "Charater.hpp"
 
 class Player;
 class LevelManager;
-class Bullet : public Util::GameObject {
+class Bullet : public Charater {
 public:
-    Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
+    Bullet(int _damage,  CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
 
     void Update();
     void Move();
@@ -22,7 +22,7 @@ public:
     bool isGetLevelManager = false;
     void setPlayer(std::shared_ptr<Player> _Player);
     bool isGetPlayer = false;
-    GameObject::CollisionLayer getLayer() { return layer; }
+    CollisionLayer getLayer() { return layer; }
 private:
     float damage;
     float speed;

@@ -2,11 +2,10 @@
 #define ITEM_HPP
 
 #include "pch.hpp"
-
-#include "Util/GameObject.hpp"
+#include "Charater.hpp"
 #include "Collider.hpp"
 
-class Item : public Util::GameObject {
+class Item : public Charater {
 public:
     Item();
 

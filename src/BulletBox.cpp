@@ -37,10 +37,11 @@ void BulletBox::RemoveAll() {
 }
 void BulletBox::AddBullet(std::shared_ptr<Bullet> bullet) {
 	bullets.push_back(bullet);
-	if (bullet->getLayer() == GameObject::CollisionLayer::Player) {
+	bullet->SetZIndex(this->GetZIndex()+0.5f);
+	if (bullet->getLayer() == CollisionLayer::Player) {
 		bullet->setLevelManager(m_LevelManager);
 	}
-	if (bullet->getLayer() == GameObject::CollisionLayer::Enemy) {
+	if (bullet->getLayer() == CollisionLayer::Enemy) {
 		bullet->setPlayer(m_Player);
 	}
 	this->AddChild(bullet);

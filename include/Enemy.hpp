@@ -4,10 +4,10 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Util/GameObject.hpp"
 #include "Collider.hpp"
+#include "Charater.hpp"
 class Player;
-class Enemy : public Util::GameObject{
+class Enemy : public Charater{
 public:
     virtual void Update()=0;
     Enemy();

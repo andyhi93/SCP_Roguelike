@@ -2,7 +2,7 @@
 #include "Player.hpp"
 
 Enemy::Enemy(){
-    layer = GameObject::CollisionLayer::Enemy;
+    layer = CollisionLayer::Enemy;
 }
 
 void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 

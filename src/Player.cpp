@@ -7,7 +7,7 @@
 
 Player::Player()
     :m_BulletBox(std::make_shared<BulletBox>()){
-    layer = GameObject::CollisionLayer::Player;
+    layer = CollisionLayer::Player;
 
     m_Collider = std::make_shared<Collider>(m_Transform.translation, glm::vec2{ 45,140 });
     m_Transform.translation = { 0, 0 };

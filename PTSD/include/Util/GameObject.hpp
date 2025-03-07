@@ -155,12 +155,6 @@ public:
     void Draw();
 
 protected:
-    enum class CollisionLayer {
-        Player = 1,
-        Enemy = 2,
-        Environment = 4,
-    };
-    CollisionLayer layer;
 
     std::shared_ptr<Core::Drawable> m_Drawable = nullptr;
     std::vector<std::shared_ptr<GameObject>> m_Children;

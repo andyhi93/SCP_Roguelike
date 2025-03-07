@@ -3,7 +3,7 @@
 
 #include "pch.hpp"
 #include "Tilemap.hpp"
-#include "Util/GameObject.hpp"
+#include "Charater.hpp"
 #include "MapUI.hpp"
 #include "Enemy.hpp"
 
@@ -13,7 +13,7 @@ constexpr int MAP_SIZE_HEIGHT = 6;
 constexpr int MIN_ROOMS = 7;
 constexpr int MAX_ROOMS = 10;
 
-class LevelManager : public Util::GameObject {
+class LevelManager : public Charater {
 public:
     LevelManager();
     void GenerateLevel();

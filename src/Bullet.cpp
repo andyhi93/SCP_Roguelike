@@ -6,7 +6,7 @@
 #include "LevelManager.hpp"
 #include "Player.hpp"
 
-Bullet::Bullet(int _damage, GameObject::CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction){
+Bullet::Bullet(int _damage, CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction){
 	m_Collider = std::make_shared<Collider>(m_Transform.translation,glm::vec2(2,2));
 	std::vector<std::string> bullet_images = { "../../../Resources/purple_ammo.png","../../../Resources/red_ammo.png","../../../Resources/choco_ammo.png" };
 	m_Transform.scale = { 1,1 };

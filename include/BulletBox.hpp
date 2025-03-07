@@ -3,11 +3,11 @@
 
 #include "pch.hpp"
 
-#include "Util/GameObject.hpp"
 #include "Bullet.hpp"
 #include "Util/Image.hpp"
+#include "Charater.hpp"
 
-class BulletBox : public Util::GameObject {
+class BulletBox : public Charater{
 public:
     BulletBox();
 

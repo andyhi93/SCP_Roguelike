@@ -4,13 +4,13 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Util/GameObject.hpp"
 #include "BulletBox.hpp"
 #include "Hand.hpp"
 #include "Collider.hpp"
 #include "LevelManager.hpp"
+#include "Charater.hpp"
 
-class Player : public Util::GameObject, public std::enable_shared_from_this<Player> {
+class Player : public Charater{
 public:
     std::shared_ptr<Hand> m_Hand;
     std::shared_ptr<BulletBox> m_BulletBox;

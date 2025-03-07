@@ -3,12 +3,12 @@
 
 #include "pch.hpp"
 
-#include "Util/GameObject.hpp"
+#include "Charater.hpp"
 #include "Util/Image.hpp"
 #include "Enemy.hpp"
 class Player;
 
-class MapUI : public Util::GameObject{
+class MapUI : public Charater{
 public:
     MapUI();
 

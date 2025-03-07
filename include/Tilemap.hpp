@@ -3,12 +3,12 @@
 
 #include "pch.hpp"
 
-#include "Util/GameObject.hpp"
+#include "Charater.hpp"
 #include "Collider.hpp"
 #include "Door.hpp"
 
 class Enemy;
-class Tilemap : public Util::GameObject {
+class Tilemap : public Charater {
 public:
     Tilemap();
     void Init();

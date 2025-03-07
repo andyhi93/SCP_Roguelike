@@ -4,6 +4,7 @@
 #include "pch.hpp" // IWYU pragma: export
 
 #include "Util/Renderer.hpp"
+#include "Charater.hpp"
 #include "Player.hpp"
 #include "Hand.hpp"
 #include "Tilemap.hpp"
