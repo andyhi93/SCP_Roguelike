@@ -7,6 +7,12 @@
 #include "Enemy.hpp"
 #include "SCP610.hpp"
 #include "SCP049_2.hpp"
+#include "SCP743A.hpp"
+#include "SCP743B.hpp"
+#include "SCP1048_B.hpp"
+#include "SCP1048_C.hpp"
+#include "SCP553.hpp"
+#include <random>
 
 Tilemap::Tilemap() {
     roomImages = { "../../../Resources/Room/room_0000.png" ,"../../../Resources/Room/room_0001.png" 
@@ -23,33 +29,56 @@ Tilemap::Tilemap() {
 std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
     std::vector<std::shared_ptr<Enemy>> Objs;
     std::vector<glm::vec2> objPos;
-    if (_RoomType == Room610) {
-        //std::cout<<"init Room610" << std::endl;
-        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
+    if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610) {
         for (int i = 0; i < 4; i++) {
             Objs.push_back(std::make_shared<SCP610>());
         }
-        //std::cout << "insize of Ojbs: " << Objs.size() <<std::endl;
-        int i = 0;
-        for (auto& enemy : Objs) {
-            enemy->SetZIndex(this->GetZIndex() + 1);
-            enemy->m_Transform.translation = objPos[i++];
-        }
-        return Objs;
     }
-    if (_RoomType == Room049_2) {
-        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
+    if (_RoomType == Room049_2 || _RoomType == Room610_049_2 || _RoomType== Room1048_049_2) {
         for (int i = 0; i < 4; i++) {
             Objs.push_back(std::make_shared<SCP049_2>());
         }
-        int i = 0;
-        for (auto& enemy : Objs) {
-            enemy->SetZIndex(this->GetZIndex() + 1);
-            enemy->m_Transform.translation = objPos[i++];
-        }
-        return Objs;
     }
-    Objs = {};
+    if (_RoomType == Room743ant || _RoomType== Room1048_743) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dis(0, 4);
+        int rdnum = dis(gen);
+        for (int i = 0; i < rdnum; i++) {
+            Objs.push_back(std::make_shared<SCP743A>());
+        }
+        for (int i = 0; i < 4- rdnum; i++) {
+            Objs.push_back(std::make_shared<SCP743B>());
+        }
+    }
+    if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dis(0, 2);
+        int rdnum = dis(gen);
+        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
+        std::shuffle(objPos.begin(), objPos.end(), gen);
+        for (int i = 0; i < rdnum; i++) {
+            Objs.push_back(std::make_shared<SCP1048_B>());
+        }
+        for (int i = 0; i < 2 - rdnum; i++) {
+            Objs.push_back(std::make_shared<SCP1048_C>());
+        }
+    }
+    if (_RoomType == Room553 || _RoomType == Room553_610) {
+        for (int i = 0; i < 6; i++) {
+            Objs.push_back(std::make_shared<SCP553>());
+        }
+    }
+    int i = 0;
+    objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
+    for (auto& enemy : Objs) {
+        enemy->SetZIndex(this->GetZIndex() + 1);
+        enemy->m_Transform.translation = objPos[i];
+        i = i > 6 ? 1 : i + 1;
+    }
+    if (Objs.empty()) { Objs = {}; }
+    //Objs = {};
     return Objs;
 }
 

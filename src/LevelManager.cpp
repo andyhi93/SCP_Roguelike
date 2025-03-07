@@ -13,7 +13,7 @@ LevelManager::LevelManager() {
 }
 void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
     m_Player = _player;
-    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room049_2);
+    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room1048_610);
     currentEnemies.clear();
     for (auto& obj : temp) {
         obj->SetPlayer(m_Player);
@@ -181,15 +181,15 @@ void LevelManager::GenerateLevel() {
 
     int half = availableRooms.size() / 2;
     std::set<Tilemap::RoomType> usedRoomTypes;
-    std::uniform_int_distribution<int> dist_easy(Tilemap::RoomType::Room610,Tilemap::RoomType::Room049_2);
-    std::uniform_int_distribution<int> dist_medium(Tilemap::RoomType::Room1048B_1048C,Tilemap::RoomType::Room3119);
-    std::uniform_int_distribution<int> dist_hard(Tilemap::RoomType::Room1048_610, Tilemap::RoomType::Room553_610_743ant);
+    std::uniform_int_distribution<int> dist_easy(m_Tilemap->seRoom[2], m_Tilemap->seRoom[3]);
+    std::uniform_int_distribution<int> dist_medium(m_Tilemap->seRoom[4], m_Tilemap->seRoom[5]);
+    std::uniform_int_distribution<int> dist_hard(m_Tilemap->seRoom[6], m_Tilemap->seRoom[7]);
 
     for (size_t i = 0; i < availableRooms.size(); i++) {
         Tilemap::RoomType roomType;
         do {
             if(floor == 1){
-                if (i < half) {
+                if (i < half+1) {
                     roomType = static_cast<Tilemap::RoomType>(dist_easy(rng));
                 }
                 else {

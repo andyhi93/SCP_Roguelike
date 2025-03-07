@@ -35,7 +35,7 @@ SCP049_2::SCP049_2() : Enemy() {
 	m_Transform.scale = { 4,4 };
 }
 void SCP049_2::Behavior() {
-	m_Collider->position = m_Transform.translation;
+	m_Collider->position = m_Transform.translation - glm::vec2{m_Collider->size[0]/2, m_Collider->size[1]/2};
 
 	if (!m_Collider->CheckCollision(*m_Collider, *m_Player->m_Collider)) {
 		glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;

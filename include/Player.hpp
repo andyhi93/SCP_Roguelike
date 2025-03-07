@@ -26,7 +26,7 @@ public:
 
     void Update();
 
-    float health = 10;
+    float health = 100;
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;
