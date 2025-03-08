@@ -4,7 +4,7 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Core/Object.hpp"
+#include "core/Object.hpp"
 
 class Player;
 

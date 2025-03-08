@@ -3,7 +3,7 @@
 
 #include "pch.hpp"
 
-#include "Core/Object.hpp"
+#include "core/Object.hpp"
 #include "Collider.hpp"
 #include "Door.hpp"
 

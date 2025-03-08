@@ -33,7 +33,7 @@ Player::Player(): Actor(glm::vec2{ 45,140 }){
     m_BulletBox->SetZIndex(this->GetZIndex() + 0.1f);
 }
 void Player::Start() {
-    m_collider->parentActor = shared_from_this();
+    //m_collider->parentActor = shared_from_this();
 }
 void Player::PlayerControl() {
     //Move

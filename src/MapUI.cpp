@@ -88,8 +88,8 @@ void MapUI::SetMap(std::vector<Room> _RoomData) {
 
 // 更新房間顯示
 void MapUI::UpdateRoomDisplay(Room roomData,int x, int y) {
-    std::shared_ptr<GameObject> roomObject = roomShape[x + y * 3];
-    std::shared_ptr<GameObject> colorObject = roomColor[x + y * 3];
+    std::shared_ptr<Object> roomObject = roomShape[x + y * 3];
+    std::shared_ptr<Object> colorObject = roomColor[x + y * 3];
 
     if (roomData.exists) {
         // 根據房間門的開關來選擇顯示圖像

@@ -3,7 +3,7 @@
 
 #include "pch.hpp"
 #include "Tilemap.hpp"
-#include "Core/Object.hpp"
+#include "core/Object.hpp"
 #include "MapUI.hpp"
 #include "Enemy.hpp"
 

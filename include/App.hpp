@@ -4,7 +4,7 @@
 #include "pch.hpp" // IWYU pragma: export
 
 #include "Util/Renderer.hpp"
-#include "Core/Object.hpp"
+#include "core/Object.hpp"
 #include "Player.hpp"
 #include "LevelManager.hpp"
 class App {
