@@ -8,22 +8,25 @@
 #include "Hand.hpp"
 #include "Collider.hpp"
 #include "LevelManager.hpp"
-#include "Charater.hpp"
+#include "Core/Actor.hpp"
 
-class Player : public Charater{
+class Player : public Actor, public Trigger{
 public:
     std::shared_ptr<Hand> m_Hand;
     std::shared_ptr<BulletBox> m_BulletBox;
-    std::shared_ptr<Collider> m_Collider;
     std::shared_ptr<LevelManager> m_LevelManager;
+
+    void SetLevelManager(std::shared_ptr<LevelManager> _LevelManager) { m_LevelManager = _LevelManager; }
     
     Player();
     void PlayerControl();
     void AnimationControl();
     void HandControl();
     void Move(glm::vec2& velocity);
-    void setLevelManager(std::shared_ptr<LevelManager> _LevelManager);
 
+    void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
+
+    void Start();
     void Update();
 
     float health = 100;

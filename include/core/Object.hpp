@@ -1,15 +1,17 @@
-#ifndef CHARATER_HPP
-#define CHARATER_HPP
+#ifndef OBJECT_HPP
+#define OBJECT_HPP
 
 #include "Util/GameObject.hpp"
 
-class Charater : public Util::GameObject {
+class Object : public Util::GameObject {
 public:
+    virtual void Update(){}
+    virtual void FixedUpdate(){}
 protected:
     enum class CollisionLayer {
         Player = 1,
         Enemy = 2,
-        Environment = 4,
+        Environment = 3,
     };
     CollisionLayer layer;
 };

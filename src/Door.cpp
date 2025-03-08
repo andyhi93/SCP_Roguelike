@@ -4,8 +4,8 @@
 #include "Util/Image.hpp"
 #include <iostream>
 
-Door::Door(){
-    m_Collider = std::make_shared<Collider>(m_Transform.translation, glm::vec2{ 45,140 });
+Door::Door():Solid(m_Transform.translation, glm::vec2{ 45,140 }){
+    m_collider->tag = "Door";
     doorImage = { "../../../Resources/Door0.png", "../../../Resources/Door1.png" };
     m_Transform.scale = { 7,7 };
 }
@@ -23,22 +23,5 @@ void Door::DoorControl(bool cmd) {
         this->SetDrawable(std::make_shared<Util::Image>(doorImage[0]));
     }
 }
-/*
-void Door::Move(glm::vec2& velocity) {
-    if (m_Collider->CheckCollision(*m_Collider, walls[0]) && velocity.y > 0) {
-        velocity.y = 0;
-    }
-    if (m_Collider->CheckCollision(*m_Collider, walls[1]) && velocity.y < 0) {
-        velocity.y = 0;
-    }
-    if (m_Collider->CheckCollision(*m_Collider, walls[2]) && velocity.x < 0) {
-        velocity.x = 0;
-    }
-    if (m_Collider->CheckCollision(*m_Collider, walls[3]) && velocity.x > 0) {
-        velocity.x = 0;
-    m_Transform.translation += velocity;
-
-}
-    }*/
 void Door::Update() {
 }

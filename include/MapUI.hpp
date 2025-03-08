@@ -3,12 +3,12 @@
 
 #include "pch.hpp"
 
-#include "Charater.hpp"
+#include "Core/Object.hpp"
 #include "Util/Image.hpp"
 #include "Enemy.hpp"
 class Player;
 
-class MapUI : public Charater{
+class MapUI : public Object {
 public:
     MapUI();
 
@@ -16,7 +16,7 @@ public:
         bool exists = false;
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
-        std::vector<std::shared_ptr<Enemy>> roomobjs = {};
+        std::vector<std::shared_ptr<Object>> roomobjs = {};
     };
     void Update();
     void Init(std::vector<Room> _RoomData);
@@ -32,10 +32,10 @@ public:
     };
     Room mapArray[3][3];
     std::shared_ptr<Player> MapPlayer = std::make_shared<Player>();
-    std::shared_ptr<GameObject> Background=std::make_shared<GameObject>();
-    std::shared_ptr<GameObject> PlayerPoint = std::make_shared<GameObject>();
-    std::vector<std::shared_ptr<GameObject>> roomShape;
-    std::vector<std::shared_ptr<GameObject>> roomColor;
+    std::shared_ptr<Object> Background=std::make_shared<Object>();
+    std::shared_ptr<Object> PlayerPoint = std::make_shared<Object>();
+    std::vector<std::shared_ptr<Object>> roomShape;
+    std::vector<std::shared_ptr<Object>> roomColor;
 
 private:
     bool isInit = false;

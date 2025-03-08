@@ -9,27 +9,10 @@
 #include "Util/Time.hpp"
 
 #include "config.hpp"
-#include <iostream>
 
 using Util::ms_t;
 
 namespace Core {
-
-void ResizeViewport(int windowWidth, int windowHeight) {
-    float aspectRatio = 16.0f / 9.0f; // 你想要的固定比例
-    int newWidth = windowWidth;
-    int newHeight = static_cast<int>(windowWidth / aspectRatio);
-
-    if (newHeight > windowHeight) {
-        newHeight = windowHeight;
-        newWidth = static_cast<int>(windowHeight * aspectRatio);
-    }
-
-    int xOffset = (windowWidth - newWidth) / 2;
-    int yOffset = (windowHeight - newHeight) / 2;
-
-    glViewport(xOffset, yOffset, newWidth, newHeight);
-}
 Context::Context() {
     Util::Logger::Init();
 
@@ -60,8 +43,7 @@ Context::Context() {
 
     m_Window =
         SDL_CreateWindow(TITLE, WINDOW_POS_X, WINDOW_POS_Y, WINDOW_WIDTH,
-                         WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
-
+                         WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (m_Window == nullptr) {
         LOG_ERROR("Failed to create window");
@@ -114,7 +96,6 @@ Context::Context() {
 }
 std::shared_ptr<Context> Context::s_Instance(nullptr);
 
-
 Context::~Context() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
@@ -139,7 +120,6 @@ void Context::Setup() {
 }
 
 void Context::Update() {
-
     Util::Input::Update();
     SDL_GL_SwapWindow(m_Window);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

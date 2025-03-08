@@ -3,12 +3,12 @@
 
 #include "pch.hpp"
 
-#include "Charater.hpp"
+#include "Core/Object.hpp"
 #include "Collider.hpp"
 #include "Door.hpp"
 
 class Enemy;
-class Tilemap : public Charater {
+class Tilemap : public Object {
 public:
     Tilemap();
     void Init();
@@ -18,27 +18,17 @@ public:
 
     enum RoomType {
         //func
-        StartRoom,
-        shop,
-        treasureRoom,
-        BossRoom,
+        StartRoom, shop, treasureRoom, BossRoom,
         //easy
-        Room610,
-        Room553,
-        Room743ant,
-        Room1048,
-        Room049_2,
+        Room610, Room553, Room743ant, Room1048, Room049_2,
         //medium
-        Room553_610,
-        Room610_049_2,
-        Room1048_743,
-        Room1048_049_2,
+        Room553_610, Room610_049_2, Room1048_743, Room1048_049_2,
         //Room3119,
         //hard
-        Room1048_610,
-        Room3119_553,
-        Room049_2_1048,
-        Room553_610_743ant,
+        Room1048_610, Room3119_553, Room049_2_1048, Room553_610_743ant,
+    };
+    enum Building {
+        Table8, Table4, Table3, Table2, Trap10 , TrapCol2, TrapCol3
     };
     RoomType seRoom[8] = { StartRoom ,BossRoom,Room610,Room049_2,Room553_610 ,Room1048_743,Room1048_610,Room553_610_743ant };
     std::vector<std::shared_ptr<Enemy>> InitRoom(RoomType _RoomType);

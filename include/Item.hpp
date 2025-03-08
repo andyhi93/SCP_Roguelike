@@ -2,10 +2,10 @@
 #define ITEM_HPP
 
 #include "pch.hpp"
-#include "Charater.hpp"
+#include "Core/Actor.hpp"
 #include "Collider.hpp"
 
-class Item : public Charater {
+class Item : public Actor {
 public:
     Item();
 

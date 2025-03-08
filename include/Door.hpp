@@ -4,12 +4,10 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Charater.hpp"
-#include "Collider.hpp"
+#include "Core/Solid.hpp"
 
-class Door: public Charater {
+class Door: public Solid {
 public:
-    std::shared_ptr<Collider> m_Collider;
 
     Door();
 

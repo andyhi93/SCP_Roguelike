@@ -5,22 +5,22 @@
 
 #include "Util/Image.hpp"
 #include "Collider.hpp"
-#include "Charater.hpp"
+#include "Core/Actor.hpp"
 
 class Player;
 class LevelManager;
-class Bullet : public Charater {
+class Bullet : public Actor ,public Trigger{
 public:
-    Bullet(int _damage,  CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
+    Bullet(glm::vec2 pos,int _damage,  CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
 
-    void Update();
+    void Start();
+    void Update() override;
+    void FixedUpdate() override;
+    void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
     void Move();
-    void Hit();
     bool GetIslive();
-    bool IsOutOfBounds();
-    void setLevelManager(std::shared_ptr<LevelManager> _LevelManager);
+    void OutOfBounds();
     bool isGetLevelManager = false;
-    void setPlayer(std::shared_ptr<Player> _Player);
     bool isGetPlayer = false;
     CollisionLayer getLayer() { return layer; }
 private:
@@ -28,9 +28,6 @@ private:
     float speed;
     glm::vec2 direction;
     bool islive = true;
-    std::shared_ptr<Collider> m_Collider;
-    std::shared_ptr<LevelManager> m_LevelManager;
-    std::shared_ptr<Player> m_Player;
 };
 
 #endif

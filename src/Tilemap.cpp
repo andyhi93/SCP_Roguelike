@@ -58,10 +58,10 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         int rdnum = dis(gen);
         objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
         std::shuffle(objPos.begin(), objPos.end(), gen);
-        /*for (int i = 0; i < rdnum; i++) {
+        for (int i = 0; i < rdnum; i++) {
             Objs.push_back(std::make_shared<SCP1048_B>());
-        }*/
-        for (int i = 0; i < 2 /*- rdnum*/; i++) {
+        }
+        for (int i = 0; i < 2 - rdnum; i++) {
             Objs.push_back(std::make_shared<SCP1048_C>());
         }
     }

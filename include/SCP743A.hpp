@@ -5,6 +5,7 @@
 class SCP743A : public Enemy {
 public:
     SCP743A();
+    void OnCollisionEnter(std::shared_ptr<BoxCollider> other);
     void Update() override;
 
     void Behavior();

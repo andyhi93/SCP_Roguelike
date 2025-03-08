@@ -1,15 +1,7 @@
 #include "BulletBox.hpp"
 #include <iostream>
 
-BulletBox::BulletBox(){
-	
-}
-void BulletBox::setLevelManager(std::shared_ptr<LevelManager> _LevelManager) {
-	m_LevelManager = _LevelManager;
-}
-void BulletBox::setPlayer(std::shared_ptr<Player> _Player) {
-	m_Player = _Player;
-}
+BulletBox::BulletBox(){}
 void BulletBox::Update(){
 	AutoRemove();
 	for (auto& bullet : bullets) {
@@ -36,13 +28,8 @@ void BulletBox::RemoveAll() {
 	bullets.clear();
 }
 void BulletBox::AddBullet(std::shared_ptr<Bullet> bullet) {
+	bullet->Start();
 	bullets.push_back(bullet);
 	bullet->SetZIndex(this->GetZIndex()+0.5f);
-	if (bullet->getLayer() == CollisionLayer::Player) {
-		bullet->setLevelManager(m_LevelManager);
-	}
-	if (bullet->getLayer() == CollisionLayer::Enemy) {
-		bullet->setPlayer(m_Player);
-	}
 	this->AddChild(bullet);
 }

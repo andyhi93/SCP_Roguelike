@@ -39,8 +39,8 @@ void MapUI::Init(std::vector<Room> _RoomData) {
     if (_RoomData.size() != 9) std::cout << "MapUI Init Wrong: RoomSize isn't 9!" << std::endl;
     for(int y=0;y<3;y++){
         for (int x = 0; x < 3; x++) {
-            std::shared_ptr<GameObject> roomObject = std::make_shared<GameObject>();
-            std::shared_ptr<GameObject> colorObject = std::make_shared<GameObject>();
+            std::shared_ptr<Object> roomObject = std::make_shared<Object>();
+            std::shared_ptr<Object> colorObject = std::make_shared<Object>();
             roomObject->SetZIndex(10.1f);
             roomObject->m_Transform.scale = { 6,6 };
             colorObject->SetZIndex(10.2f);

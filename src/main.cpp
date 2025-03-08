@@ -15,10 +15,12 @@ int main(int, char**) {
                 break;
 
             case App::State::UPDATE:
+                std::cout << "main.update" << std::endl;
                 app.Update();
                 break;
 
             case App::State::END:
+                std::cout << "end.update" << std::endl;
                 app.End();
                 context->SetExit(true);
                 break;

@@ -10,14 +10,11 @@ void App::Start() {
     LOG_TRACE("Start");
 
     //Layer
-    std::shared_ptr<Util::GameObject> empty;
-    std::vector<std::shared_ptr<Util::GameObject>> BackgroundLayer = {m_LevelManager};
-    std::vector<std::shared_ptr<Util::GameObject>> EnemyLayer = { empty };
-    std::vector<std::shared_ptr<Util::GameObject>> PlayerLayer = { m_Player, m_Player->m_BulletBox };
-    std::vector<std::shared_ptr<Util::GameObject>> UILayer = { empty};
+    std::shared_ptr<Object> empty;
+    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player};
 
     int i = 0;
-    for each (auto & obj in BackgroundLayer) {
+    for each (auto & obj in Objects) {
         if (obj) {
             obj->SetZIndex(i);
             m_Root.AddChild(obj);
@@ -25,40 +22,16 @@ void App::Start() {
         else { LOG_INFO("Error: Null GameObject:{}",i); }
         i++;
     }
-    for each (auto & obj in EnemyLayer) {
-        if (obj) {
-            obj->SetZIndex(i);
-            m_Root.AddChild(obj);
-        }
-        else { LOG_INFO("Error: Null GameObject:{}", i); }
-        i++;
-    }
-    for each (auto& obj in PlayerLayer) {
-        if (obj) {
-            obj->SetZIndex(i);
-            m_Root.AddChild(obj);
-        }
-        else { LOG_INFO("Error: Null GameObject:{}", i); }
-        i++;
-    }
-    for each (auto & obj in UILayer) {
-        if (obj) {
-            obj->SetZIndex(i);
-            m_Root.AddChild(obj);
-        }
-        else { LOG_INFO("Error: Null GameObject:{}", i); }
-        i++;
-    }
 
+    m_Player->Start();
     m_LevelManager->setPlayer(m_Player);
-    m_Player->setLevelManager(m_LevelManager);
+    m_Player->SetLevelManager(m_LevelManager);
 
     m_LevelManager->m_MapUI->GetPlayer(m_Player);
 
     m_CurrentState = State::UPDATE;
 }
 void App::FixedUpdate() {
-    m_Player->m_BulletBox->Update();
     //m_SCP610->Update();
     //m_SCP610->m_BulletBox->Update();
 }
@@ -70,7 +43,7 @@ float App::GetDeltaTime() {
     return deltaTime;
 }
 void App::Update() {
-    
+    std::cout << "current State:" << std::endl;
     m_Player->Update();
     m_LevelManager->Update();
     m_Root.Update();

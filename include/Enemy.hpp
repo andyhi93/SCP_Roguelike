@@ -5,18 +5,17 @@
 
 #include "Util/Animation.hpp"
 #include "Collider.hpp"
-#include "Charater.hpp"
+#include "Core/Actor.hpp"
 class Player;
-class Enemy : public Charater{
+class Enemy : public Actor {
 public:
+    virtual void Start();
     virtual void Update()=0;
-    Enemy();
+    Enemy(glm::vec2 size);
     virtual void SetPlayer(std::shared_ptr<Player> _player);//child obj need add app
     glm::vec2 normalize(glm::vec2 values);
 
-    std::shared_ptr<Collider> m_Collider;
-
-    void SetHealth(float _health);
+    void SetHealth(float _health) { health = _health; }
     float GetHealth() { return health; }
     bool isDead = false;
 protected:

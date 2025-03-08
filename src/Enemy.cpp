@@ -1,10 +1,13 @@
 #include "Enemy.hpp"
 #include "Player.hpp"
 
-Enemy::Enemy(){
+Enemy::Enemy(glm::vec2 size) :Actor(size) {
+    m_collider->tag = "Enemy";
     layer = CollisionLayer::Enemy;
 }
-
+void Enemy::Start() {
+    m_collider->parentActor = shared_from_this();
+}
 void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
     m_Player = _player; 
 }
@@ -26,7 +29,4 @@ void Enemy::FlipControl() {
         m_Transform.scale.x = -std::abs(m_Transform.scale.x);
         isFaceRight = false;
     }
-}
-void Enemy::SetHealth(float _health) {
-    health = _health;
 }

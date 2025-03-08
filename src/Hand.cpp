@@ -1,7 +1,5 @@
 #include "Hand.hpp"
 
-#include "Util/Input.hpp"
-#include "Util/Transform.hpp"
 #include "Util/Logger.hpp"
 
 Hand::Hand()

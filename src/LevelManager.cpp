@@ -16,6 +16,7 @@ void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
     std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room1048_610);
     currentEnemies.clear();
     for (auto& obj : temp) {
+        obj->Start();
         obj->SetPlayer(m_Player);
         this->AddChild(obj);
         currentEnemies.push_back(obj);
@@ -83,9 +84,13 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
     }
     currentEnemies.clear();
     for (auto& enemy : map[currentRoom.x][currentRoom.y].roomobjs) {
-        enemy->SetPlayer(m_Player);
-        currentEnemies.push_back(enemy);//Enemy class add to Gameobject vector
-        this->AddChild(enemy);
+        std::shared_ptr<Enemy> enemyPtr = std::dynamic_pointer_cast<Enemy>(enemy);
+        if (enemyPtr) { 
+            enemyPtr->Start();
+            enemyPtr->SetPlayer(m_Player);
+            currentEnemies.push_back(enemyPtr);
+            this->AddChild(enemyPtr);
+        }
     }
 }
 void LevelManager::GenerateLevel() {

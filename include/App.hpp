@@ -4,13 +4,9 @@
 #include "pch.hpp" // IWYU pragma: export
 
 #include "Util/Renderer.hpp"
-#include "Charater.hpp"
+#include "Core/Object.hpp"
 #include "Player.hpp"
-#include "Hand.hpp"
-#include "Tilemap.hpp"
-#include "BulletBox.hpp"
 #include "LevelManager.hpp"
-#include "SCP610.hpp"
 class App {
 public:
     enum class State {
@@ -34,10 +30,8 @@ private:
 
 private:
     State m_CurrentState = State::START;
-    //std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<Player> m_Player = std::make_shared<Player>();
     std::shared_ptr<LevelManager> m_LevelManager = std::make_shared<LevelManager>();
-    std::shared_ptr<SCP610> m_SCP610 = std::make_shared<SCP610>();
     Util::Renderer m_Root;
 
     //FixedUpdate

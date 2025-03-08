@@ -4,11 +4,11 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Charater.hpp"
+#include "Core/Object.hpp"
 
 class Player;
 
-class Hand : public Charater {
+class Hand : public Object {
 public:
     Hand();
 
