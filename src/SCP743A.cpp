@@ -7,8 +7,7 @@ SCP743A::SCP743A() : Enemy(glm::vec2{ 45,140 }) {
 	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
 	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
 
-	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
-
+	//m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));
 	m_LastAttackTime = dis(gen);
 	attackSpeed = 1;
 
@@ -42,8 +41,7 @@ void SCP743A::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	}
 }
 void SCP743A::Behavior() {
-	glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;
-	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 }

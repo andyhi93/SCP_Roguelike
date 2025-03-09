@@ -47,8 +47,7 @@ void SCP049_2::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	}
 }
 void SCP049_2::Behavior() {
-	glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;
-	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x* speed);
 	MoveY(direction.y* speed);
 }

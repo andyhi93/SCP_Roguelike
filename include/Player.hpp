@@ -6,7 +6,6 @@
 #include "Util/Animation.hpp"
 #include "BulletBox.hpp"
 #include "Hand.hpp"
-#include "Collider.hpp"
 #include "LevelManager.hpp"
 #include "Core/Actor.hpp"
 
@@ -27,7 +26,8 @@ public:
     void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
 
     void Start();
-    void Update();
+    void Update() override;
+    void FixedUpdate() override;
 
     float health = 100;
 protected:

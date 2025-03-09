@@ -11,6 +11,7 @@ public:
     BulletBox();
 
     void Update();
+    void FixedUpdate();
     void AutoRemove();
     void AddBullet(std::shared_ptr<Bullet> bullet);
     void RemoveAll();

@@ -11,9 +11,10 @@ Table::Table(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
     tableImages = { "../../../Resources/table.png" ,"../../../Resources/table_broken.png",
     "../../../Resources/tablePS5.png" ,"../../../Resources/tablePS5_broken.png", };
     SetDrawable(std::make_shared<Util::Image>(tableImages[tableIndex]));
-
-    //m_Collider = std::make_shared<Collider>(m_Transform.translation, glm::vec2{ 45,140 });
+    m_Transform.translation = pos;
     m_Transform.scale = { 7, 7 };
+    m_collider->tag = "Table";
+    m_collider->isSolid = true;
 }
 void Table::BreakTable() {
     if (!isBroken) {

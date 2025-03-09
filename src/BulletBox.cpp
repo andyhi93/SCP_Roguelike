@@ -8,11 +8,17 @@ void BulletBox::Update(){
 		bullet->Update();
 	}
 }
+void BulletBox::FixedUpdate() {
+	for (auto& bullet : bullets) {
+		bullet->FixedUpdate();
+	}
+}
 void BulletBox::AutoRemove() {
 	size_t beforeSize = bullets.size();
 	bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
 		[this](const std::shared_ptr<Bullet>& bullet) {
 			if (!bullet->GetIslive()) {
+				ColliderManager::GetInstance().UnregisterCollider(bullet->m_collider);
 				this->RemoveChild(bullet); 
 				return true;
 			}

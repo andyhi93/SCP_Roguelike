@@ -3,7 +3,6 @@
 
 #include "pch.hpp"
 #include "Core/Actor.hpp"
-#include "Collider.hpp"
 
 class Item : public Actor {
 public:

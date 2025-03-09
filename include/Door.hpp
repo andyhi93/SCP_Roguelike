@@ -9,7 +9,7 @@
 class Door: public Solid {
 public:
 
-    Door();
+    Door(glm::vec2 pos, glm::vec2 size);
 
     void Update();
 

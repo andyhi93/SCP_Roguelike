@@ -4,7 +4,6 @@
 #include "pch.hpp"
 
 #include "Util/Animation.hpp"
-#include "Collider.hpp"
 #include "Core/Actor.hpp"
 class Player;
 class Enemy : public Actor {

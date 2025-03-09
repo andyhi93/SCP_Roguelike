@@ -32,8 +32,7 @@ void SCP610::SetPlayer(std::shared_ptr<Player> _player) {
 	this->AddChild(m_BulletBox);
 }
 void SCP610::Behavior() {
-	glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;
-	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 	Shoot();
@@ -57,6 +56,9 @@ void SCP610::Shoot() {
 		SetDrawable(m_AnimationWalk);
 		isFire = false;
 	}
+}
+void SCP610::FixedUpdate() {
+	m_BulletBox->FixedUpdate();
 }
 void SCP610::Update() {
 	m_BulletBox->Update() ;	

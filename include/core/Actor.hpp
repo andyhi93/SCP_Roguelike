@@ -9,6 +9,7 @@ class Actor : public Object, public std::enable_shared_from_this<Actor> {
 public:
     glm::vec2 velocity;
     std::shared_ptr<BoxCollider> m_collider;
+    float xRemainder=0, yRemainder=0;
 
     Actor(glm::vec2 size);
 

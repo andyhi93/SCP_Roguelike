@@ -30,8 +30,7 @@ void SCP743B::SetPlayer(std::shared_ptr<Player> _player) {
 	this->AddChild(m_BulletBox);
 }
 void SCP743B::Behavior() {
-	glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;
-	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 	Shoot();
@@ -53,6 +52,9 @@ void SCP743B::Shoot() {
 		isFire = true;
 		SetDrawable(m_AnimationWalk);
 	}
+}
+void SCP743B::FixedUpdate() {
+	m_BulletBox->FixedUpdate();
 }
 void SCP743B::Update() {
 	m_BulletBox->Update();

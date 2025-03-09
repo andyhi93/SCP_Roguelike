@@ -40,6 +40,9 @@ void SCP1048_B::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 			m_LastAttackTime = currentTime;
 		}
 	}
+	if (other->tag == "Bullet") {
+		std::cout << "Bullet" << std::endl;
+	}
 }
 void SCP1048_B::Behavior() {
 
@@ -71,6 +74,9 @@ void SCP1048_B::Shoot() {
 		isFire = true;
 		SetDrawable(m_AnimationWalk);
 	}
+}
+void SCP1048_B::FixedUpdate() {
+	m_BulletBox->FixedUpdate();
 }
 void SCP1048_B::Update() {
 	m_BulletBox->Update();

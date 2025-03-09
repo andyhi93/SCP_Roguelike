@@ -4,7 +4,6 @@
 #include "pch.hpp"
 
 #include "core/Object.hpp"
-#include "Collider.hpp"
 #include "Door.hpp"
 
 class Enemy;

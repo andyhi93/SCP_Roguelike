@@ -13,11 +13,12 @@ LevelManager::LevelManager() {
 }
 void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
     m_Player = _player;
-    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room1048_610);
+    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room1048);
     currentEnemies.clear();
     for (auto& obj : temp) {
         obj->Start();
         obj->SetPlayer(m_Player);
+        obj->m_collider->isActive = true;
         this->AddChild(obj);
         currentEnemies.push_back(obj);
     }
@@ -37,6 +38,11 @@ void LevelManager::Update(){
     m_MapUI->Update();
     for (auto& obj : currentEnemies) {
         obj->Update();
+    }
+}
+void LevelManager::FixedUpdate() {
+    for (auto& obj : currentEnemies) {
+        obj->FixedUpdate();
     }
 }
 
@@ -88,6 +94,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         if (enemyPtr) { 
             enemyPtr->Start();
             enemyPtr->SetPlayer(m_Player);
+            enemyPtr->m_collider->isActive = true;
             currentEnemies.push_back(enemyPtr);
             this->AddChild(enemyPtr);
         }

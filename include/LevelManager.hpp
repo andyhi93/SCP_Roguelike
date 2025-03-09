@@ -27,6 +27,7 @@ public:
     void setPlayer(std::shared_ptr<Player> _player);
 
     void Update();
+    void FixedUpdate() override;
 
 private:
 

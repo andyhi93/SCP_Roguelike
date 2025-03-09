@@ -7,6 +7,7 @@ class SCP610 : public Enemy ,public IRangedAttack{
 public:
     SCP610();
     void Update() override;
+    void FixedUpdate() override;
 
     void Behavior();
     void Shoot() override;

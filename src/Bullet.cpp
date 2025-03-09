@@ -6,8 +6,9 @@
 #include "Player.hpp"
 
 Bullet::Bullet(glm::vec2 pos, int _damage, CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction) :Actor(glm::vec2(2, 2)){
+	layer = _layer;
 	m_collider->isTrigger = true;
-	m_collider->SetTriggerCallback(std::make_shared<Trigger>());//for trigger func
+	m_collider->tag = "Bullet";
 	m_Transform.translation = pos;
 	std::vector<std::string> bullet_images = { "../../../Resources/purple_ammo.png","../../../Resources/red_ammo.png","../../../Resources/choco_ammo.png" };
 	m_Transform.scale = { 1,1 };
@@ -16,9 +17,9 @@ Bullet::Bullet(glm::vec2 pos, int _damage, CollisionLayer _layer, float _speed, 
 	damage = _damage;
 	direction = _direction;
 	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
-	layer = _layer;
 }
 void Bullet::Start() {
+	m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));//for trigger func
 	m_collider->parentActor = shared_from_this();
 }
 void Bullet::Update(){
@@ -41,13 +42,11 @@ void Bullet::Move() {
 }
 
 void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
-	std::cout << "Bullet hit something! Tag: " << other->tag << std::endl;
-	if (other->tag == "Wall" || other->tag == "Door") {
+	if (other->tag == "Wall" || other->tag == "Door0" || other->tag == "Door1" || other->tag == "Door2" || other->tag == "Door3" || other->tag == "Table") {
 		islive = false;
 		return;
 	}
 	std::shared_ptr<Actor> collidedActor = other->parentActor;
-	
 	if (layer == CollisionLayer::Player && other->tag == "Enemy") {
 		std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(collidedActor);
 		if (enemy && !enemy->isDead) {
@@ -57,7 +56,7 @@ void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 			return;
 		}
 	}
-	if (layer == CollisionLayer::Enemy && other->tag == "Player") {
+	else if (layer == CollisionLayer::Enemy && other->tag == "Player") {
 		std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(collidedActor);
 		player->health -= damage;
 		std::cout << "Bullet hit Player" << std::endl;

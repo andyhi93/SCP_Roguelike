@@ -4,7 +4,6 @@
 #include "pch.hpp"
 
 #include "Util/Image.hpp"
-#include "Collider.hpp"
 #include "Core/Actor.hpp"
 
 class Player;

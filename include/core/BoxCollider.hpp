@@ -19,7 +19,7 @@ public:
     virtual void OnTriggerExit(std::shared_ptr<BoxCollider> other) {}
 };
 
-class BoxCollider {
+class BoxCollider: public std::enable_shared_from_this<BoxCollider> {
 public:
     bool isTrigger = false;
     bool isSolid = false;//wall
@@ -38,11 +38,12 @@ public:
     bool CheckCollision(std::shared_ptr<BoxCollider> other);
 
     // 用於觸發進入、停留和退出事件
-    std::unordered_set<std::shared_ptr<BoxCollider>> currentCollisions;
     void HandleCollision(std::shared_ptr<BoxCollider> other);
 
     virtual void OnCollisionEnter(std::shared_ptr<BoxCollider> other) {};
     virtual void OnCollisionExit(std::shared_ptr<BoxCollider> other) {};
+private:
+    std::unordered_set<std::shared_ptr<BoxCollider>> currentCollisions;
 };
 
 

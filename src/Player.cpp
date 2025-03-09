@@ -8,7 +8,6 @@
 Player::Player(): Actor(glm::vec2{ 45,140 }){
     m_collider->tag = "Player";
     m_BulletBox = std::make_shared<BulletBox>();
-    m_collider->SetTriggerCallback(std::make_shared<Trigger>());//for trigger func
     layer = CollisionLayer::Player;
 
     m_Transform.translation = { 0, 0 };
@@ -26,14 +25,14 @@ Player::Player(): Actor(glm::vec2{ 45,140 }){
     m_AnimationIdle->Play();
     m_Transform.scale = { 4,4 };
     m_Hand = std::make_shared<Hand>();
-    this->AddChild(m_Hand);
-    this->AddChild(m_BulletBox);
-    //laterInit
-    m_Hand->SetZIndex(this->GetZIndex() + 0.2f);
-    m_BulletBox->SetZIndex(this->GetZIndex() + 0.1f);
 }
 void Player::Start() {
-    //m_collider->parentActor = shared_from_this();
+    m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));//for trigger func
+    m_collider->parentActor = shared_from_this();
+    m_Hand->SetZIndex(this->GetZIndex() + 0.2f);
+    m_BulletBox->SetZIndex(this->GetZIndex() - 0.1f);
+    this->AddChild(m_Hand);
+    this->AddChild(m_BulletBox);
 }
 void Player::PlayerControl() {
     //Move
@@ -68,37 +67,31 @@ void Player::PlayerControl() {
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
         glm::vec2 bulletDirection = Util::Input::GetCursorPosition() - m_Transform.translation;
-        auto bullet = std::make_shared<Bullet>(m_Transform.translation,1, CollisionLayer::Player, 10.0f, 0, bulletDirection);
+        auto bullet = std::make_shared<Bullet>(m_Transform.translation,1, CollisionLayer::Player, 7.0f, 0, bulletDirection);
         bullet->m_Transform.translation = m_Hand->m_Transform.translation;
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;
     }
 }
 void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
-    if (other->tag == "Door") {
-        glm::vec2 newPosition = m_Transform.translation + velocity;
-
-        if (m_LevelManager->m_Tilemap->doors[0]->isOpen && velocity.x > 0) {
-            m_LevelManager->ChangeRoom(glm::ivec2(1, 0));
-            m_Transform.translation = glm::vec2(-793, -66);
-        }
-        if (m_LevelManager->m_Tilemap->doors[1]->isOpen && velocity.y < 0) {
-            m_LevelManager->ChangeRoom(glm::ivec2(0, -1));
-            m_Transform.translation = glm::vec2(-6, 240);
-        }
-        if (m_LevelManager->m_Tilemap->doors[2]->isOpen && velocity.x < 0) {
-            m_LevelManager->ChangeRoom(glm::ivec2(-1, 0));
-            m_Transform.translation = glm::vec2(802, -67);
-        }
-        if (m_LevelManager->m_Tilemap->doors[3]->isOpen && velocity.y > 0) {
-            m_LevelManager->ChangeRoom(glm::ivec2(0, 1));
-            m_Transform.translation = glm::vec2(-9, -397);
-        }
+    if (other->tag == "Door0" && m_LevelManager->m_Tilemap->doors[0]->isOpen) {
+        m_LevelManager->ChangeRoom(glm::ivec2(1, 0));
+        m_Transform.translation = glm::vec2(-793, -66);
+    }
+    if (other->tag == "Door1" && m_LevelManager->m_Tilemap->doors[1]->isOpen) {
+        m_LevelManager->ChangeRoom(glm::ivec2(0, -1));
+        m_Transform.translation = glm::vec2(-6, 240);
+    }
+    if (other->tag == "Door2" && m_LevelManager->m_Tilemap->doors[2]->isOpen) {
+        m_LevelManager->ChangeRoom(glm::ivec2(-1, 0));
+        m_Transform.translation = glm::vec2(802, -67);
+    }
+    if (other->tag == "Door3" && m_LevelManager->m_Tilemap->doors[3]->isOpen) {
+        m_LevelManager->ChangeRoom(glm::ivec2(0, 1));
+        m_Transform.translation = glm::vec2(-9, -397);
     }
 }
 void Player::Move(glm::vec2& velocity) {
-    MoveX(velocity.x);
-    MoveY(velocity.y);
 
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (currentTime - lastDashEndTime >= dashCooldown) {
@@ -120,6 +113,8 @@ void Player::Move(glm::vec2& velocity) {
             lastDashEndTime = currentTime; 
         }
     }
+    MoveX(velocity.x);
+    MoveY(velocity.y);
 
 }
 void Player::AnimationControl() {
@@ -160,6 +155,9 @@ void Player::HandControl() {
     float angle = isFaceRight ? atan2(direction.y, direction.x) : -atan2(direction.y, direction.x);
     m_Hand->m_Transform.rotation = isFaceRight ? angle + 90.0f : 180.0f - (angle + 90.0f);
 }
+void Player::FixedUpdate() {
+    m_BulletBox->FixedUpdate();
+}
 void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
@@ -171,6 +169,11 @@ void Player::Update() {
     if (currentState != Die) {
         PlayerControl();
         HandControl();
+    }
+    if (Util::Input::IsKeyPressed(Util::Keycode::SPACE)) {
+        for (auto& door : m_LevelManager->m_Tilemap->doors) {
+            door->DoorControl(true);
+        }
     }
     AnimationControl();
 

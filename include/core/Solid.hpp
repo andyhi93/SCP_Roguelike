@@ -8,12 +8,10 @@
 class Solid : public Object {
 public:
     std::shared_ptr<BoxCollider> m_collider;
+    static std::vector<std::shared_ptr<BoxCollider>> walls;
 
-    Solid(glm::vec2 pos, glm::vec2 size)
-        : m_collider(std::make_shared<BoxCollider>(pos, size)){
-        ColliderManager::GetInstance().RegisterCollider(m_collider);
-    }
-
+    Solid(glm::vec2 pos, glm::vec2 size);
+    static void InitializeColliders();
     virtual ~Solid() {
         ColliderManager::GetInstance().UnregisterCollider(m_collider);
     }

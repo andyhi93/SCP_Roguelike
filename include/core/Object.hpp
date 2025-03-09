@@ -7,13 +7,13 @@ class Object : public Util::GameObject {
 public:
     virtual void Update(){}
     virtual void FixedUpdate(){}
-protected:
     enum class CollisionLayer {
         Player = 1,
         Enemy = 2,
         Environment = 3,
     };
     CollisionLayer layer;
+protected:
 };
 
 #endif

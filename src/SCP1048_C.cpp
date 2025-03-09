@@ -8,6 +8,7 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 	std::uniform_real_distribution<float> dis(0.0f, 3.0f);
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
+	std::cout << "collider:"<<m_collider->isTrigger << std::endl;
 
 	attackSpeed = 3;
 	m_LastAttackTime = dis(gen);
@@ -40,11 +41,13 @@ void SCP1048_C::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 			m_LastAttackTime = currentTime;
 		}
 	}
+	if (other->tag == "Bullet") {
+		std::cout << "Bullet" << std::endl;
+	}
 }
 void SCP1048_C::Behavior() {
 
-	glm::vec2 direction = m_Player->m_Transform.translation - m_Transform.translation;
-	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	glm::vec2 direction = normalize( m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 	float currentTime = SDL_GetTicks() / 1000.0f;
@@ -69,6 +72,9 @@ void SCP1048_C::Shoot() {
 		isFire = true;
 		SetDrawable(m_AnimationWalk);
 	}
+}
+void SCP1048_C::FixedUpdate() {
+	m_BulletBox->FixedUpdate();
 }
 void SCP1048_C::Update() {
 	m_BulletBox->Update();

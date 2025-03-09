@@ -12,6 +12,7 @@
 #include "SCP1048_B.hpp"
 #include "SCP1048_C.hpp"
 #include "SCP553.hpp"
+#include "Table.hpp"
 #include <random>
 
 Tilemap::Tilemap() {
@@ -27,16 +28,16 @@ Tilemap::Tilemap() {
     m_Transform.scale = { 7, 7 };
 }
 std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
-    std::vector<std::shared_ptr<Enemy>> Objs;
-    std::vector<glm::vec2> objPos;
+    std::vector<std::shared_ptr<Enemy>> EnemyObjs;
+    std::vector<glm::vec2> EnemyObjPos;
     if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610) {
         for (int i = 0; i < 4; i++) {
-            Objs.push_back(std::make_shared<SCP610>());
+            EnemyObjs.push_back(std::make_shared<SCP610>());
         }
     }
     if (_RoomType == Room049_2 || _RoomType == Room610_049_2 || _RoomType== Room1048_049_2) {
         for (int i = 0; i < 4; i++) {
-            Objs.push_back(std::make_shared<SCP049_2>());
+            EnemyObjs.push_back(std::make_shared<SCP049_2>());
         }
     }
     if (_RoomType == Room743ant || _RoomType== Room1048_743) {
@@ -45,10 +46,10 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         std::uniform_int_distribution<int> dis(0, 4);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum; i++) {
-            Objs.push_back(std::make_shared<SCP743A>());
+            EnemyObjs.push_back(std::make_shared<SCP743A>());
         }
         for (int i = 0; i < 4- rdnum; i++) {
-            Objs.push_back(std::make_shared<SCP743B>());
+            EnemyObjs.push_back(std::make_shared<SCP743B>());
         }
     }
     if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610) {
@@ -56,40 +57,47 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<int> dis(0, 2);
         int rdnum = dis(gen);
-        objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 } };
-        std::shuffle(objPos.begin(), objPos.end(), gen);
         for (int i = 0; i < rdnum; i++) {
-            Objs.push_back(std::make_shared<SCP1048_B>());
+            EnemyObjs.push_back(std::make_shared<SCP1048_B>());
         }
         for (int i = 0; i < 2 - rdnum; i++) {
-            Objs.push_back(std::make_shared<SCP1048_C>());
+            EnemyObjs.push_back(std::make_shared<SCP1048_C>());
         }
     }
     if (_RoomType == Room553 || _RoomType == Room553_610) {
         for (int i = 0; i < 6; i++) {
-            Objs.push_back(std::make_shared<SCP553>());
+            EnemyObjs.push_back(std::make_shared<SCP553>());
         }
     }
     int i = 0;
-    objPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
-    for (auto& enemy : Objs) {
+    EnemyObjPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
+    for (auto& enemy : EnemyObjs) {
+        enemy->m_collider->isActive = false;
         enemy->SetZIndex(this->GetZIndex() + 1);
-        enemy->m_Transform.translation = objPos[i];
+        enemy->m_Transform.translation = EnemyObjPos[i];
         i = i > 6 ? 1 : i + 1;
     }
-    if (Objs.empty()) { Objs = {}; }
+    if (EnemyObjs.empty()) { EnemyObjs = {}; }
     //Objs = {};
-    return Objs;
+    return EnemyObjs;
 }
 
 void Tilemap::Update() {
 }
 void Tilemap::Init() {
-    std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 390} };
+    std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 450} };
+    std::vector<glm::vec2> doorSize = { glm::vec2 {60, 120} ,glm::vec2 {126, 57} ,glm::vec2 {60, 123},glm::vec2 {126, 57} };
     std::string path = "";
     for (int i = 0; i < 4; i++) {
-        std::shared_ptr<Door> temp_door = std::make_shared<Door>();
-        temp_door->m_Transform.translation = doorPos[i];
+        std::shared_ptr<Door> temp_door = std::make_shared<Door>(doorPos[i],doorSize[i]);
+        temp_door->m_collider->tag = "Door"+ std::to_string(i);
+        if (i == 3) {
+            temp_door->m_Transform.translation = doorPos[i] - glm::vec2{0, 60};
+        }
+        else {
+            temp_door->m_Transform.translation = doorPos[i];
+        }
+        temp_door->m_collider->isSolid = true;
         temp_door->SetZIndex(this->GetZIndex() + 1);
         this->AddChild(temp_door);
         doors.push_back(temp_door);

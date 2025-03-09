@@ -7,6 +7,7 @@ class SCP743B : public Enemy, public IRangedAttack {
 public:
     SCP743B();
     void Update() override;
+    void FixedUpdate() override;
 
     void Behavior();
     void Shoot() override;

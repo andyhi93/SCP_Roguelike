@@ -4,6 +4,7 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "Core/Solid.hpp"
 #include <iostream>
 
 void App::Start() {
@@ -11,7 +12,7 @@ void App::Start() {
 
     //Layer
     std::shared_ptr<Object> empty;
-    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player};
+    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager,m_Table, empty/*Enemy*/, m_Player};
 
     int i = 0;
     for each (auto & obj in Objects) {
@@ -23,6 +24,8 @@ void App::Start() {
         i++;
     }
 
+    Solid::InitializeColliders();
+
     m_Player->Start();
     m_LevelManager->setPlayer(m_Player);
     m_Player->SetLevelManager(m_LevelManager);
@@ -32,8 +35,8 @@ void App::Start() {
     m_CurrentState = State::UPDATE;
 }
 void App::FixedUpdate() {
-    //m_SCP610->Update();
-    //m_SCP610->m_BulletBox->Update();
+    m_Player->FixedUpdate();
+    m_LevelManager->FixedUpdate();
 }
 float App::GetDeltaTime() {
     static Uint32 lastTime = SDL_GetTicks(); 
@@ -43,7 +46,7 @@ float App::GetDeltaTime() {
     return deltaTime;
 }
 void App::Update() {
-    std::cout << "current State:" << std::endl;
+    ColliderManager::GetInstance().Update();
     m_Player->Update();
     m_LevelManager->Update();
     m_Root.Update();
