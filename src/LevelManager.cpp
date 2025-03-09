@@ -3,6 +3,8 @@
 #include <random>
 #include <iostream>
 #include "Player.hpp"
+#include "Table.hpp"
+#include <Trap.hpp>
 
 LevelManager::LevelManager() {
     m_MapUI= std::make_shared<MapUI>();
@@ -13,15 +15,21 @@ LevelManager::LevelManager() {
 }
 void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
     m_Player = _player;
-    std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom(Tilemap::Room1048);
-    currentEnemies.clear();
+    /*std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom(Tilemap::Room1048);
+    currentObjects.clear();
     for (auto& obj : temp) {
-        obj->Start();
-        obj->SetPlayer(m_Player);
-        obj->m_collider->isActive = true;
-        this->AddChild(obj);
-        currentEnemies.push_back(obj);
-    }
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        if (enemy) {
+            enemy->Start();
+            enemy->SetPlayer(m_Player);
+            enemy->m_collider->isActive = true;
+            this->AddChild(enemy);
+            currentObjects.push_back(enemy);
+        }
+        else {
+            this->AddChild(obj);
+        }
+    }*/
 }
 bool LevelManager::IsValidRoom(int x, int y) {
     if (x < 0 || x >= MAP_SIZE_WIDTH || y < 0 || y >= MAP_SIZE_HEIGHT) return false;
@@ -36,12 +44,12 @@ bool LevelManager::IsValidRoom(int x, int y) {
 }
 void LevelManager::Update(){
     m_MapUI->Update();
-    for (auto& obj : currentEnemies) {
+    for (auto& obj : currentObjects) {
         obj->Update();
     }
 }
 void LevelManager::FixedUpdate() {
-    for (auto& obj : currentEnemies) {
+    for (auto& obj : currentObjects) {
         obj->FixedUpdate();
     }
 }
@@ -85,19 +93,37 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
     }
     m_MapUI->SetMap(RoomForMap);
 
-    for (auto& enemy : currentEnemies) {
-        this->RemoveChild(enemy);
-    }
-    currentEnemies.clear();
-    for (auto& enemy : map[currentRoom.x][currentRoom.y].roomobjs) {
-        std::shared_ptr<Enemy> enemyPtr = std::dynamic_pointer_cast<Enemy>(enemy);
-        if (enemyPtr) { 
-            enemyPtr->Start();
-            enemyPtr->SetPlayer(m_Player);
-            enemyPtr->m_collider->isActive = true;
-            currentEnemies.push_back(enemyPtr);
-            this->AddChild(enemyPtr);
+    for (auto& obj : currentObjects) {
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        if (enemy) {
+            enemy->m_collider->isActive = false;
         }
+        else {
+            std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
+            if (table) {
+                table->m_collider->isActive = false;
+            }
+        }
+        this->RemoveChild(obj);
+    }
+    currentObjects.clear();
+    for (auto& obj : map[currentRoom.x][currentRoom.y].roomobjs) {
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
+        std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
+        if (enemy) {
+            enemy->Start();
+            enemy->SetPlayer(m_Player);
+            enemy->m_collider->isActive = true;
+        }
+        else if (table) {
+            table->m_collider->isActive = true;
+        }
+        else if (trap) {
+            trap->m_collider->isActive = true;
+        }
+        currentObjects.push_back(obj);
+        this->AddChild(obj);
     }
 }
 void LevelManager::GenerateLevel() {
@@ -245,11 +271,13 @@ void LevelManager::GenerateLevel() {
     }
     for (int x = 0; x < MAP_SIZE_WIDTH; x++) {
         for (int y = 0; y < MAP_SIZE_HEIGHT; y++) {
-            std::vector<std::shared_ptr<Enemy>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType);
+            std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType);
             if (!temp.empty()) {
                 for (auto& obj : temp) {
-                    obj->SetPlayer(m_Player);
-                    //this->AddChild(obj);  //Render
+                    std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+                    if (enemy) {
+                        enemy->SetPlayer(m_Player);
+                    }
                     map[x][y].roomobjs.push_back(obj);
                 }
             }

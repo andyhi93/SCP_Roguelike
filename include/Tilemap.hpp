@@ -30,7 +30,8 @@ public:
         Table8, Table4, Table3, Table2, Trap10 , TrapCol2, TrapCol3
     };
     RoomType seRoom[8] = { StartRoom ,BossRoom,Room610,Room049_2,Room553_610 ,Room1048_743,Room1048_610,Room553_610_743ant };
-    std::vector<std::shared_ptr<Enemy>> InitRoom(RoomType _RoomType);
+    Building BuildingLast = TrapCol3;
+    std::vector<std::shared_ptr<Object>> InitRoom(RoomType _RoomType);
     std::vector<std::shared_ptr<Door>> doors;
 private:
     std::vector<std::string> roomImages;

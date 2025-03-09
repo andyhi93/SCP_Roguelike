@@ -34,7 +34,6 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player = std::make_shared<Player>();
     std::shared_ptr<LevelManager> m_LevelManager = std::make_shared<LevelManager>();
-    std::shared_ptr<Table> m_Table = std::make_shared<Table>(glm::vec2{ 488, -63 }, glm::vec2{250,80});
 
     Util::Renderer m_Root;
 

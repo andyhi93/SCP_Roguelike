@@ -16,8 +16,16 @@ Table::Table(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
     m_collider->tag = "Table";
     m_collider->isSolid = true;
 }
+void Table::Start() {
+    m_collider->parentActor= std::dynamic_pointer_cast<Object>(shared_from_this());
+}
+void Table::SetTrigger() {
+    m_collider->isTrigger = !m_collider->isTrigger;
+}
 void Table::BreakTable() {
     if (!isBroken) {
+        isBroken = true;
+        m_collider->isActive = false;
         SetDrawable(std::make_shared<Util::Image>(tableImages[++tableIndex]));
     }
 }

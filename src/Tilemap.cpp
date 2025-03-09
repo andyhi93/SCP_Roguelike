@@ -13,6 +13,7 @@
 #include "SCP1048_C.hpp"
 #include "SCP553.hpp"
 #include "Table.hpp"
+#include "Trap.hpp"
 #include <random>
 
 Tilemap::Tilemap() {
@@ -27,9 +28,11 @@ Tilemap::Tilemap() {
     m_Transform.translation = { 0, 0 };
     m_Transform.scale = { 7, 7 };
 }
-std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
+std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
     std::vector<std::shared_ptr<Enemy>> EnemyObjs;
     std::vector<glm::vec2> EnemyObjPos;
+    std::random_device rd;
+    std::mt19937 gen(rd());
     if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610) {
         for (int i = 0; i < 4; i++) {
             EnemyObjs.push_back(std::make_shared<SCP610>());
@@ -41,8 +44,6 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         }
     }
     if (_RoomType == Room743ant || _RoomType== Room1048_743) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
         std::uniform_int_distribution<int> dis(0, 4);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum; i++) {
@@ -53,8 +54,6 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         }
     }
     if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
         std::uniform_int_distribution<int> dis(0, 2);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum; i++) {
@@ -70,7 +69,8 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         }
     }
     int i = 0;
-    EnemyObjPos = { {776, -365},{ -784,-389 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
+    EnemyObjPos = { {750, -365},{ -776,-365 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
+    std::shuffle(EnemyObjPos.begin(), EnemyObjPos.end(), rd);
     for (auto& enemy : EnemyObjs) {
         enemy->m_collider->isActive = false;
         enemy->SetZIndex(this->GetZIndex() + 1);
@@ -78,8 +78,47 @@ std::vector<std::shared_ptr<Enemy>> Tilemap::InitRoom(RoomType _RoomType) {
         i = i > 6 ? 1 : i + 1;
     }
     if (EnemyObjs.empty()) { EnemyObjs = {}; }
-    //Objs = {};
-    return EnemyObjs;
+
+    std::vector<std::shared_ptr<Object>> Obj;
+    if (_RoomType != StartRoom && _RoomType != treasureRoom && _RoomType != shop && _RoomType != BossRoom) {
+        std::uniform_int_distribution<int> dis(0, 3);
+        //Building rdBuilding = (Building)dis(gen);
+        Building rdBuilding = Trap10;
+        std::vector<glm::vec2> BuildingObjPos;
+        if (rdBuilding == Table8 || rdBuilding == Table4 || rdBuilding == Table3 || rdBuilding == Table2) {
+            if (rdBuilding == Table8) BuildingObjPos = { { -210,160}, {210,160}, { -210,-280}, {210,-280},{-625,160},{ 625,160},{-625,-280},{ 625,-280} };
+            if (rdBuilding == Table4) BuildingObjPos = { { -210,160}, {210,160}, { -210,-280}, {210,-280} };
+            if (rdBuilding == Table3) BuildingObjPos = { { -0,160}, {0,-60}, { -0,-280} };
+            if (rdBuilding == Table2) BuildingObjPos = { { -300, 0 }, { 300,0 } };
+            for (int i = 0; i < BuildingObjPos.size(); i++) {
+                std::shared_ptr<Table> table = std::make_shared<Table>(BuildingObjPos[i], glm::vec2{ 250,40 });
+                table->Start();
+                table->m_collider->isActive = false;
+                table->m_collider->SetOffset({ 0,20 });
+                table->SetZIndex(this->GetZIndex() + 0.2f);
+                Obj.push_back(table);
+            }
+        }
+        if (rdBuilding == Trap10 || rdBuilding == TrapCol2 || rdBuilding == TrapCol3) {
+            if (rdBuilding == Trap10) { BuildingObjPos = { { 0,-66},{ 150,-66},{ 300,-66},{ 450,-66},{ 600,-66},{ -150,-66},{ -300,-66},{ -450,-66},{ -600,-66},
+                { 0,0},{ 0,66} ,{ 0,132 } ,{ 0,198 },{ 0,-66} ,{ 0,-132 } ,{ 0,-198 },{ 0,-264 } };
+            }
+            if (rdBuilding == TrapCol2) {}
+            if (rdBuilding == TrapCol3) {}
+            for (int i = 0; i < BuildingObjPos.size(); i++) {
+                std::shared_ptr<Trap> trap = std::make_shared<Trap>(BuildingObjPos[i], glm::vec2{ 125,1 });
+                trap->Start();
+                trap->m_collider->isActive = false;
+                trap->m_collider->SetOffset({ 0,20 });
+                trap->SetZIndex(this->GetZIndex() + 0.2f);
+                Obj.push_back(trap);
+            }
+        }
+    }
+    for (auto& enemy : EnemyObjs) {
+        Obj.push_back(enemy);
+    }
+    return Obj;
 }
 
 void Tilemap::Update() {
@@ -98,7 +137,7 @@ void Tilemap::Init() {
             temp_door->m_Transform.translation = doorPos[i];
         }
         temp_door->m_collider->isSolid = true;
-        temp_door->SetZIndex(this->GetZIndex() + 1);
+        temp_door->SetZIndex(this->GetZIndex() + 0.1f);
         this->AddChild(temp_door);
         doors.push_back(temp_door);
         if (i == 3) temp_door->SetIsTop(true);

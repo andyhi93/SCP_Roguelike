@@ -19,7 +19,7 @@ void Actor::MoveX(float amount) {
             if (!CheckCollisionWithSolids() || m_collider->isTrigger)
             {
                 m_Transform.translation.x += sign;
-                m_collider->position = m_Transform.translation;
+                m_collider->position = m_Transform.translation + m_collider->offset;
                 move -= sign;
             }
             else
@@ -46,7 +46,7 @@ void Actor::MoveY(float amount) {
             if (!CheckCollisionWithSolids() || m_collider->isTrigger)
             {
                 m_Transform.translation.y += sign;
-                m_collider->position = m_Transform.translation;
+                m_collider->position = m_Transform.translation+m_collider->offset;
                 move -= sign;
             }
             else

@@ -12,6 +12,10 @@ bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
         position.y + size.y / 2 > other->position.y - other->size.y / 2);
 }
+void BoxCollider::SetOffset(glm::vec2 offset) {
+    this->offset = offset;
+    position = position + offset;
+}
 // 用於觸發進入、停留和退出事件
 void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
     if (triggerCallback && (this->isTrigger ^other->isTrigger) && this->isActive && other->isActive) {
@@ -19,7 +23,7 @@ void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
         bool wasColliding = currentCollisions.count(other) > 0;
         if (isColliding) {
             if (!wasColliding) {
-                std::cout <<this->tag <<" Enter trigger with: " << other->tag << std::endl;
+                //std::cout <<this->tag <<" Enter trigger with: " << other->tag << std::endl;
                 triggerCallback->OnTriggerEnter(other);
                 currentCollisions.insert(other);
             }
@@ -28,7 +32,7 @@ void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
             }
         }
         else if (wasColliding) {
-            std::cout << this->tag << " Exited trigger with : " << other->tag << std::endl;
+            //std::cout << this->tag << " Exited trigger with : " << other->tag << std::endl;
             triggerCallback->OnTriggerExit(other);
             currentCollisions.erase(other);
         }

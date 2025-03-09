@@ -3,6 +3,7 @@
 
 #include "Enemy.hpp"
 #include "IRangedAttack.hpp"
+#include "random"
 class SCP1048_B : public Enemy, public IRangedAttack {
 public:
     SCP1048_B();

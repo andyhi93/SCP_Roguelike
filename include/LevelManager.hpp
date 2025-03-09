@@ -22,7 +22,7 @@ public:
 
     std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
     std::shared_ptr<MapUI> m_MapUI;
-    std::vector<std::shared_ptr<Enemy>> currentEnemies = {};
+    std::vector<std::shared_ptr<Object>> currentObjects = {};
 
     void setPlayer(std::shared_ptr<Player> _player);
 

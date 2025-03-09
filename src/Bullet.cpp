@@ -42,11 +42,11 @@ void Bullet::Move() {
 }
 
 void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
-	if (other->tag == "Wall" || other->tag == "Door0" || other->tag == "Door1" || other->tag == "Door2" || other->tag == "Door3" || other->tag == "Table") {
+	if (other->tag == "Wall" || other->tag == "Door0" || other->tag == "Door1" || other->tag == "Door2" || other->tag == "Door3") {
 		islive = false;
 		return;
 	}
-	std::shared_ptr<Actor> collidedActor = other->parentActor;
+	std::shared_ptr<Object> collidedActor = other->parentActor;
 	if (layer == CollisionLayer::Player && other->tag == "Enemy") {
 		std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(collidedActor);
 		if (enemy && !enemy->isDead) {

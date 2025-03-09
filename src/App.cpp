@@ -12,7 +12,7 @@ void App::Start() {
 
     //Layer
     std::shared_ptr<Object> empty;
-    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager,m_Table, empty/*Enemy*/, m_Player};
+    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player};
 
     int i = 0;
     for each (auto & obj in Objects) {

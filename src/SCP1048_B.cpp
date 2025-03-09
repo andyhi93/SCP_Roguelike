@@ -6,6 +6,8 @@ SCP1048_B::SCP1048_B() : Enemy(glm::vec2{ 47,76 }) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(0.0f, 2.0f);
+	std::uniform_int_distribution<int> idis(0, 3);
+	targetIndex = idis(gen);
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 

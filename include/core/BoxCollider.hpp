@@ -6,8 +6,7 @@
 #include "pch.hpp"
 #include <iostream>
 #include <unordered_set>
-
-class Actor;
+#include "Object.hpp"
 class BoxCollider;
 
 class Trigger {
@@ -29,11 +28,13 @@ public:
     std::string tag;
     std::shared_ptr<Trigger> triggerCallback = nullptr; // 觸發回調
     bool isActive = true;  // 是否啟用該 Collider
-    std::shared_ptr<Actor> parentActor;
+    std::shared_ptr<Object> parentActor;
 
     BoxCollider(glm::vec2 _pos, glm::vec2 _size);
 
     void SetTriggerCallback(std::shared_ptr<Trigger> callback);
+
+    void SetOffset(glm::vec2 offset);
 
     bool CheckCollision(std::shared_ptr<BoxCollider> other);
 

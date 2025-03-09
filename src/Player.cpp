@@ -4,8 +4,11 @@
 #include "Util/Transform.hpp"
 #include "Util/Logger.hpp"
 #include <iostream>
+#include <Table.hpp>
 
-Player::Player(): Actor(glm::vec2{ 45,140 }){
+/*   [info] Position:-22 -53
+ [info] Position:16 40*/
+Player::Player(): Actor(glm::vec2{ 45,100 }){
     m_collider->tag = "Player";
     m_BulletBox = std::make_shared<BulletBox>();
     layer = CollisionLayer::Player;
@@ -80,7 +83,7 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     }
     if (other->tag == "Door1" && m_LevelManager->m_Tilemap->doors[1]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(0, -1));
-        m_Transform.translation = glm::vec2(-6, 240);
+        m_Transform.translation = glm::vec2(-6, 348);
     }
     if (other->tag == "Door2" && m_LevelManager->m_Tilemap->doors[2]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(-1, 0));
@@ -89,6 +92,10 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Door3" && m_LevelManager->m_Tilemap->doors[3]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(0, 1));
         m_Transform.translation = glm::vec2(-9, -397);
+    }
+    if (other->tag == "Table") {
+        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor);
+        if(!table->isBroken) table->BreakTable();
     }
 }
 void Player::Move(glm::vec2& velocity) {
@@ -100,6 +107,10 @@ void Player::Move(glm::vec2& velocity) {
 
     // 檢測是否按下 Shift 開始 Dash
     if (Util::Input::IsKeyDown(Util::Keycode::LSHIFT) && !isDashing && canDash) {
+        std::vector<std::shared_ptr<BoxCollider>> tables= ColliderManager::GetInstance().GetTableColliders();
+        for(auto& table : tables){
+            if(table->tag=="Table") table->isTrigger = true;
+        }
         isDashing = true;
         canDash = false;
         dashStartTime = currentTime;
@@ -109,13 +120,17 @@ void Player::Move(glm::vec2& velocity) {
     if (isDashing) {
         velocity *= dashSpeedMultiplier;
         if (currentTime - dashStartTime >= dashTime) {
-            isDashing = false; 
+            std::vector<std::shared_ptr<BoxCollider>> tables = ColliderManager::GetInstance().GetTableColliders();
+            for (auto& table : tables) {
+                if (table->tag == "Table") table->isTrigger = false;
+            }
+            isDashing = false;
             lastDashEndTime = currentTime; 
         }
     }
     MoveX(velocity.x);
     MoveY(velocity.y);
-
+    std::cout << "Player pos: " << m_Transform.translation.x<<", "<< m_Transform.translation.y << " Collider pos: " << m_collider->position.x<<", "<< m_collider->position.y << std::endl;
 }
 void Player::AnimationControl() {
     if (currentState == Die) {

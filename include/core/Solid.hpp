@@ -5,7 +5,7 @@
 #include "ColliderManager.hpp"
 #include "Object.hpp"
 
-class Solid : public Object {
+class Solid : public Object, public std::enable_shared_from_this<Solid> {
 public:
     std::shared_ptr<BoxCollider> m_collider;
     static std::vector<std::shared_ptr<BoxCollider>> walls;
