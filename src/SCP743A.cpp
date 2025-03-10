@@ -2,7 +2,7 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP743A::SCP743A() : Enemy(glm::vec2{ 45,140 }) {
+SCP743A::SCP743A() : Enemy(glm::vec2{ 80,30 }) {
 	std::random_device rd;  // 隨機數種子
 	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
 	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
@@ -46,7 +46,7 @@ void SCP743A::Behavior() {
 void SCP743A::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
-		isDead = true;
+		SetDead();
 	}
 	if (!isDead) {
 		FlipControl();

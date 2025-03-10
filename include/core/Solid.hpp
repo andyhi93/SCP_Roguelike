@@ -9,6 +9,7 @@ class Solid : public Object, public std::enable_shared_from_this<Solid> {
 public:
     std::shared_ptr<BoxCollider> m_collider;
     static std::vector<std::shared_ptr<BoxCollider>> walls;
+    void Update();
 
     Solid(glm::vec2 pos, glm::vec2 size);
     static void InitializeColliders();

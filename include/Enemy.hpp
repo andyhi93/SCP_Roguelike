@@ -16,7 +16,6 @@ public:
 
     void SetHealth(float _health) { health = _health; }
     float GetHealth() { return health; }
-    bool isDead = false;
 protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationAttack;

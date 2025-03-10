@@ -2,7 +2,7 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP553::SCP553() : Enemy(glm::vec2{ 45,150 }) {
+SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(0.0f, 2.0f);
@@ -45,7 +45,7 @@ void SCP553::Behavior() {
 void SCP553::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
-		isDead = true;
+		SetDead();
 	}
 	if (!isDead) {
 		FlipControl();

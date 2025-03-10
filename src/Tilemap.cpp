@@ -73,7 +73,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
     std::shuffle(EnemyObjPos.begin(), EnemyObjPos.end(), rd);
     for (auto& enemy : EnemyObjs) {
         enemy->m_collider->isActive = false;
-        enemy->SetZIndex(this->GetZIndex() + 1);
+        enemy->SetZIndex(this->GetZIndex() + 0.3f);
         enemy->m_Transform.translation = EnemyObjPos[i];
         i = i > 6 ? 1 : i + 1;
     }
@@ -95,7 +95,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
                 table->Start();
                 table->m_collider->isActive = false;
                 table->m_collider->SetOffset({ 0,20 });
-                table->SetZIndex(this->GetZIndex() + 0.2f);
+                table->SetZIndex(this->GetZIndex() + 0.4f);
                 Obj.push_back(table);
             }
         }

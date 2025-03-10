@@ -34,6 +34,9 @@ public:
     bool GetIsInvincible() { return isInvincible; }
 
     float health = 100;
+
+
+    bool isDashing = false;
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;
@@ -60,7 +63,6 @@ private:
     float dashSpeedMultiplier = 5.0f;  
     float dashStartTime = 0.0f;  
     float lastDashEndTime = -dashCooldown;  
-    bool isDashing = false;  
     bool canDash = true;  
 
     float invincibleTime = 1.5f;

@@ -1,10 +1,29 @@
 #include "Core/Solid.hpp"
+#include "Core/ColliderManager.hpp"
+#include "Core/Actor.hpp"
 
 
 Solid::Solid(glm::vec2 pos, glm::vec2 size)
     : m_collider(std::make_shared<BoxCollider>(pos, size)) {
     m_collider->isSolid = true;
     ColliderManager::GetInstance().RegisterCollider(m_collider);
+}
+void Solid::Update() {
+    auto actorCols=ColliderManager::GetInstance().GetActorColliders();
+    for (auto actorCol : actorCols) {
+        if (m_collider->CheckCollision(actorCol)) {
+            std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(actorCol->parentActor);
+            auto direction = actor->m_Transform.translation - m_Transform.translation;
+            m_collider->isActive = false;
+            while (m_collider->CheckCollision(actorCol)) {
+                actor->MoveX(direction.x);
+                actor->MoveY(direction.y);
+            }
+        }
+        else {
+            m_collider->isActive = true;
+        }
+    }
 }
 std::vector<std::shared_ptr<BoxCollider>> Solid::walls = {
     std::make_shared<BoxCollider>(glm::vec2(845, -303), glm::vec2(10, 335)), // right bottom

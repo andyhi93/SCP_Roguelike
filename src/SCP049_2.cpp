@@ -52,7 +52,7 @@ void SCP049_2::Behavior() {
 void SCP049_2::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
-		isDead = true;
+		SetDead();
 	}
 	if (!isDead) {
 		FlipControl();

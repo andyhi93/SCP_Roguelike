@@ -103,13 +103,14 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     }
     if (!isDashing && currentState!=Hurt) {
         if (other->tag == "Trap") {
-            Damage(100.0f);
+            Damage(1.0f);
         }
     }
 }
 void Player::Damage(float damage) {
     if (currentState != Hurt) {
         SetHealth(GetHealth() - damage);
+        m_collider->isActive = false;
         currentState = Hurt;
     }
 }
@@ -196,10 +197,6 @@ void Player::FixedUpdate() {
 void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
-    if (currentState == Hurt) {
-        std::cout << "Hurt" << std::endl;
-    }
-    //std::cout << "currentState: " << currentState<<std::endl;
     if (health <= 0 && currentState != Die) {
         currentState = Die;
         this->RemoveChild(m_Hand);
@@ -214,6 +211,7 @@ void Player::Update() {
             if (isInvincible && currentTime - lastHurtTime >= isInvincible) {
                 currentState = Idle;
                 isInvincible = false;
+                m_collider->isActive = true;
             }
         }
         PlayerControl();

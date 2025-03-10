@@ -11,6 +11,7 @@ public:
     std::shared_ptr<BoxCollider> m_collider;
     float xRemainder=0, yRemainder=0;
 
+    bool isDead = false;
     Actor(glm::vec2 size);
 
     ~Actor() {
@@ -21,7 +22,9 @@ public:
 
     void MoveY(float amount);
 
+    void SetDead();
+
     bool CheckCollisionWithSolids();
-    std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors()
+    std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors();
 };
 #endif

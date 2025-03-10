@@ -1,4 +1,5 @@
 #include "Core/ColliderManager.hpp"
+#include <Core/Solid.hpp>
 
 ColliderManager& ColliderManager::GetInstance() {
     static ColliderManager instance; // 確保只有一個實例
@@ -55,4 +56,9 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetTableColliders() {
 }
 void ColliderManager::Update() {
     UpdateCollisions();
+    auto SolidCols=GetSolidColliders();
+    for (auto solidCol : SolidCols) {
+        std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
+        if(solid) solid->Update();
+    }
 }

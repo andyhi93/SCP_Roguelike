@@ -60,7 +60,7 @@ void SCP743B::Update() {
 	m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
-		isDead = true;
+		SetDead();
 	}
 	if (!isDead) {
 		FlipControl();
