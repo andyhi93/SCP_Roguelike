@@ -95,14 +95,17 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
 
     for (auto& obj : currentObjects) {
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
+        std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
         if (enemy) {
             enemy->m_collider->isActive = false;
         }
-        else {
-            std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
-            if (table) {
-                table->m_collider->isActive = false;
-            }
+        else if(table){
+            table->m_collider->isActive = false;
+        }
+        else if (trap) {
+            trap->m_collider->isActive = false;
+            trap->isOpen = false;
         }
         this->RemoveChild(obj);
     }
@@ -120,7 +123,8 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
             table->m_collider->isActive = true;
         }
         else if (trap) {
-            trap->m_collider->isActive = true;
+            trap->Start();
+            trap->isOpen = true;
         }
         currentObjects.push_back(obj);
         this->AddChild(obj);

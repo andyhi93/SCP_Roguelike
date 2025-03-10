@@ -81,9 +81,9 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
 
     std::vector<std::shared_ptr<Object>> Obj;
     if (_RoomType != StartRoom && _RoomType != treasureRoom && _RoomType != shop && _RoomType != BossRoom) {
-        std::uniform_int_distribution<int> dis(0, 3);
-        //Building rdBuilding = (Building)dis(gen);
-        Building rdBuilding = Trap10;
+        std::uniform_int_distribution<int> dis(0, BuildingLast);
+        Building rdBuilding = (Building)dis(gen);
+        //Building rdBuilding = TrapRec;
         std::vector<glm::vec2> BuildingObjPos;
         if (rdBuilding == Table8 || rdBuilding == Table4 || rdBuilding == Table3 || rdBuilding == Table2) {
             if (rdBuilding == Table8) BuildingObjPos = { { -210,160}, {210,160}, { -210,-280}, {210,-280},{-625,160},{ 625,160},{-625,-280},{ 625,-280} };
@@ -99,12 +99,19 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
                 Obj.push_back(table);
             }
         }
-        if (rdBuilding == Trap10 || rdBuilding == TrapCol2 || rdBuilding == TrapCol3) {
+        if (rdBuilding == Trap10 || rdBuilding == TrapRec || rdBuilding == TrapCol4) {
             if (rdBuilding == Trap10) { BuildingObjPos = { { 0,-66},{ 150,-66},{ 300,-66},{ 450,-66},{ 600,-66},{ -150,-66},{ -300,-66},{ -450,-66},{ -600,-66},
-                { 0,0},{ 0,66} ,{ 0,132 } ,{ 0,198 },{ 0,-66} ,{ 0,-132 } ,{ 0,-198 },{ 0,-264 } };
+                { 0,0},{ 0,66} ,{ 0,132 } ,{ 0,198 } ,{ 0,-132 } ,{ 0,-198 },{ 0,-264 } ,{0,-330} };
             }
-            if (rdBuilding == TrapCol2) {}
-            if (rdBuilding == TrapCol3) {}
+            if (rdBuilding == TrapRec) {BuildingObjPos = { { 0,-230},{ 150,-230},{ 300,-230},{ 450,-230},{ 600,-230},{ -150,-230},{ -300,-230},{ -450,-230},{ -600,-230},
+            { 0,166},{ 150,166},{ 300,166},{ 450,166},{ 600,166},{ -150,166},{ -300,166},{ -450,166},{ -600,166},
+                {-600,-164},{-600,-98},{-600,-32},{-600,34},{-600,100},{-600,166},
+            {600,-164},{600,-98},{600,-32},{600,34},{600,100},{600,166}, };
+            }
+            if (rdBuilding == TrapCol4) { BuildingObjPos = { { 150,198 } ,{ 150,132 } ,{ 150,66},{ 150,0}  ,{ 150,-66} ,{ 150,-132 } ,{ 150,-198 },{ 150,-264 },{ 150,-330 },
+            { 450,198 } ,{ 450,132 } ,{ 450,66},{ 450,0}  ,{ 450,-66} ,{ 450,-132 } ,{ 450,-198 },{ 450,-264 },{ 450,-330 },
+            { -450,198 } ,{ -450,132 } ,{ -450,66},{ -450,0}  ,{ -450,-66} ,{ -450,-132 } ,{ -450,-198 },{ -450,-264 } ,{ -450,-330 } ,
+            { -150,198 } ,{ -150,132 } ,{ -150,66},{ -150,0}  ,{ -150,-66} ,{ -150,-132 } ,{ -150,-198 },{ -150,-264 },{ -150,-330 } }; }
             for (int i = 0; i < BuildingObjPos.size(); i++) {
                 std::shared_ptr<Trap> trap = std::make_shared<Trap>(BuildingObjPos[i], glm::vec2{ 125,1 });
                 trap->Start();

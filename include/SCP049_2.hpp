@@ -2,7 +2,7 @@
 #define SCP0492_HPP
 
 #include "Enemy.hpp"
-class SCP049_2 : public Enemy {
+class SCP049_2 : public Enemy{
 public:
     SCP049_2();
     void Update() override;

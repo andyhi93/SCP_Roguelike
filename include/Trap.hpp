@@ -9,8 +9,12 @@ public:
 	void Update();
 	void Start();
 	void SetActive();
+	bool isOpen = false;
 private:
 	std::vector<std::string> trapImages;
+	float m_LastAttackTime = 0;
+	float attackTime = 3;
+	float attackSpeed = 7;
 };
 
 #endif

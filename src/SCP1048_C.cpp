@@ -35,14 +35,9 @@ void SCP1048_C::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
 		if (currentTime - m_LastAttackTime >= attackSpeed) {
-			if (m_collider->CheckCollision(m_Player->m_collider)) {
-				m_Player->health -= damage;
-			}
+			m_Player->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}
-	}
-	if (other->tag == "Bullet") {
-		std::cout << "Bullet" << std::endl;
 	}
 }
 void SCP1048_C::Behavior() {

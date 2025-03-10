@@ -22,11 +22,17 @@ void Actor::MoveX(float amount) {
                 m_collider->position = m_Transform.translation + m_collider->offset;
                 move -= sign;
             }
-            else
-            {
-                m_Transform.translation.x -= sign;
-                m_collider->position -= newPos;
-                break;
+            else {
+                auto otherActor = CheckCollisionWithActors();
+                if (otherActor) {
+                    OnCollisionEnter(otherActor);
+                    break;
+                }
+                else {
+                    m_Transform.translation.x -= sign;
+                    m_collider->position -= newPos;
+                    break;
+                }
             }
         }
     }
@@ -49,6 +55,11 @@ void Actor::MoveY(float amount) {
                 m_collider->position = m_Transform.translation+m_collider->offset;
                 move -= sign;
             }
+            else if (CheckCollisionWithActors() && !m_collider->isTrigger) {
+                m_Transform.translation.x -= sign;
+                m_collider->position -= newPos;
+                break;
+            }
             else
             {
                 m_Transform.translation.y -= sign;
@@ -68,4 +79,13 @@ bool Actor::CheckCollisionWithSolids() {
         }
     }
     return false;
+}
+std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors() {
+    auto actors = ColliderManager::GetInstance().GetActorColliders();
+    for (auto& actor : actors) {
+        if (m_collider != actor && m_collider->CheckCollision(actor) && !actor->isTrigger) {
+            return actor;
+        }
+    }
+    return nullptr;
 }

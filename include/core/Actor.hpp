@@ -22,5 +22,6 @@ public:
     void MoveY(float amount);
 
     bool CheckCollisionWithSolids();
+    std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors()
 };
 #endif

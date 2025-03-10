@@ -20,6 +20,10 @@ Player::Player(): Actor(glm::vec2{ 45,100 }){
         "../../../Resources/Player/boy_walk3.png", "../../../Resources/Player/boy_walk4.png",
         "../../../Resources/Player/boy_walk5.png", "../../../Resources/Player/boy_walk6.png",
         "../../../Resources/Player/boy_walk7.png", "../../../Resources/Player/boy_walk8.png", },true,50,true,50);
+    m_AnimationHurt = std::make_shared<Util::Animation>(std::vector<std::string>{"../../../Resources/Player/boy_hurt1.png", "../../../Resources/Player/boy_hurt2.png",
+        "../../../Resources/Player/boy_hurt3.png", "../../../Resources/Player/boy_hurt4.png",
+        "../../../Resources/Player/boy_hurt5.png", "../../../Resources/Player/boy_hurt6.png",
+        "../../../Resources/Player/boy_hurt7.png", "../../../Resources/Player/boy_hurt8.png", }, true, 50, true, 50);
     m_AnimationDash= std::make_shared<Util::Animation>( std::vector<std::string>{"../../../Resources/Player/boy_dash.png"}, true, 1000, true, 1000);
     m_AnimationDie = std::make_shared<Util::Animation>(
         std::vector<std::string>{"../../../Resources/die_animation1.png", "../../../Resources/die_animation2.png"}, true, 50, true, 50);
@@ -42,24 +46,24 @@ void Player::PlayerControl() {
     glm::vec2 velocity(0.0f, 0.0f);
 
     if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
-        currentState = Walk;
+        currentState = (currentState == Hurt) ? Hurt : Walk;
         velocity.y += speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-        currentState = Walk;
+        currentState = (currentState == Hurt) ? Hurt : Walk;
         velocity.x -= speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
-        currentState = Walk;
+        currentState = (currentState == Hurt) ? Hurt : Walk;
         velocity.y -= speed;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-        currentState = Walk;
+        currentState = (currentState == Hurt) ? Hurt : Walk;
         velocity.x += speed;
     }
     if (!Util::Input::IsKeyPressed(Util::Keycode::W) &&  !Util::Input::IsKeyPressed(Util::Keycode::A) && 
         !Util::Input::IsKeyPressed(Util::Keycode::S) &&  !Util::Input::IsKeyPressed(Util::Keycode::D)) {
-        currentState = Idle;
+        currentState = (currentState == Hurt) ? Hurt : Idle;
     }
     Move(velocity);
     //get mousePos
@@ -97,7 +101,20 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor);
         if(!table->isBroken) table->BreakTable();
     }
+    if (!isDashing && currentState!=Hurt) {
+        if (other->tag == "Trap") {
+            Damage(100.0f);
+        }
+    }
 }
+void Player::Damage(float damage) {
+    if (currentState != Hurt) {
+        SetHealth(GetHealth() - damage);
+        currentState = Hurt;
+    }
+}
+void Player::SetHealth(float amount) { health = amount; }
+float Player::GetHealth() { return health; }
 void Player::Move(glm::vec2& velocity) {
 
     float currentTime = SDL_GetTicks() / 1000.0f;
@@ -130,7 +147,7 @@ void Player::Move(glm::vec2& velocity) {
     }
     MoveX(velocity.x);
     MoveY(velocity.y);
-    std::cout << "Player pos: " << m_Transform.translation.x<<", "<< m_Transform.translation.y << " Collider pos: " << m_collider->position.x<<", "<< m_collider->position.y << std::endl;
+    //std::cout << "Player pos: " << m_Transform.translation.x<<", "<< m_Transform.translation.y << " Collider pos: " << m_collider->position.x<<", "<< m_collider->position.y << std::endl;
 }
 void Player::AnimationControl() {
     if (currentState == Die) {
@@ -140,6 +157,9 @@ void Player::AnimationControl() {
     if (isDashing) {
         SetDrawable(m_AnimationDash);
         m_Hand->SetDrawable(m_Hand->m_AnimationDash);
+    }
+    else if (currentState == Hurt) {
+        SetDrawable(m_AnimationHurt);
     }
     else if (currentState==Walk) {
         SetDrawable(m_AnimationWalk);
@@ -176,12 +196,26 @@ void Player::FixedUpdate() {
 void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
+    if (currentState == Hurt) {
+        std::cout << "Hurt" << std::endl;
+    }
     //std::cout << "currentState: " << currentState<<std::endl;
     if (health <= 0 && currentState != Die) {
         currentState = Die;
         this->RemoveChild(m_Hand);
     }
     if (currentState != Die) {
+        if (currentState == Hurt) {
+            float currentTime = SDL_GetTicks() / 1000.0f;
+            if (!isInvincible) {
+                isInvincible = true;
+                lastHurtTime = currentTime;
+            }
+            if (isInvincible && currentTime - lastHurtTime >= isInvincible) {
+                currentState = Idle;
+                isInvincible = false;
+            }
+        }
         PlayerControl();
         HandControl();
     }

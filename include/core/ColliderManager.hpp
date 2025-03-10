@@ -17,6 +17,7 @@ public:
     void Update();
     std::vector<std::shared_ptr<BoxCollider>> GetSolidColliders();
     std::vector<std::shared_ptr<BoxCollider>> GetTableColliders();
+    std::vector<std::shared_ptr<BoxCollider>> GetActorColliders();
 private:
     std::vector<std::shared_ptr<BoxCollider>> colliders;
 

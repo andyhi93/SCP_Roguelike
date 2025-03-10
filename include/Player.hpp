@@ -28,18 +28,24 @@ public:
     void Start();
     void Update() override;
     void FixedUpdate() override;
+    void Damage(float damage);
+    void SetHealth(float amount);
+    float GetHealth();
+    bool GetIsInvincible() { return isInvincible; }
 
     float health = 100;
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationDash;
+    std::shared_ptr<Util::Animation> m_AnimationHurt;
     std::shared_ptr<Util::Animation> m_AnimationDie;
 private:
     enum State
     {
         Idle,
         Walk,
+        Hurt,
         Die,
     };
     State currentState = Idle;
@@ -57,6 +63,9 @@ private:
     bool isDashing = false;  
     bool canDash = true;  
 
+    float invincibleTime = 1.5f;
+    bool isInvincible = false;
+    float lastHurtTime = 0.0f;
 };
 
 #endif

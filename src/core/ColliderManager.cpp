@@ -35,6 +35,15 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetSolidColliders() {
     }
     return solids;
 }
+std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetActorColliders() {
+    std::vector<std::shared_ptr<BoxCollider>> actors;
+    for (auto& col : colliders) {
+        if (col->isActive && !col->isTrigger && !col->isSolid) {
+            actors.push_back(col);
+        }
+    }
+    return actors;
+}
 std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetTableColliders() {
     std::vector<std::shared_ptr<BoxCollider>> tables;
     for (auto& col : colliders) {
