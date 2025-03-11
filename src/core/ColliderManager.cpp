@@ -8,6 +8,8 @@ ColliderManager& ColliderManager::GetInstance() {
 
 void ColliderManager::RegisterCollider(std::shared_ptr<BoxCollider> collider) {
     colliders.push_back(collider);
+    std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(collider->parentActor);
+    if(collider->tag=="Solid") solid->Start();
 }
 void ColliderManager::UnregisterCollider(std::shared_ptr<BoxCollider> collider) {
     colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
@@ -59,6 +61,7 @@ void ColliderManager::Update() {
     auto SolidCols=GetSolidColliders();
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
-        if(solid) solid->Update();
+        if (solidCol->tag=="Solid") solid->Update();
+        else if (solidCol->tag == "Solid"&&!solid)std::cout << "nullptr\n";
     }
 }

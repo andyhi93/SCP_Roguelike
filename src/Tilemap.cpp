@@ -69,7 +69,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
         }
     }
     int i = 0;
-    EnemyObjPos = { {750, -365},{ -776,-365 }, { -776,338 }, { 776, 336 },{776,170},{776,-170},{-776,-170},{-776,170} };
+    EnemyObjPos = { {750, -365},{ -776,-365 }, { -776,338 }, { 776, 336 },{776,200},{776,-200},{-776,-200},{-776,200} };
     std::shuffle(EnemyObjPos.begin(), EnemyObjPos.end(), rd);
     for (auto& enemy : EnemyObjs) {
         enemy->m_collider->isActive = false;

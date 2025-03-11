@@ -7,7 +7,7 @@ class Trap : public Solid {
 public:
 	Trap(glm::vec2 pos, glm::vec2 size);
 	void Update();
-	void Start();
+	void Start() override;
 	void SetActive();
 	bool isOpen = false;
 private:

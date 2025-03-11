@@ -10,7 +10,7 @@ public:
 	int tableIndex = 0;
 	void BreakTable();
 	bool isBroken = false;
-	void Start();
+	void Start() override;
 	void SetTrigger();
 private:
 	std::vector<std::string> tableImages;

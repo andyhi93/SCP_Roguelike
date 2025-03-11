@@ -47,19 +47,19 @@ void Player::PlayerControl() {
 
     if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
         currentState = (currentState == Hurt) ? Hurt : Walk;
-        velocity.y += speed;
+        velocity.y = (velocity.y<speed)? velocity.y+speed : velocity.y;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
         currentState = (currentState == Hurt) ? Hurt : Walk;
-        velocity.x -= speed;
+        velocity.x = (velocity.x > -speed) ? velocity.x - speed : velocity.x;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
         currentState = (currentState == Hurt) ? Hurt : Walk;
-        velocity.y -= speed;
+        velocity.y = (velocity.y > -speed) ? velocity.y - speed : velocity.y;
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
         currentState = (currentState == Hurt) ? Hurt : Walk;
-        velocity.x += speed;
+        velocity.x = (velocity.x < speed) ? velocity.x + speed : velocity.x;
     }
     if (!Util::Input::IsKeyPressed(Util::Keycode::W) &&  !Util::Input::IsKeyPressed(Util::Keycode::A) && 
         !Util::Input::IsKeyPressed(Util::Keycode::S) &&  !Util::Input::IsKeyPressed(Util::Keycode::D)) {

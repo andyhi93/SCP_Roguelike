@@ -8,22 +8,30 @@ Solid::Solid(glm::vec2 pos, glm::vec2 size)
     m_collider->isSolid = true;
     ColliderManager::GetInstance().RegisterCollider(m_collider);
 }
+void Solid::Start() {
+    m_collider->parentActor = std::dynamic_pointer_cast<Object>(shared_from_this());
+}
 void Solid::Update() {
-    auto actorCols=ColliderManager::GetInstance().GetActorColliders();
+    /*auto actorCols = ColliderManager::GetInstance().GetActorColliders();
     for (auto actorCol : actorCols) {
-        if (m_collider->CheckCollision(actorCol)) {
+        if (actorCol->tag == "Player") std::cout << "Player \n";
+        if (m_collider->CheckCollisionEdge(actorCol)) {
             std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(actorCol->parentActor);
             auto direction = actor->m_Transform.translation - m_Transform.translation;
-            m_collider->isActive = false;
-            while (m_collider->CheckCollision(actorCol)) {
-                actor->MoveX(direction.x);
-                actor->MoveY(direction.y);
+            if (m_collider->size.x > m_collider->size.y) {
+                while (m_collider->CheckCollisionEdge(actorCol)) {
+                    actor->MoveY(direction.y);
+                    std::cout << "Touch y edge \n";
+                }
+            }
+            else {
+                while (m_collider->CheckCollisionEdge(actorCol)) {
+                    actor->MoveX(direction.x);
+                    std::cout << "Touch x edge \n";
+                }
             }
         }
-        else {
-            m_collider->isActive = true;
-        }
-    }
+    }*/
 }
 std::vector<std::shared_ptr<BoxCollider>> Solid::walls = {
     std::make_shared<BoxCollider>(glm::vec2(845, -303), glm::vec2(10, 335)), // right bottom
