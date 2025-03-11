@@ -12,6 +12,16 @@ bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
         position.y + size.y / 2 > other->position.y - other->size.y / 2);
 }
+bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other, int cmdxy) {
+    if (cmdxy) {
+        return position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
+            position.y + size.y / 2 > other->position.y - other->size.y / 2;
+    }
+    else {
+        return position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
+            position.x + size.x / 2 > other->position.x - other->size.x / 2;
+    }
+}
 bool BoxCollider::CheckCollisionEdge(std::shared_ptr<BoxCollider> other) {
     return (position.x - size.x / 2 <= other->position.x + other->size.x / 2 &&
         position.x + size.x / 2 >= other->position.x - other->size.x / 2 &&

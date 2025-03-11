@@ -1,16 +1,37 @@
-#include "MapUI.hpp"
+#include "UI.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Image.hpp"
 #include "Player.hpp"
+#include "UIText.hpp"
 #include <iostream>
 
-MapUI::MapUI() {
+UI::UI() {
     this->AddChild(Background);
     m_Transform.translation = { 637 ,330 };
     Background->SetZIndex(10);
     Background->m_Transform.translation = { 637 ,330 };
     Background->SetDrawable(std::make_shared<Util::Image>("../../../Resources/Map/map_background.png"));
     Background->m_Transform.scale = { 6,6 };
+
+    //HealthUI
+    HealthFrameImage->SetDrawable(std::make_shared<Util::Image>("../../../Resources/UI/HealthFrame.png"));
+    HealthBarImage->SetDrawable(std::make_shared<Util::Image>("../../../Resources/UI/HealthBar.png"));
+    this->AddChild(HealthFrameImage);
+    HealthFrameImage->m_Transform.scale = { 3,3 };
+    HealthFrameImage->m_Transform.translation = { -712,408 };
+    HealthFrameImage->SetZIndex(10.2f);
+    this->AddChild(HealthBarImage);
+    HealthBarImage->m_Transform.scale = { 3,3 };
+    HealthBarImage->m_Transform.translation = { -808,408 };
+    HealthBarImage->SetZIndex(10);
+
+    m_healthText = std::make_unique<UIText>("../../../Resources/UI/PixelText.ttf", 50);
+    m_healthText->SetZIndex(10.1f);
+    m_healthText->Start();
+    m_healthText->m_Transform.translation = { -690,408 };
+    m_healthText->m_Transform.scale = { 0.7,0.7 };
+    m_healthText->m_Text->SetText(fmt::format("{}/{}", maxHealth, maxHealth));
+    this->AddChild(m_healthText);
 
     this->AddChild(PlayerPoint);
     PlayerPoint->m_Transform.translation = { 637 ,330 };
@@ -34,7 +55,7 @@ MapUI::MapUI() {
         "../../../Resources/Map/map_boss.png",   
     };
 }
-void MapUI::Init(std::vector<Room> _RoomData) {
+void UI::Init(std::vector<Room> _RoomData) {
     int roomIndex = 0;
     if (_RoomData.size() != 9) std::cout << "MapUI Init Wrong: RoomSize isn't 9!" << std::endl;
     for(int y=0;y<3;y++){
@@ -71,7 +92,7 @@ void MapUI::Init(std::vector<Room> _RoomData) {
         }
     }
 }
-void MapUI::SetMap(std::vector<Room> _RoomData) {
+void UI::SetMap(std::vector<Room> _RoomData) {
     if (!isInit) {
         isInit = true;
         Init(_RoomData);
@@ -87,7 +108,7 @@ void MapUI::SetMap(std::vector<Room> _RoomData) {
 }
 
 // 更新房間顯示
-void MapUI::UpdateRoomDisplay(Room roomData,int x, int y) {
+void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
     std::shared_ptr<Object> roomObject = roomShape[x + y * 3];
     std::shared_ptr<Object> colorObject = roomColor[x + y * 3];
 
@@ -112,8 +133,17 @@ void MapUI::UpdateRoomDisplay(Room roomData,int x, int y) {
         colorObject->SetDrawable(nullptr);
     }
 }
-void MapUI::GetPlayer(std::shared_ptr<Player> _player) { MapPlayer = _player; }
-void MapUI::Update() {
+void UI::GetPlayer(std::shared_ptr<Player> _player) { 
+    MapPlayer = _player; 
+    maxHealth= MapPlayer->GetHealth();
+    currentHealth = maxHealth;
+}
+void UI::Update() {
     glm::vec2 zoomDiff = { 1631 / 79 ,650 / 30 };
     PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer->m_Transform.translation.x/zoomDiff[0], MapPlayer->m_Transform.translation.y/zoomDiff[1] };
+
+    //HealthUI
+    currentHealth = MapPlayer->GetHealth();
+    HealthBarImage->m_Transform.scale.x = (currentHealth<0)? 0: currentHealth / maxHealth*3;
+    m_healthText->m_Text->SetText(fmt::format("{}/{}", currentHealth, maxHealth));
 }

@@ -4,7 +4,7 @@
 #include "pch.hpp"
 #include "Tilemap.hpp"
 #include "core/Object.hpp"
-#include "MapUI.hpp"
+#include "UI.hpp"
 #include "Enemy.hpp"
 
 class Player;
@@ -21,7 +21,7 @@ public:
     void ChangeRoom(glm::ivec2 direction);
 
     std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
-    std::shared_ptr<MapUI> m_MapUI;
+    std::shared_ptr<UI> m_MapUI;
     std::vector<std::shared_ptr<Object>> currentObjects = {};
 
     void setPlayer(std::shared_ptr<Player> _player);
@@ -31,7 +31,7 @@ public:
 
 private:
 
-    MapUI::Room map[MAP_SIZE_WIDTH][MAP_SIZE_HEIGHT];
+    UI::Room map[MAP_SIZE_WIDTH][MAP_SIZE_HEIGHT];
     glm::ivec2 startPos;
     glm::ivec2 bossPos;
 

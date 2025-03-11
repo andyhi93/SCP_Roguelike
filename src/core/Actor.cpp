@@ -11,6 +11,16 @@ void Actor::SetDead() {
 }
 
 void Actor::MoveX(float amount) {
+    auto OtherSolidCol = CheckCollisionWithSolids();
+    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor) : nullptr;
+    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || OtherSolidCol->tag == "Door")))//remember x
+    {
+        int sign = (m_Transform.translation.x - OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
+        while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
+            m_Transform.translation.x += sign;
+        }
+        m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+    }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor) : nullptr;
     auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor);
@@ -21,17 +31,13 @@ void Actor::MoveX(float amount) {
         else if (diff < 0) m_Transform.translation.x -= 1;
         m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
-    else if (CheckCollisionWithSolids() && (!m_collider->isTrigger && !(PlayerActor)))
-    {
-        return;
-    }
     xRemainder += amount;
     int move = (int)round(xRemainder);
     if (move != 0)
     {
         xRemainder -= move;
         int sign = move > 0 ? 1 : -1;
-        glm::vec2 newPos = m_Transform.translation + m_collider->offset + glm::vec2(sign, 0);
+        glm::vec2 newPos = m_Transform.translation + m_collider->offset + glm::vec2(sign,0);
         m_collider->position = newPos;
         while (move != 0)
         {

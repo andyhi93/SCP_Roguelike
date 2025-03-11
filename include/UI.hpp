@@ -6,11 +6,12 @@
 #include "core/Object.hpp"
 #include "Util/Image.hpp"
 #include "Enemy.hpp"
+#include "Util/Text.hpp"
 class Player;
-
-class MapUI : public Object {
+class UIText;
+class UI : public Object {
 public:
-    MapUI();
+    UI();
 
     struct Room {
         bool exists = false;
@@ -42,6 +43,14 @@ private:
     std::vector<std::string> roomImages;
     std::vector<std::string> colorImages;
     void UpdateRoomDisplay(Room roomData,int x, int y);
+
+    std::shared_ptr<Object> HealthFrameImage = std::make_shared<Object>();
+    std::shared_ptr<Object> HealthBarImage = std::make_shared<Object>();
+    float currentHealth=0;
+    float maxHealth=0; 
+    std::string m_Font;
+    int m_Size;
+    std::shared_ptr<UIText> m_healthText;
 };
 
 #endif

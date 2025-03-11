@@ -7,7 +7,7 @@
 #include <Trap.hpp>
 
 LevelManager::LevelManager() {
-    m_MapUI= std::make_shared<MapUI>();
+    m_MapUI= std::make_shared<UI>();
     this->AddChild(m_Tilemap);
     this->AddChild(m_MapUI);
     m_MapUI->SetZIndex(10);
@@ -66,12 +66,12 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         map[currentRoom.x][currentRoom.y].doors[2],
         map[currentRoom.x][currentRoom.y].doors[3]);
     //===============================================Map===================================================
-    std::vector<MapUI::Room> RoomForMap;
+    std::vector<UI::Room> RoomForMap;
     std::cout << "===================================Push Romm======================================" << std::endl;
     for (int y = -1; y < 2; y++) {
         for (int x = -1; x < 2; x++) {
             if (x + currentRoom.x < 0 || x + currentRoom.x >= MAP_SIZE_WIDTH || y + currentRoom.y < 0 || y + currentRoom.y >= MAP_SIZE_HEIGHT) {
-                MapUI::Room EmptyRoom;
+                UI::Room EmptyRoom;
                 EmptyRoom.exists = false;
                 RoomForMap.push_back(EmptyRoom);
             }
@@ -260,11 +260,11 @@ void LevelManager::GenerateLevel() {
         map[availableRooms[i].x][availableRooms[i].y].roomType = roomType;
     }
     m_Tilemap->SetDoors(map[startPos.x][startPos.y].doors[0], map[startPos.x][startPos.y].doors[1], map[startPos.x][startPos.y].doors[2], map[startPos.x][startPos.y].doors[3]);
-    std::vector<MapUI::Room> RoomForMap;
+    std::vector<UI::Room> RoomForMap;
     for(int y=-1;y<2;y++){
         for (int x = -1; x < 2; x++) {
             if (x + startPos.x < 0 || x + startPos.x >= MAP_SIZE_WIDTH || y + startPos.y < 0 || y + startPos.y >= MAP_SIZE_HEIGHT) {
-                MapUI::Room EmptyRoom;
+                UI::Room EmptyRoom;
                 EmptyRoom.exists = false;
                 RoomForMap.push_back(EmptyRoom);
             }

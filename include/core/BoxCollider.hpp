@@ -37,6 +37,7 @@ public:
     void SetOffset(glm::vec2 offset);
 
     bool CheckCollision(std::shared_ptr<BoxCollider> other);
+    bool CheckCollision(std::shared_ptr<BoxCollider> other, int cmdxy);
     bool CheckCollisionEdge(std::shared_ptr<BoxCollider> other);
 
     // 用於觸發進入、停留和退出事件
