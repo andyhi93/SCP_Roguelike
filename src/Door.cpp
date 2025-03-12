@@ -6,11 +6,11 @@
 
 Door::Door(glm::vec2 pos,glm::vec2 size):Solid(pos, size){
 
-    doorImage = { "../../../Resources/Door0.png", "../../../Resources/Door1.png" };
+    doorImage = { RESOURCE_DIR "/Door0.png", RESOURCE_DIR "/Door1.png" };
     m_Transform.scale = { 7,7 };
 }
 void Door::SetIsTop(bool _isTop) {
-    doorImage = { "../../../Resources/TopDoor0.png","../../../Resources/TopDoor1.png" };
+    doorImage = { RESOURCE_DIR "/TopDoor0.png",RESOURCE_DIR "/TopDoor1.png" };
     isTop = _isTop;
 }
 void Door::DoorControl(bool cmd) {

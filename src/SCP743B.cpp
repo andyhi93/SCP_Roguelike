@@ -3,6 +3,8 @@
 #include <iostream>
 #include <random>
 SCP743B::SCP743B() : Enemy(glm::vec2{ 45,150 }) {
+	isDropCoin = true;
+
 	std::random_device rd;  
 	std::mt19937 gen(rd()); 
 	std::uniform_real_distribution<float> dis(0.0f, 2.0f); 
@@ -15,11 +17,11 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,150 }) {
 	health = 1;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
-		std::vector<std::string>{"../../../Resources/SCP743/SCP743B_fly1.png", "../../../Resources/SCP743/SCP743B_fly2.png", }, true, 50, true, 50);
+		std::vector<std::string>{RESOURCE_DIR "/SCP743/SCP743B_fly1.png", RESOURCE_DIR "/SCP743/SCP743B_fly2.png", }, true, 50, true, 50);
 	m_AnimationAttack = m_AnimationWalk;
 	m_AnimationDie = std::make_shared<Util::Animation>(
-		std::vector<std::string>{"../../../Resources/SCP743/SCP743B_die1.png", "../../../Resources/SCP743/SCP743B_die2.png",
-		"../../../Resources/SCP743/SCP743B_die3.png", "../../../Resources/SCP743/SCP743B_die4.png", }, true, 50, true, 50);
+		std::vector<std::string>{RESOURCE_DIR "/SCP743/SCP743B_die1.png", RESOURCE_DIR "/SCP743/SCP743B_die2.png",
+		RESOURCE_DIR "/SCP743/SCP743B_die3.png", RESOURCE_DIR "/SCP743/SCP743B_die4.png", }, true, 50, true, 50);
 	SetDrawable(m_AnimationWalk);
 	m_AnimationDie->SetLooping(false);
 	m_AnimationWalk->Play();

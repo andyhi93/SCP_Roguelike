@@ -10,12 +10,36 @@ UI::UI() {
     m_Transform.translation = { 637 ,330 };
     Background->SetZIndex(10);
     Background->m_Transform.translation = { 637 ,330 };
-    Background->SetDrawable(std::make_shared<Util::Image>("../../../Resources/Map/map_background.png"));
+    Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_background.png"));
     Background->m_Transform.scale = { 6,6 };
 
-    //HealthUI
-    HealthFrameImage->SetDrawable(std::make_shared<Util::Image>("../../../Resources/UI/HealthFrame.png"));
-    HealthBarImage->SetDrawable(std::make_shared<Util::Image>("../../../Resources/UI/HealthBar.png"));
+    this->AddChild(PlayerPoint);
+    PlayerPoint->m_Transform.translation = { 637 ,330 };
+    PlayerPoint->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_point.png"));
+    PlayerPoint->m_Transform.scale = { 6,6 };
+    PlayerPoint->SetZIndex(10.3);
+
+    roomImages = { RESOURCE_DIR "/Map/map1.png" ,RESOURCE_DIR "/Map/map2.png" ,
+    RESOURCE_DIR "/Map/map3.png" ,RESOURCE_DIR "/Map/map4.png" ,
+    RESOURCE_DIR "/Map/map5.png" ,RESOURCE_DIR "/Map/map6.png" ,
+    RESOURCE_DIR "/Map/map7.png" ,RESOURCE_DIR "/Map/map8.png" ,
+    RESOURCE_DIR "/Map/map9.png" ,RESOURCE_DIR "/Map/map10.png" ,
+    RESOURCE_DIR "/Map/map11.png" ,RESOURCE_DIR "/Map/map12.png" ,
+    RESOURCE_DIR "/Map/map13.png" ,RESOURCE_DIR "/Map/map14.png" ,
+    RESOURCE_DIR "/Map/map15.png" ,RESOURCE_DIR "/Map/map16.png" ,
+    };
+    colorImages = {
+        RESOURCE_DIR "/Map/map_spawn.png",
+        RESOURCE_DIR "/Map/map_store.png" ,
+        RESOURCE_DIR "/Map/map_treasure.png",
+        RESOURCE_DIR "/Map/map_boss.png",
+    };
+
+    setHealthUI();
+}
+void UI::setHealthUI() {
+    HealthFrameImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthFrame.png"));
+    HealthBarImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthBar.png"));
     this->AddChild(HealthFrameImage);
     HealthFrameImage->m_Transform.scale = { 3,3 };
     HealthFrameImage->m_Transform.translation = { -712,408 };
@@ -25,7 +49,7 @@ UI::UI() {
     HealthBarImage->m_Transform.translation = { -808,408 };
     HealthBarImage->SetZIndex(10);
 
-    m_healthText = std::make_unique<UIText>("../../../Resources/UI/PixelText.ttf", 50);
+    m_healthText = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
     m_healthText->SetZIndex(10.1f);
     m_healthText->Start();
     m_healthText->m_Transform.translation = { -690,408 };
@@ -33,27 +57,13 @@ UI::UI() {
     m_healthText->m_Text->SetText(fmt::format("{}/{}", maxHealth, maxHealth));
     this->AddChild(m_healthText);
 
-    this->AddChild(PlayerPoint);
-    PlayerPoint->m_Transform.translation = { 637 ,330 };
-    PlayerPoint->SetDrawable(std::make_shared<Util::Image>("../../../Resources/Map/map_point.png"));
-    PlayerPoint->m_Transform.scale = { 6,6 };
-    PlayerPoint->SetZIndex(10.3);
-
-    roomImages = { "../../../Resources/Map/map1.png" ,"../../../Resources/Map/map2.png" , 
-    "../../../Resources/Map/map3.png" ,"../../../Resources/Map/map4.png" ,
-    "../../../Resources/Map/map5.png" ,"../../../Resources/Map/map6.png" ,
-    "../../../Resources/Map/map7.png" ,"../../../Resources/Map/map8.png" ,
-    "../../../Resources/Map/map9.png" ,"../../../Resources/Map/map10.png" ,
-    "../../../Resources/Map/map11.png" ,"../../../Resources/Map/map12.png" ,
-    "../../../Resources/Map/map13.png" ,"../../../Resources/Map/map14.png" ,
-    "../../../Resources/Map/map15.png" ,"../../../Resources/Map/map16.png" ,
-    };
-    colorImages = {
-        "../../../Resources/Map/map_spawn.png",    
-        "../../../Resources/Map/map_store.png" ,
-        "../../../Resources/Map/map_treasure.png",
-        "../../../Resources/Map/map_boss.png",   
-    };
+    m_coinText = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
+    m_coinText->SetZIndex(10.1f);
+    m_coinText->Start();
+    m_coinText->m_Transform.translation = { -780,335 };
+    m_coinText->m_Transform.scale = { 1,1 };
+    m_coinText->m_Text->SetText("0");
+    this->AddChild(m_coinText);
 }
 void UI::Init(std::vector<Room> _RoomData) {
     int roomIndex = 0;
@@ -146,4 +156,6 @@ void UI::Update() {
     currentHealth = MapPlayer->GetHealth();
     HealthBarImage->m_Transform.scale.x = (currentHealth<0)? 0: currentHealth / maxHealth*3;
     m_healthText->m_Text->SetText(fmt::format("{}/{}", currentHealth, maxHealth));
+    //CoinText
+    m_coinText->m_Text->SetText(std::to_string(MapPlayer->GetCoin()));
 }

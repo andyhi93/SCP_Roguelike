@@ -43,6 +43,7 @@ private:
     void AddRoom(int x, int y);
 
     std::shared_ptr<Player> m_Player;
+
 };
 
 #endif

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <random>
 SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
+	isDropCoin = true;
+
 	std::random_device rd;  // 隨機數種子
 	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
 	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
@@ -14,13 +16,13 @@ SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
 	health = 1;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
-		std::vector<std::string>{"../../../Resources/SCP610/scp610_walk1.png", "../../../Resources/SCP610/scp610_walk2.png", 
-		"../../../Resources/SCP610/scp610_walk3.png", "../../../Resources/SCP610/scp610_walk4.png", }, true, 100, true, 100);
+		std::vector<std::string>{RESOURCE_DIR "/SCP610/scp610_walk1.png", RESOURCE_DIR "/SCP610/scp610_walk2.png",
+		RESOURCE_DIR "/SCP610/scp610_walk3.png", RESOURCE_DIR "/SCP610/scp610_walk4.png", }, true, 100, true, 100);
 	m_AnimationAttack = std::make_shared<Util::Animation>(
-		std::vector<std::string>{"../../../Resources/SCP610/scp610_attack1.png", "../../../Resources/SCP610/scp610_attack2.png",
-		"../../../Resources/SCP610/scp610_attack3.png", "../../../Resources/SCP610/scp610_attack4.png", }, true, 200, true, 200);
+		std::vector<std::string>{RESOURCE_DIR "/SCP610/scp610_attack1.png", RESOURCE_DIR "/SCP610/scp610_attack2.png",
+		RESOURCE_DIR "/SCP610/scp610_attack3.png", RESOURCE_DIR "/SCP610/scp610_attack4.png", }, true, 200, true, 200);
 	m_AnimationDie = std::make_shared<Util::Animation>(
-		std::vector<std::string>{"../../../Resources/die_animation1.png", "../../../Resources/die_animation2.png"}, true, 50, true, 50);
+		std::vector<std::string>{RESOURCE_DIR "/die_animation1.png", RESOURCE_DIR "/die_animation2.png"}, true, 50, true, 50);
 	SetDrawable(m_AnimationWalk);
 	m_AnimationAttack->SetLooping(false);
 	m_AnimationDie->SetLooping(false);

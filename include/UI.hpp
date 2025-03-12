@@ -7,6 +7,7 @@
 #include "Util/Image.hpp"
 #include "Enemy.hpp"
 #include "Util/Text.hpp"
+#include "BloodCoin.hpp"
 class Player;
 class UIText;
 class UI : public Object {
@@ -18,6 +19,7 @@ public:
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
         std::vector<std::shared_ptr<Object>> roomobjs = {};
+        std::vector<std::shared_ptr<BloodCoin>> roomCoins = {};
     };
     void Update();
     void Init(std::vector<Room> _RoomData);
@@ -44,6 +46,7 @@ private:
     std::vector<std::string> colorImages;
     void UpdateRoomDisplay(Room roomData,int x, int y);
 
+    void setHealthUI();
     std::shared_ptr<Object> HealthFrameImage = std::make_shared<Object>();
     std::shared_ptr<Object> HealthBarImage = std::make_shared<Object>();
     float currentHealth=0;
@@ -51,6 +54,7 @@ private:
     std::string m_Font;
     int m_Size;
     std::shared_ptr<UIText> m_healthText;
+    std::shared_ptr<UIText> m_coinText;
 };
 
 #endif

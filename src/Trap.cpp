@@ -6,7 +6,7 @@
 Trap::Trap(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
 
 	attackSpeed = 3;
-    trapImages = { "../../../Resources/Trap1.png" ,"../../../Resources/Trap2.png" };
+    trapImages = { RESOURCE_DIR "/Trap1.png" ,RESOURCE_DIR "/Trap2.png" };
     SetDrawable(std::make_shared<Util::Image>(trapImages[0]));
     m_Transform.translation = pos;
     m_Transform.scale = { 3, 3 };

@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "Table.hpp"
 #include <Trap.hpp>
+#include "BloodCoin.hpp"
 
 LevelManager::LevelManager() {
     m_MapUI= std::make_shared<UI>();
@@ -44,9 +45,32 @@ bool LevelManager::IsValidRoom(int x, int y) {
 }
 void LevelManager::Update(){
     m_MapUI->Update();
+    std::vector<std::shared_ptr<Object>> newCoins;
     for (auto& obj : currentObjects) {
         obj->Update();
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        if (enemy && enemy->isDead && enemy->isDropCoin && !enemy->isGiveCoin) {
+            auto coin = enemy->GetCoin();
+            enemy->isGiveCoin = true;
+            coin->Start();
+            AddChild(coin);
+            map[currentRoom.x][currentRoom.y].roomCoins.push_back(coin);
+            newCoins.push_back(coin);
+        }
     }
+    for (auto& coin : newCoins) {
+        currentObjects.push_back(coin);
+    }
+    map[currentRoom.x][currentRoom.y].roomCoins.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomCoins.begin(), map[currentRoom.x][currentRoom.y].roomCoins.end(),
+        [this](const std::shared_ptr<BloodCoin>& coin) {
+            if (coin->isPick) {
+                this->RemoveChild(coin);
+                ColliderManager::GetInstance().UnregisterCollider(coin->m_collider);
+                return true;
+            }
+            return false;
+        }),
+        map[currentRoom.x][currentRoom.y].roomCoins.end());
 }
 void LevelManager::FixedUpdate() {
     for (auto& obj : currentObjects) {
@@ -128,6 +152,10 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         }
         currentObjects.push_back(obj);
         this->AddChild(obj);
+    }
+    for (auto& coin : map[currentRoom.x][currentRoom.y].roomCoins) {
+        currentObjects.push_back(coin);
+        this->AddChild(coin);
     }
 }
 void LevelManager::GenerateLevel() {

@@ -17,14 +17,14 @@
 #include <random>
 
 Tilemap::Tilemap() {
-    roomImages = { "../../../Resources/Room/room_0000.png" ,"../../../Resources/Room/room_0001.png" 
-    ,"../../../Resources/Room/room_0010.png","../../../Resources/Room/room_0011.png"
-    ,"../../../Resources/Room/room_0100.png" ,"../../../Resources/Room/room_0101.png" 
-    ,"../../../Resources/Room/room_0110.png" ,"../../../Resources/Room/room_0111.png" 
-    ,"../../../Resources/Room/room_1000.png" ,"../../../Resources/Room/room_1001.png" 
-    ,"../../../Resources/Room/room_1010.png" ,"../../../Resources/Room/room_1011.png" 
-    ,"../../../Resources/Room/room_1100.png" ,"../../../Resources/Room/room_1101.png" 
-    ,"../../../Resources/Room/room_1110.png" ,"../../../Resources/Room/room_1111.png" };
+    roomImages = { RESOURCE_DIR "/Room/room_0000.png" ,RESOURCE_DIR "/Room/room_0001.png"
+    ,RESOURCE_DIR "/Room/room_0010.png",RESOURCE_DIR "/Room/room_0011.png"
+    ,RESOURCE_DIR "/Room/room_0100.png" ,RESOURCE_DIR "/Room/room_0101.png"
+    ,RESOURCE_DIR "/Room/room_0110.png" ,RESOURCE_DIR "/Room/room_0111.png"
+    ,RESOURCE_DIR "/Room/room_1000.png" ,RESOURCE_DIR "/Room/room_1001.png"
+    ,RESOURCE_DIR "/Room/room_1010.png" ,RESOURCE_DIR "/Room/room_1011.png"
+    ,RESOURCE_DIR "/Room/room_1100.png" ,RESOURCE_DIR "/Room/room_1101.png"
+    ,RESOURCE_DIR "/Room/room_1110.png" ,RESOURCE_DIR "/Room/room_1111.png" };
     m_Transform.translation = { 0, 0 };
     m_Transform.scale = { 7, 7 };
 }

@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
     ${HEADER_FILES}
  "src/Player.cpp" "src/Hand.cpp" "src/Tilemap.cpp" "src/Bullet.cpp" "src/BulletBox.cpp"  
  "src/LevelManager.cpp" "src/Door.cpp" "src/Item.cpp" "src/UI.cpp" "src/Enemy.cpp" "src/SCP610.cpp" "src/SCP049_2.cpp" 
- "src/SCP743A.cpp" "src/SCP743B.cpp" "src/SCP1048_B.cpp" "src/SCP1048_C.cpp" "src/SCP553.cpp" "src/Table.cpp" "src/core/BoxCollider.cpp" "src/core/Actor.cpp" "src/core/Solid.cpp" "src/Core/ColliderManager.cpp" "src/Trap.cpp" "src/UIText.cpp")
+ "src/SCP743A.cpp" "src/SCP743B.cpp" "src/SCP1048_B.cpp" "src/SCP1048_C.cpp" "src/SCP553.cpp" "src/Table.cpp" "src/core/BoxCollider.cpp" "src/core/Actor.cpp" "src/core/Solid.cpp" "src/Core/ColliderManager.cpp" "src/Trap.cpp" "src/UIText.cpp" "src/BloodCoin.cpp")
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)

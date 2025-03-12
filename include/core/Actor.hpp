@@ -24,6 +24,7 @@ public:
 
     void SetDead();
 
+
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids();
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors();
 };

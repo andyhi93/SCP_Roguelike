@@ -15,18 +15,18 @@ Player::Player(): Actor(glm::vec2{ 45,100 }){
 
     m_Transform.translation = { 0, 0 };
     m_AnimationIdle = std::make_shared<Util::Animation>(
-        std::vector<std::string>{"../../../Resources/Player/boy_idle1.png","../../../Resources/Player/boy_idle2.png"}, true, 1000, true, 1000);
-    m_AnimationWalk = std::make_shared<Util::Animation>(std::vector<std::string>{"../../../Resources/Player/boy_walk1.png", "../../../Resources/Player/boy_walk2.png",
-        "../../../Resources/Player/boy_walk3.png", "../../../Resources/Player/boy_walk4.png",
-        "../../../Resources/Player/boy_walk5.png", "../../../Resources/Player/boy_walk6.png",
-        "../../../Resources/Player/boy_walk7.png", "../../../Resources/Player/boy_walk8.png", },true,50,true,50);
-    m_AnimationHurt = std::make_shared<Util::Animation>(std::vector<std::string>{"../../../Resources/Player/boy_hurt1.png", "../../../Resources/Player/boy_hurt2.png",
-        "../../../Resources/Player/boy_hurt3.png", "../../../Resources/Player/boy_hurt4.png",
-        "../../../Resources/Player/boy_hurt5.png", "../../../Resources/Player/boy_hurt6.png",
-        "../../../Resources/Player/boy_hurt7.png", "../../../Resources/Player/boy_hurt8.png", }, true, 50, true, 50);
-    m_AnimationDash= std::make_shared<Util::Animation>( std::vector<std::string>{"../../../Resources/Player/boy_dash.png"}, true, 1000, true, 1000);
+        std::vector<std::string>{RESOURCE_DIR "/Player/boy_idle1.png", RESOURCE_DIR "/Player/boy_idle2.png"}, true, 1000, true, 1000);
+    m_AnimationWalk = std::make_shared<Util::Animation>(std::vector<std::string>{RESOURCE_DIR "/Player/boy_walk1.png", RESOURCE_DIR "/Player/boy_walk2.png",
+        RESOURCE_DIR "/Player/boy_walk3.png", RESOURCE_DIR "/Player/boy_walk4.png",
+        RESOURCE_DIR "/Player/boy_walk5.png", RESOURCE_DIR "/Player/boy_walk6.png",
+        RESOURCE_DIR "/Player/boy_walk7.png", RESOURCE_DIR "/Player/boy_walk8.png", },true,50,true,50);
+    m_AnimationHurt = std::make_shared<Util::Animation>(std::vector<std::string>{RESOURCE_DIR "/Player/boy_hurt1.png", RESOURCE_DIR "/Player/boy_hurt2.png",
+        RESOURCE_DIR "/Player/boy_hurt3.png", RESOURCE_DIR "/Player/boy_hurt4.png",
+        RESOURCE_DIR "/Player/boy_hurt5.png", RESOURCE_DIR "/Player/boy_hurt6.png",
+        RESOURCE_DIR "/Player/boy_hurt7.png", RESOURCE_DIR "/Player/boy_hurt8.png", }, true, 50, true, 50);
+    m_AnimationDash= std::make_shared<Util::Animation>( std::vector<std::string>{RESOURCE_DIR "/Player/boy_dash.png"}, true, 1000, true, 1000);
     m_AnimationDie = std::make_shared<Util::Animation>(
-        std::vector<std::string>{"../../../Resources/die_animation1.png", "../../../Resources/die_animation2.png"}, true, 50, true, 50);
+        std::vector<std::string>{RESOURCE_DIR "/die_animation1.png", RESOURCE_DIR "/die_animation2.png"}, true, 50, true, 50);
     m_AnimationDie->SetLooping(false);
     SetDrawable(m_AnimationIdle);
     m_AnimationIdle->Play();
@@ -104,6 +104,16 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     if (!isDashing && currentState!=Hurt) {
         if (other->tag == "Trap") {
             Damage(1.0f);
+        }
+    }
+    if (other->tag == "Coin") {
+        std::shared_ptr<BloodCoin> coin = std::dynamic_pointer_cast<BloodCoin>(other->parentActor);
+        if (coin && !coin->isPick) {
+            std::cout << "Pick up Coin\n";
+            coinAmount += coin->pickUpCoin();
+            coin->m_collider->tag = "PickedCoin";
+            coin = nullptr;
+            other = nullptr;
         }
     }
 }

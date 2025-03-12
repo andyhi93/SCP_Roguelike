@@ -19,13 +19,11 @@ void ColliderManager::UpdateCollisions() {
     //std::cout << "colliders size: " << colliders.size() << std::endl;
     for (size_t i = 0; i < colliders.size(); ++i) {
         for (size_t j = i + 1; j < colliders.size(); ++j) {
-            if (colliders[i]->tag == "") std::cout << "Empty tag" << std::endl;
-            if (!colliders[i]->isSolid) {
-                colliders[i]->HandleCollision(colliders[j]);
-            }
-            if (!colliders[j]->isSolid){
-                colliders[j]->HandleCollision(colliders[i]);
-            }
+            if (!colliders[i]->isActive || !colliders[j]->isActive || colliders[i]->isSolid) continue;
+            //if (!colliders[i]->CheckCollision(colliders[j])) continue;
+            colliders[i]->HandleCollision(colliders[j]);
+            if (colliders[j]->isSolid) continue;
+            colliders[j]->HandleCollision(colliders[i]);
         }
     }
 }

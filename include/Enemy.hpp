@@ -5,6 +5,7 @@
 
 #include "Util/Animation.hpp"
 #include "Core/Actor.hpp"
+#include "BloodCoin.hpp"
 class Player;
 class Enemy : public Actor {
 public:
@@ -16,6 +17,9 @@ public:
 
     void SetHealth(float _health) { health = _health; }
     float GetHealth() { return health; }
+    bool isDropCoin = false;
+    bool isGiveCoin = false;
+    std::shared_ptr<BloodCoin> GetCoin();
 protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationAttack;
