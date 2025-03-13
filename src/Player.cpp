@@ -6,8 +6,6 @@
 #include <iostream>
 #include <Table.hpp>
 
-/*   [info] Position:-22 -53
- [info] Position:16 40*/
 Player::Player(): Actor(glm::vec2{ 45,100 }){
     m_collider->tag = "Player";
     m_BulletBox = std::make_shared<BulletBox>();
@@ -83,18 +81,22 @@ void Player::PlayerControl() {
 void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Door0" && m_LevelManager->m_Tilemap->doors[0]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(1, 0));
+        m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-793, -66);
     }
     if (other->tag == "Door1" && m_LevelManager->m_Tilemap->doors[1]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(0, -1));
+        m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-6, 348);
     }
     if (other->tag == "Door2" && m_LevelManager->m_Tilemap->doors[2]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(-1, 0));
+        m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(802, -67);
     }
     if (other->tag == "Door3" && m_LevelManager->m_Tilemap->doors[3]->isOpen) {
         m_LevelManager->ChangeRoom(glm::ivec2(0, 1));
+        m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-9, -397);
     }
     if (other->tag == "Table") {

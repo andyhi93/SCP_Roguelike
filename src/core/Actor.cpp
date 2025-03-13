@@ -18,6 +18,7 @@ void Actor::MoveX(float amount) {
         int sign = (m_Transform.translation.x - OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
         while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
             m_Transform.translation.x += sign;
+            sign = (m_Transform.translation.x - OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
         }
         m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
@@ -62,11 +63,13 @@ void Actor::MoveX(float amount) {
 void Actor::MoveY(float amount) {
     auto OtherSolidCol = CheckCollisionWithSolids();
     auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor) : nullptr;
-    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag=="Wall"|| OtherSolidCol->tag == "Door")))//remember x
+    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || OtherSolidCol->tag == "Door")))//remember x
     {
-        float diff = (m_Transform.translation.y - OtherSolid->m_Transform.translation.y);
-        if (diff > 0) m_Transform.translation.y += 1;
-        else if (diff < 0) m_Transform.translation.y -= 1;
+        int sign = (m_Transform.translation.y - OtherSolid->m_Transform.translation.y) < 0 ? -1 : 1;
+        while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
+            m_Transform.translation.y += sign;
+            sign = (m_Transform.translation.y - OtherSolid->m_Transform.translation.y) < 0 ? -1 : 1;
+        }
         m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
     }
     auto OtherCollider = CheckCollisionWithActors();

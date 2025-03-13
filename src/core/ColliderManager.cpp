@@ -1,8 +1,8 @@
 #include "Core/ColliderManager.hpp"
 #include <Core/Solid.hpp>
-
+#include "Player.hpp"
 ColliderManager& ColliderManager::GetInstance() {
-    static ColliderManager instance; // 確保只有一個實例
+    static ColliderManager instance;
     return instance;
 }
 
@@ -19,7 +19,9 @@ void ColliderManager::UpdateCollisions() {
     //std::cout << "colliders size: " << colliders.size() << std::endl;
     for (size_t i = 0; i < colliders.size(); ++i) {
         for (size_t j = i + 1; j < colliders.size(); ++j) {
-            if (!colliders[i]->isActive || !colliders[j]->isActive || colliders[i]->isSolid) continue;
+            auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor);
+            if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Coin" || colliders[j]->tag == "Door" || colliders[j]->tag == "Table") && colliders[j]->isActive) {  }
+            else if (!colliders[i]->isActive || !colliders[j]->isActive || colliders[i]->isSolid) continue;
             //if (!colliders[i]->CheckCollision(colliders[j])) continue;
             colliders[i]->HandleCollision(colliders[j]);
             if (colliders[j]->isSolid) continue;

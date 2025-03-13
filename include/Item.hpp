@@ -6,12 +6,9 @@
 
 class Item : public Actor {
 public:
-    Item();
-
-    void Update();
-    enum ItemIndex {
+    enum ItemType {
         redPill,
-        redClot,
+        redCoin,
         SCP1609,
         SCP610,
         SCP023,
@@ -24,8 +21,22 @@ public:
         SCP063,
         SCP2295,
     };
+    Item(glm::vec2 pos, ItemType type);
+    void SetItemType(ItemType type);
+
+    void Update() override;
+    void pickUp();
+    void Start();
+    float attackSpeed = 1;
+    float movekSpeed = 1;
+    float damageUp = 1;
+    float healthUp = 1;
+    float dashCooldown = 1;
+    int healValue = 0;
+    bool canPick;
+    bool isPick = false;
 private:
-    int ItemType;
+    ItemType ItemIndex;
 };
 
 #endif

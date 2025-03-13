@@ -15,6 +15,7 @@ public:
     void AutoRemove();
     void AddBullet(std::shared_ptr<Bullet> bullet);
     void RemoveAll();
+    void ChangeRoom();
 private:
     std::vector<std::shared_ptr<Bullet>> bullets;
 };

@@ -30,6 +30,11 @@ void BulletBox::AutoRemove() {
 		std::cout << "Removed " << (beforeSize - afterSize) << " bullets still last " <<(afterSize)<<"bullets" << std::endl;
 	}
 }
+void BulletBox::ChangeRoom() {
+	for (auto& bullet : bullets) {
+		bullet->SetIsLive(false);
+	}
+}
 void BulletBox::RemoveAll() {
 	bullets.clear();
 }

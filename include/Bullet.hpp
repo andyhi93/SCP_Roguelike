@@ -18,6 +18,7 @@ public:
     void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
     void Move();
     bool GetIslive();
+    void SetIsLive(bool cmd) { islive = cmd; }
     void OutOfBounds();
     bool isGetLevelManager = false;
     bool isGetPlayer = false;

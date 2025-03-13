@@ -1,5 +1,6 @@
 #include "Enemy.hpp"
 #include "Player.hpp"
+#include "random"
 
 Enemy::Enemy(glm::vec2 size) :Actor(size) {
     m_collider->tag = "Enemy";
@@ -7,6 +8,13 @@ Enemy::Enemy(glm::vec2 size) :Actor(size) {
 }
 void Enemy::Start() {
     m_collider->parentActor = shared_from_this();
+    if (isDropCoin) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dis(0, 4);
+        int cmd = dis(gen);
+        if (cmd == 0 || cmd == 1 || cmd==2) isDropCoin = false;
+    }
 }
 
 void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
