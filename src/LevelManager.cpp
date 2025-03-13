@@ -148,14 +148,15 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         }
         else if (trap) {
             trap->Start();
+            trap->m_collider->isActive = true;
             trap->isOpen = true;
         }
         currentObjects.push_back(obj);
         this->AddChild(obj);
     }
-    for (auto& coin : map[currentRoom.x][currentRoom.y].roomItems) {
-        currentObjects.push_back(coin);
-        this->AddChild(coin);
+    for (auto& item : map[currentRoom.x][currentRoom.y].roomItems) {
+        currentObjects.push_back(item);
+        this->AddChild(item);
     }
 }
 void LevelManager::GenerateLevel() {

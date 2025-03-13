@@ -26,10 +26,7 @@ void ColliderManager::UpdateCollisions() {
             }
             auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor);
             if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" || colliders[j]->tag == "Door" || colliders[j]->tag == "Table") && colliders[j]->isActive) {  }
-            else if (!colliders[i]->isActive || !colliders[j]->isActive || colliders[i]->isSolid) continue; 
-            //if (colliders[i]->tag == "Bullet" && colliders[i]->isTrigger && colliders[i]->isActive) std::cout << "Bullet\n";
-            //if (colliders[j]->tag == "Wall" && colliders[j]->isSolid && colliders[j]->isActive) std::cout << "Wall\n";
-            if (colliders[i]->tag == "Bullet" && colliders[i]->isTrigger && colliders[i]->isActive && colliders[j]->tag == "Wall" && colliders[j]->isSolid && colliders[j]->isActive) std::cout << "Bullet&Wall\n";
+            else if (!colliders[i]->isActive || !colliders[j]->isActive) continue; 
 
             colliders[i]->HandleCollision(colliders[j]);
             if (colliders[j]->isSolid) continue;
