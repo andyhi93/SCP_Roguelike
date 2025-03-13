@@ -12,7 +12,7 @@ SCP049_2::SCP049_2() : Enemy(glm::vec2{ 45,140 }) {
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 
 	m_LastAttackTime = dis(gen);
-	attackSpeed = 1;
+	attackSpeedUp = 1;
 
 	health = 1;
 	speed = 2.0f;
@@ -34,7 +34,7 @@ SCP049_2::SCP049_2() : Enemy(glm::vec2{ 45,140 }) {
 void SCP049_2::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeed) {
+		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}

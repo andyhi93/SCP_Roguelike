@@ -14,7 +14,7 @@ private:
 	std::vector<std::string> trapImages;
 	float m_LastAttackTime = 0;
 	float attackTime = 3;
-	float attackSpeed = 7;
+	float attackSpeedUp = 7;
 };
 
 #endif

@@ -1,4 +1,6 @@
 #include "Item.hpp"
+#include <Util/Image.hpp>
+#include <random>
 
 Item::Item(glm::vec2 pos, ItemType type) :Actor(glm::vec2{ 50,50 }) {
 	m_collider->isTrigger = true;
@@ -7,48 +9,86 @@ Item::Item(glm::vec2 pos, ItemType type) :Actor(glm::vec2{ 50,50 }) {
 	SetItemType(type);
 }
 void Item::SetItemType(ItemType type) {
-	attackSpeed = 1;
-	movekSpeed = 1;
-	damageUp = 1;
-	healthUp = 1;
-	dashCooldown = 1;
-	healValue = 0;
-	if (type == ItemType::redPill) {
+	m_collider->tag = "Item";
+	m_collider->isTrigger = true;
+	ItemIndex = type;
+	if (type == ItemType::bloodCoin) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 2);
+		m_Transform.scale = { 2,2 };
+		price = 1;
+		int cmd = dis(gen);
+		if (cmd == 1) {
+			price = 5;
+			m_Transform.scale = { 3,3 };
+		}
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/bloodCoin.png"));
+	}
+	if (type == ItemType::bloodPill) {
 		healValue = 2;
+		price = 3;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/bloodPill.png"));
 	}
 	if (type == ItemType::SCP023) {
-		attackSpeed = 1.2f;
+		attackSpeedUp = 0.8f;
 		damageUp = 1.2f;
+		price = 10;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP023.png"));
 	}
 	if (type == ItemType::SCP063) {
 		damageUp = 1.3f;
+		price = 10;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP063.png"));
 	}
 	if (type == ItemType::SCP1016) {
-		attackSpeed = 1.2f;
+		attackSpeedUp = 0.8f;
 		damageUp = 1.2f;
+		price = 10;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP1016.png"));
 	}
 	if (type == ItemType::SCP1609) {
-		movekSpeed = 1.2f;
+		moveSpeedUp = 1.2f;
 		dashCooldown = 0.9f;
+		price = 15;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP1609.png"));
 	}
 	if (type == ItemType::SCP2295) {
 		healthUp = 1.2f;
 		healValue = 10;
+		price = 15;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP2295.png"));
 	}
 	if (type == ItemType::SCP297) {
 		damageUp = 1.4f;
+		price = 15;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP297.png"));
 	}
 	if (type == ItemType::SCP307) {
-		attackSpeed = 1.2f;
+		attackSpeedUp = 0.8f;
 		damageUp = 1.2f;
+		price = 15;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP307.png"));
 	}
 	if (type == ItemType::SCP553) {
-		damageUp = 1.2f;
-		movekSpeed = 1.3f;
+		damageUp = 1.1f;
+		moveSpeedUp = 1.3f;
+		price = 15;
+		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP553.png"));
 	}
 }
-void Item::pickUp() {
+std::vector<float> Item::pickUp() {
+	std::vector<float> packageValue = {
+		attackSpeedUp,
+		moveSpeedUp,
+		damageUp,
+		healthUp,
+		dashCooldown,
+		healValue,
+		price,
+	};
 	isPick = true;
+	return packageValue;
 }
 void Item::Update() {
 

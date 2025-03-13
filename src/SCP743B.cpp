@@ -9,7 +9,7 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,150 }) {
 	std::mt19937 gen(rd()); 
 	std::uniform_real_distribution<float> dis(0.0f, 2.0f); 
 
-	attackSpeed = 3;
+	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
 	m_BulletBox = std::make_shared<BulletBox>();
 	this->AddChild(m_BulletBox);
@@ -39,7 +39,7 @@ void SCP743B::Behavior() {
 }
 void SCP743B::Shoot() {
 	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastAttackTime >= attackSpeed) {
+	if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 		SetDrawable(m_AnimationAttack);
 		m_AnimationAttack->SetCurrentFrame(0);
 		m_AnimationAttack->Play();

@@ -5,6 +5,7 @@
 #include "Util/Logger.hpp"
 #include <iostream>
 #include <Table.hpp>
+#include "Item.hpp"
 
 Player::Player(): Actor(glm::vec2{ 45,100 }){
     m_collider->tag = "Player";
@@ -72,7 +73,7 @@ void Player::PlayerControl() {
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
         glm::vec2 bulletDirection = Util::Input::GetCursorPosition() - m_Transform.translation;
-        auto bullet = std::make_shared<Bullet>(m_Transform.translation,1, CollisionLayer::Player, 7.0f, 0, bulletDirection);
+        auto bullet = std::make_shared<Bullet>(m_Transform.translation, ammoDamage, CollisionLayer::Player, 7.0f, 0, bulletDirection);
         bullet->m_Transform.translation = m_Hand->m_Transform.translation;
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;
@@ -108,13 +109,18 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
             Damage(1.0f);
         }
     }
-    if (other->tag == "Coin") {
-        std::shared_ptr<BloodCoin> coin = std::dynamic_pointer_cast<BloodCoin>(other->parentActor);
-        if (coin && !coin->isPick) {
-            std::cout << "Pick up Coin\n";
-            coinAmount += coin->pickUpCoin();
-            coin->m_collider->tag = "PickedCoin";
-            coin = nullptr;
+    if (other->tag == "Item") {
+        std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(other->parentActor);
+        if (item && !item->isPick) {
+            auto itemData= item->pickUp();
+            m_ShotInterval *= itemData[0];
+            speed*= itemData[1];
+            ammoDamage*= itemData[2];
+            health*= itemData[3];
+            dashCooldown*= itemData[4];
+            health+= itemData[5];
+            if(item->GetItemType()==Item::bloodCoin) coinAmount+= itemData[6];
+            item = nullptr;
             other = nullptr;
         }
     }

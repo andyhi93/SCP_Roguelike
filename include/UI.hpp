@@ -7,7 +7,8 @@
 #include "Util/Image.hpp"
 #include "Enemy.hpp"
 #include "Util/Text.hpp"
-#include "BloodCoin.hpp"
+
+class Item;
 class Player;
 class UIText;
 class UI : public Object {
@@ -19,7 +20,7 @@ public:
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
         std::vector<std::shared_ptr<Object>> roomobjs = {};
-        std::vector<std::shared_ptr<BloodCoin>> roomCoins = {};
+        std::vector<std::shared_ptr<Item>> roomItems = {};
     };
     void Update();
     void Init(std::vector<Room> _RoomData);

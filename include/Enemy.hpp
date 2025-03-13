@@ -5,8 +5,8 @@
 
 #include "Util/Animation.hpp"
 #include "Core/Actor.hpp"
-#include "BloodCoin.hpp"
 class Player;
+class Item;
 class Enemy : public Actor {
 public:
     virtual void Start();
@@ -19,7 +19,7 @@ public:
     float GetHealth() { return health; }
     bool isDropCoin = false;
     bool isGiveCoin = false;
-    std::shared_ptr<BloodCoin> GetCoin();
+    std::shared_ptr<Item> GetCoin();
 protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationAttack;
@@ -38,7 +38,7 @@ protected:
     bool isFaceRight = true;
     bool isMoving = false;
     float speed = 5;
-    float attackSpeed = 5;
+    float attackSpeedUp = 5;
     float m_LastAttackTime = 0.0f;   
 
     float health = 10;

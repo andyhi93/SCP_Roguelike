@@ -11,7 +11,7 @@ SCP743A::SCP743A() : Enemy(glm::vec2{ 80,30 }) {
 
 	//m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));
 	m_LastAttackTime = dis(gen);
-	attackSpeed = 1;
+	attackSpeedUp = 1;
 
 	health = 1;
 	speed = 5.0f;
@@ -30,7 +30,7 @@ SCP743A::SCP743A() : Enemy(glm::vec2{ 80,30 }) {
 void SCP743A::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeed) {
+		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}

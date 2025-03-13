@@ -9,7 +9,7 @@ SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 
-	attackSpeed = 3;
+	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
 
 	health = 1;
@@ -31,7 +31,7 @@ void SCP553::SetPlayer(std::shared_ptr<Player> _player) {
 void SCP553::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeed) {
+		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}

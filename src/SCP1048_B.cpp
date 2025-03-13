@@ -13,7 +13,7 @@ SCP1048_B::SCP1048_B() : Enemy(glm::vec2{ 47,76 }) {
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 
-	attackSpeed = 3;
+	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
 	m_BulletBox = std::make_shared<BulletBox>();
 	this->AddChild(m_BulletBox);
@@ -37,7 +37,7 @@ void SCP1048_B::SetPlayer(std::shared_ptr<Player> _player) {
 void SCP1048_B::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeed) {
+		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}
@@ -58,7 +58,7 @@ void SCP1048_B::Behavior() {
 }
 void SCP1048_B::Shoot() {
 	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastAttackTime >= attackSpeed) {
+	if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 		SetDrawable(m_AnimationAttack);
 		m_AnimationAttack->SetCurrentFrame(0);
 		m_AnimationAttack->Play();

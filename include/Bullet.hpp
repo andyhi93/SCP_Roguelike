@@ -10,7 +10,7 @@ class Player;
 class LevelManager;
 class Bullet : public Actor ,public Trigger{
 public:
-    Bullet(glm::vec2 pos,int _damage,  CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
+    Bullet(glm::vec2 pos,float _damage,  CollisionLayer _layer, float _speed,int _imageID, glm::vec2 _direction);
 
     void Start();
     void Update() override;

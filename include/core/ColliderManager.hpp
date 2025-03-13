@@ -20,6 +20,7 @@ public:
     std::vector<std::shared_ptr<BoxCollider>> GetActorColliders();
 private:
     std::vector<std::shared_ptr<BoxCollider>> colliders;
+    bool isReset = true;
 
     ColliderManager() { } // 私有建構子，防止外部創建
     ~ColliderManager() {}

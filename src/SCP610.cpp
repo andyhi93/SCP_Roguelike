@@ -41,7 +41,7 @@ void SCP610::Behavior() {
 }
 void SCP610::Shoot() {
 	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastAttackTime >= attackSpeed) {
+	if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 		SetDrawable(m_AnimationAttack);
 		m_AnimationAttack->SetCurrentFrame(0);
 		m_AnimationAttack->Play();

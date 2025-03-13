@@ -5,7 +5,7 @@
 #include "Player.hpp"
 #include "Table.hpp"
 #include <Trap.hpp>
-#include "BloodCoin.hpp"
+#include "Item.hpp"
 
 LevelManager::LevelManager() {
     m_MapUI= std::make_shared<UI>();
@@ -54,23 +54,23 @@ void LevelManager::Update(){
             enemy->isGiveCoin = true;
             coin->Start();
             AddChild(coin);
-            map[currentRoom.x][currentRoom.y].roomCoins.push_back(coin);
+            map[currentRoom.x][currentRoom.y].roomItems.push_back(coin);
             newCoins.push_back(coin);
         }
     }
     for (auto& coin : newCoins) {
         currentObjects.push_back(coin);
     }
-    map[currentRoom.x][currentRoom.y].roomCoins.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomCoins.begin(), map[currentRoom.x][currentRoom.y].roomCoins.end(),
-        [this](const std::shared_ptr<BloodCoin>& coin) {
-            if (coin->isPick) {
-                this->RemoveChild(coin);
-                ColliderManager::GetInstance().UnregisterCollider(coin->m_collider);
+    map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
+        [this](const std::shared_ptr<Item>& item) {
+            if (item->isPick) {
+                this->RemoveChild(item);
+                ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
                 return true;
             }
             return false;
         }),
-        map[currentRoom.x][currentRoom.y].roomCoins.end());
+        map[currentRoom.x][currentRoom.y].roomItems.end());
 }
 void LevelManager::FixedUpdate() {
     for (auto& obj : currentObjects) {
@@ -153,7 +153,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         currentObjects.push_back(obj);
         this->AddChild(obj);
     }
-    for (auto& coin : map[currentRoom.x][currentRoom.y].roomCoins) {
+    for (auto& coin : map[currentRoom.x][currentRoom.y].roomItems) {
         currentObjects.push_back(coin);
         this->AddChild(coin);
     }

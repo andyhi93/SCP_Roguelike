@@ -5,7 +5,7 @@
 
 Trap::Trap(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
 
-	attackSpeed = 3;
+	attackSpeedUp = 3;
     trapImages = { RESOURCE_DIR "/Trap1.png" ,RESOURCE_DIR "/Trap2.png" };
     SetDrawable(std::make_shared<Util::Image>(trapImages[0]));
     m_Transform.translation = pos;
@@ -18,7 +18,7 @@ Trap::Trap(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
 void Trap::Update(){
 	if (isOpen) {
 		float currentTime = SDL_GetTicks() / 1000.0f;
-		if (currentTime - m_LastAttackTime >= attackSpeed) {
+		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			SetActive();
 			m_LastAttackTime = currentTime;
 		}

@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include "Player.hpp"
 
-Bullet::Bullet(glm::vec2 pos, int _damage, CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction) :Actor(glm::vec2(2, 2)){
+Bullet::Bullet(glm::vec2 pos, float _damage, CollisionLayer _layer, float _speed, int _imageID, glm::vec2 _direction) :Actor(glm::vec2(2, 2)){
 	layer = _layer;
 	m_collider->isTrigger = true;
 	m_collider->tag = "Bullet";
@@ -44,6 +44,7 @@ void Bullet::Move() {
 void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	if (other->tag == "Wall" || other->tag == "Door0" || other->tag == "Door1" || other->tag == "Door2" || other->tag == "Door3") {
 		islive = false;
+		std::cout << "bullet hit sth\n";
 		return;
 	}
 	std::shared_ptr<Object> collidedActor = other->parentActor;

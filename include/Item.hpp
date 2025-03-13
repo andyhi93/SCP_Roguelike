@@ -4,11 +4,11 @@
 #include "pch.hpp"
 #include "Core/Actor.hpp"
 
-class Item : public Actor {
+class Item : public Actor,public Trigger {
 public:
     enum ItemType {
-        redPill,
-        redCoin,
+        bloodPill,
+        bloodCoin,
         SCP1609,
         SCP610,
         SCP023,
@@ -23,16 +23,18 @@ public:
     };
     Item(glm::vec2 pos, ItemType type);
     void SetItemType(ItemType type);
+    ItemType GetItemType() { return ItemIndex; }
 
     void Update() override;
-    void pickUp();
+    std::vector<float> pickUp();
     void Start();
-    float attackSpeed = 1;
-    float movekSpeed = 1;
+    float attackSpeedUp = 1;
+    float moveSpeedUp = 1;
     float damageUp = 1;
     float healthUp = 1;
     float dashCooldown = 1;
-    int healValue = 0;
+    float healValue = 0;
+    float price = 10;
     bool canPick;
     bool isPick = false;
 private:

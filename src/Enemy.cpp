@@ -1,6 +1,7 @@
 #include "Enemy.hpp"
 #include "Player.hpp"
 #include "random"
+#include "Item.hpp"
 
 Enemy::Enemy(glm::vec2 size) :Actor(size) {
     m_collider->tag = "Enemy";
@@ -20,8 +21,9 @@ void Enemy::Start() {
 void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
     m_Player = _player; 
 }
-std::shared_ptr<BloodCoin> Enemy::GetCoin() {
-    auto coin = std::make_shared<BloodCoin>(m_Transform.translation);
+std::shared_ptr<Item> Enemy::GetCoin() {
+    auto coin = std::make_shared<Item>(m_Transform.translation,Item::bloodCoin);
+    coin->SetItemType(Item::bloodCoin);
     coin->m_Transform.translation = m_Transform.translation - glm::vec2{0, m_collider->size.y/4};
     coin->SetZIndex(GetZIndex() + 0.01f);
     return coin;
