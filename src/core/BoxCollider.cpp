@@ -7,20 +7,11 @@ void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//»Ý­n¥
     triggerCallback = callback;
 }
 bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
+    if (!other) return false;
     return (position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
         position.x + size.x / 2 > other->position.x - other->size.x / 2 &&
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
         position.y + size.y / 2 > other->position.y - other->size.y / 2);
-}
-bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other, int cmdxy) {
-    if (cmdxy) {
-        return position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
-            position.y + size.y / 2 > other->position.y - other->size.y / 2;
-    }
-    else {
-        return position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
-            position.x + size.x / 2 > other->position.x - other->size.x / 2;
-    }
 }
 bool BoxCollider::CheckCollisionEdge(std::shared_ptr<BoxCollider> other) {
     return (position.x - size.x / 2 <= other->position.x + other->size.x / 2 &&
@@ -34,7 +25,7 @@ void BoxCollider::SetOffset(glm::vec2 offset) {
 }
 // ¥Î©óÄ²µo¶i¤J¡B°±¯d©M°h¥X¨Æ¥ó
 void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
-    if (triggerCallback && (this->isTrigger ^ other->isTrigger)) {
+    if (triggerCallback && (this->isTrigger ^ other->isTrigger) && other) {
         bool isColliding = CheckCollision(other);
         bool wasColliding = currentCollisions.count(other) > 0;
         if (isColliding) {

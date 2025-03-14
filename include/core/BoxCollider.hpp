@@ -25,7 +25,7 @@ public:
     glm::vec2 position;
     glm::vec2 size;
     glm::vec2 offset = { 0,0 };
-    std::string tag;
+    std::string tag="";
     std::shared_ptr<Trigger> triggerCallback = nullptr; // 觸發回調
     bool isActive = true;  // 是否啟用該 Collider
     std::shared_ptr<Object> parentActor;

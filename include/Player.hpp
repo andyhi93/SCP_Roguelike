@@ -58,7 +58,7 @@ private:
     //bool isMoving = false;
     float speed = 5;
     float m_LastShotTime=0;
-    float m_ShotInterval=0.5f;
+    float m_ShotInterval=1;
     float ammoDamage = 1;
     float maxHealth = 100;
     float currentHealth = maxHealth;

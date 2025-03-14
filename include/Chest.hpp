@@ -8,8 +8,10 @@ class Chest : public Solid {
 public:
     Chest(glm::vec2 pos, glm::vec2 size);
 
+    void Start();
     void Update();
     void Open();
+    void SetActive(bool IsActive);
 
     bool isOpen = false;
 private:

@@ -139,7 +139,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
             actor->m_collider->isActive = false;
         }
         else if(chest){
-            chest->m_collider->isActive = false;
+            chest->SetActive(false);
         }
         this->RemoveChild(obj);
     }
@@ -155,19 +155,19 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
             enemy->SetPlayer(m_Player);
             enemy->m_collider->isActive = true;
         }
-        else if (table) {
+        else if (table && !table->isBroken) {
             table->m_collider->isActive = true;
         }
         else if (trap) {
             trap->Start();
-            trap->m_collider->isActive = true;
             trap->isOpen = true;
         }
         else if (actor) {
             actor->m_collider->isActive = true;
         }
         else if (chest) {
-            chest->m_collider->isActive = true;
+            std::cout << "chest set\n";
+            chest->SetActive(true);
         }
         currentObjects.push_back(obj);
         this->AddChild(obj);
@@ -222,10 +222,26 @@ void LevelManager::GenerateLevel() {
                     AddRoom(nx, ny);
                     roomQueue.push({ nx, ny });
 
-                    if (dir.x == 1) { map[current.x][current.y].doors[0] = true; map[nx][ny].doors[2] = true; }
-                    else if (dir.x == -1) { map[current.x][current.y].doors[2] = true; map[nx][ny].doors[0] = true; }
-                    else if (dir.y == 1) { map[current.x][current.y].doors[3] = true; map[nx][ny].doors[1] = true; }
-                    else if (dir.y == -1) { map[current.x][current.y].doors[1] = true; map[nx][ny].doors[3] = true; }
+                    if (dir.x == 1) { 
+                        map[current.x][current.y].doors[0] = true; 
+                        map[nx][ny].doors[2] = true; 
+                        map[nx][ny].entrance = 2;
+                    }
+                    else if (dir.x == -1) { 
+                        map[current.x][current.y].doors[2] = true; 
+                        map[nx][ny].doors[0] = true;
+                        map[nx][ny].entrance = 0;
+                    }
+                    else if (dir.y == 1) { 
+                        map[current.x][current.y].doors[3] = true;
+                        map[nx][ny].doors[1] = true;
+                        map[nx][ny].entrance = 1;
+                    }
+                    else if (dir.y == -1) { 
+                        map[current.x][current.y].doors[1] = true; 
+                        map[nx][ny].doors[3] = true;
+                        map[nx][ny].entrance = 3;
+                    }
                 }
             }
         }
@@ -323,7 +339,7 @@ void LevelManager::GenerateLevel() {
     }
     for (int x = 0; x < MAP_SIZE_WIDTH; x++) {
         for (int y = 0; y < MAP_SIZE_HEIGHT; y++) {
-            std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType);
+            std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType, map[x][y].entrance);
             if (!temp.empty()) {
                 for (auto& obj : temp) {
                     std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);

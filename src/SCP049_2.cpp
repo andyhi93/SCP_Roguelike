@@ -14,7 +14,7 @@ SCP049_2::SCP049_2() : Enemy(glm::vec2{ 45,140 }) {
 	m_LastAttackTime = dis(gen);
 	attackSpeedUp = 1;
 
-	health = 1;
+	health = 8;
 	speed = 2.0f;
 	//m_Transform.translation = { 50,0 };
 	m_AnimationWalk = std::make_shared<Util::Animation>(

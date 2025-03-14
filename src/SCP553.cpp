@@ -12,7 +12,7 @@ SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
 	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
 
-	health = 1;
+	health = 2;
 	speed = 3.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP553/SCP553_fly1.png", RESOURCE_DIR "/SCP553/SCP553_fly2.png", }, true, 50, true, 50);

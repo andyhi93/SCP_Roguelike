@@ -25,7 +25,9 @@ void ColliderManager::UpdateCollisions() {
                 break;
             }
             auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor);
-            if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" || colliders[j]->tag == "Door" || colliders[j]->tag == "Table") && colliders[j]->isActive) {  }
+            if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" 
+                || colliders[j]->tag == "Door1" || colliders[j]->tag == "Door2" || colliders[j]->tag == "Door3" || colliders[j]->tag == "Door4"
+                || colliders[j]->tag == "Table") && colliders[j]->isActive) {  }
             else if (!colliders[i]->isActive || !colliders[j]->isActive) continue; 
 
             colliders[i]->HandleCollision(colliders[j]);
@@ -67,7 +69,6 @@ void ColliderManager::Update() {
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
         if (solidCol->tag == "Solid") solid->Update();
-        else if (solidCol->tag == "Solid" && !solid)  std::cout << "nullptr\n";
-        else if (solidCol->tag == "Chest") solid->Update();
+        else if (solidCol->tag == "Chest" && !solid)  std::cout << "nullptr\n";
     }
 }

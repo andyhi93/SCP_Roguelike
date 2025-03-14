@@ -6,8 +6,10 @@
 #include <iostream>
 #include <Table.hpp>
 #include "Item.hpp"
+#include <Chest.hpp>
 
-Player::Player(): Actor(glm::vec2{ 45,100 }){
+Player::Player(): Actor(glm::vec2{ 45,50 }){
+    m_collider->offset = { 0,-25 };
     m_collider->tag = "Player";
     m_BulletBox = std::make_shared<BulletBox>();
     layer = CollisionLayer::Player;
@@ -67,7 +69,8 @@ void Player::PlayerControl() {
     Move(velocity);
     //get mousePos
     if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_RB)) {
-        LOG_INFO("Position:{} {}", Util::Input::GetCursorPosition().x, Util::Input::GetCursorPosition().y);
+        LOG_INFO("CursorPosition:{} {}", Util::Input::GetCursorPosition().x, Util::Input::GetCursorPosition().y);
+        LOG_INFO("PlayerPosition:{} {}", m_Transform.translation.x, m_Transform.translation.y);
     }
 
     float currentTime = SDL_GetTicks() / 1000.0f;
@@ -104,27 +107,36 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor);
         if(!table->isBroken) table->BreakTable();
     }
-    if (!isDashing && currentState!=Hurt) {
+}
+void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
+    if (!other) return;
+
+
+    if (!isDashing && currentState != Hurt) {
         if (other->tag == "Trap") {
             Damage(1.0f);
         }
     }
-}
-void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Item") {
         std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(other->parentActor);
-        if (item!=nullptr&& Util::Input::IsKeyDown(Util::Keycode::E) && !item->isUnlocked && coinAmount>=item->price) {
+        if (!item) return;
+        if (Util::Input::IsKeyDown(Util::Keycode::E) && !item->isUnlocked && coinAmount>=item->price) {
             std::cout << "buy\n";
             coinAmount -= item->price;
             item->isUnlocked = true;
         }
-        if (item && !item->isPick && item->isUnlocked) {
+        if (!item->isPick && item->isUnlocked) {
             auto itemData = item->pickUp();
             std::cout << "itemIspick: " << item->isPick<<"\n";
             m_ShotInterval *= itemData[0];
             speed *= itemData[1];
             ammoDamage *= itemData[2];
-            maxHealth *= itemData[3];
+            if (itemData[2] != 1) {
+                float tempHealth = maxHealth * itemData[3];
+                tempHealth = tempHealth - maxHealth;
+                currentHealth += tempHealth;
+                maxHealth *= itemData[3];
+            }
             dashCooldown *= itemData[4];
             currentHealth = (currentHealth+ itemData[5])>maxHealth? maxHealth:currentHealth+ itemData[5];
             if (item->GetItemType() == Item::bloodCoin) coinAmount += itemData[6];
@@ -132,11 +144,18 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
             other = nullptr;
         }
     }
-
+    else if (other->tag == "ChestTrigger") {
+        std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(other->parentActor);
+        if (!chest) return;
+        if (Util::Input::IsKeyDown(Util::Keycode::E) && !chest->isOpen) {
+            std::cout << "chest open\n";
+            chest->Open();
+        }
+    }
 }
 void Player::Damage(float damage) {
     if (currentState != Hurt) {
-        SetHealth(GetMaxHealth() - damage);
+        SetHealth(GetCurrentHealth() - damage);
         m_collider->isActive = false;
         currentState = Hurt;
     }

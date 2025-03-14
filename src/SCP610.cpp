@@ -13,7 +13,7 @@ SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
 	m_BulletBox = std::make_shared<BulletBox>();
 	this->AddChild(m_BulletBox);
 
-	health = 1;
+	health = 5;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP610/scp610_walk1.png", RESOURCE_DIR "/SCP610/scp610_walk2.png",

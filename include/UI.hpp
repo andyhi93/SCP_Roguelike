@@ -19,6 +19,7 @@ public:
         bool exists = false;
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
+        int entrance;
         std::vector<std::shared_ptr<Object>> roomobjs = {};
         std::vector<std::shared_ptr<Item>> roomItems = {};
     };
