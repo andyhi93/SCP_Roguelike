@@ -14,6 +14,8 @@
 #include "SCP553.hpp"
 #include "Table.hpp"
 #include "Trap.hpp"
+#include "Item.hpp"
+#include "Chest.hpp"
 #include <random>
 
 Tilemap::Tilemap() {
@@ -121,6 +123,34 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType) {
                 Obj.push_back(trap);
             }
         }
+    }
+    if (_RoomType == shop) {
+        std::unordered_set<int> generatedItems; 
+
+        for (int i = 0; i < 3; i++) {
+            std::uniform_int_distribution<int> dis(Item::bloodPill, Item::lastItemIndex);
+            std::vector<glm::vec2> merchPos = { {450,0},{0,0},{-450,0} };
+            Item::ItemType itemType;
+            do {
+                itemType = static_cast<Item::ItemType>(dis(gen));
+            } while (generatedItems.find(static_cast<int>(itemType)) != generatedItems.end());  
+
+            generatedItems.insert(static_cast<int>(itemType));
+
+            auto merchItem = std::make_shared<Item>(merchPos[i], itemType);
+            merchItem->SetZIndex(this->GetZIndex() + 1);
+            merchItem->Start();
+            merchItem->m_collider->isActive = false;
+            merchItem->isUnlocked = false;
+            merchItem->SetSell();
+            Obj.push_back(merchItem);
+        }
+    }
+    if (_RoomType == treasureRoom) {
+        auto chest = std::make_shared<Chest>(glm::vec2{0,0},glm::vec2{150,100});
+        chest->Start();
+        chest->m_collider->isActive = false;
+        Obj.push_back(chest);
     }
     for (auto& enemy : EnemyObjs) {
         Obj.push_back(enemy);

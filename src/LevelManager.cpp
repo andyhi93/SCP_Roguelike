@@ -6,6 +6,7 @@
 #include "Table.hpp"
 #include <Trap.hpp>
 #include "Item.hpp"
+#include <Chest.hpp>
 
 LevelManager::LevelManager() {
     m_MapUI= std::make_shared<UI>();
@@ -65,6 +66,7 @@ void LevelManager::Update(){
         [this](const std::shared_ptr<Item>& item) {
             if (item->isPick) {
                 this->RemoveChild(item);
+                std::cout << "remove item\n";
                 ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
                 return true;
             }
@@ -121,6 +123,8 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
         std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
+        std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(obj);
+        std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
             enemy->m_collider->isActive = false;
         }
@@ -131,6 +135,12 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
             trap->m_collider->isActive = false;
             trap->isOpen = false;
         }
+        else if(actor){
+            actor->m_collider->isActive = false;
+        }
+        else if(chest){
+            chest->m_collider->isActive = false;
+        }
         this->RemoveChild(obj);
     }
     currentObjects.clear();
@@ -138,6 +148,8 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
         std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
+        std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(obj);
+        std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
             enemy->Start();
             enemy->SetPlayer(m_Player);
@@ -151,10 +163,17 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
             trap->m_collider->isActive = true;
             trap->isOpen = true;
         }
+        else if (actor) {
+            actor->m_collider->isActive = true;
+        }
+        else if (chest) {
+            chest->m_collider->isActive = true;
+        }
         currentObjects.push_back(obj);
         this->AddChild(obj);
     }
     for (auto& item : map[currentRoom.x][currentRoom.y].roomItems) {
+        item->m_collider->isActive = true;
         currentObjects.push_back(item);
         this->AddChild(item);
     }
@@ -308,10 +327,17 @@ void LevelManager::GenerateLevel() {
             if (!temp.empty()) {
                 for (auto& obj : temp) {
                     std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+                    std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(obj);
                     if (enemy) {
                         enemy->SetPlayer(m_Player);
+                        map[x][y].roomobjs.push_back(obj);
                     }
-                    map[x][y].roomobjs.push_back(obj);
+                    else if (item) {
+                        map[x][y].roomItems.push_back(item);
+                    }
+                    else {
+                        map[x][y].roomobjs.push_back(obj);
+                    }
                 }
             }
         }

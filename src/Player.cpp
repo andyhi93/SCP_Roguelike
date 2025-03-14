@@ -109,31 +109,40 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
             Damage(1.0f);
         }
     }
+}
+void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Item") {
         std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(other->parentActor);
-        if (item && !item->isPick) {
-            auto itemData= item->pickUp();
+        if (item!=nullptr&& Util::Input::IsKeyDown(Util::Keycode::E) && !item->isUnlocked && coinAmount>=item->price) {
+            std::cout << "buy\n";
+            coinAmount -= item->price;
+            item->isUnlocked = true;
+        }
+        if (item && !item->isPick && item->isUnlocked) {
+            auto itemData = item->pickUp();
+            std::cout << "itemIspick: " << item->isPick<<"\n";
             m_ShotInterval *= itemData[0];
-            speed*= itemData[1];
-            ammoDamage*= itemData[2];
-            health*= itemData[3];
-            dashCooldown*= itemData[4];
-            health+= itemData[5];
-            if(item->GetItemType()==Item::bloodCoin) coinAmount+= itemData[6];
+            speed *= itemData[1];
+            ammoDamage *= itemData[2];
+            maxHealth *= itemData[3];
+            dashCooldown *= itemData[4];
+            currentHealth = (currentHealth+ itemData[5])>maxHealth? maxHealth:currentHealth+ itemData[5];
+            if (item->GetItemType() == Item::bloodCoin) coinAmount += itemData[6];
             item = nullptr;
             other = nullptr;
         }
     }
+
 }
 void Player::Damage(float damage) {
     if (currentState != Hurt) {
-        SetHealth(GetHealth() - damage);
+        SetHealth(GetMaxHealth() - damage);
         m_collider->isActive = false;
         currentState = Hurt;
     }
 }
-void Player::SetHealth(float amount) { health = amount; }
-float Player::GetHealth() { return health; }
+void Player::SetHealth(float amount) { currentHealth = amount; }
+float Player::GetMaxHealth() { return maxHealth; }
 void Player::Move(glm::vec2& velocity) {
 
     float currentTime = SDL_GetTicks() / 1000.0f;
@@ -215,7 +224,7 @@ void Player::FixedUpdate() {
 void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
-    if (health <= 0 && currentState != Die) {
+    if (currentHealth <= 0 && currentState != Die) {
         currentState = Die;
         this->RemoveChild(m_Hand);
     }

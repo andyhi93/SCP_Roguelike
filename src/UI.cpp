@@ -54,7 +54,7 @@ void UI::setHealthUI() {
     m_healthText->Start();
     m_healthText->m_Transform.translation = { -690,408 };
     m_healthText->m_Transform.scale = { 0.7,0.7 };
-    m_healthText->m_Text->SetText(fmt::format("{}/{}", maxHealth, maxHealth));
+    m_healthText->m_Text->SetText(fmt::format("{}/{}", currentHealth, maxHealth));
     this->AddChild(m_healthText);
 
     m_coinText = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
@@ -145,7 +145,7 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
 }
 void UI::GetPlayer(std::shared_ptr<Player> _player) { 
     MapPlayer = _player; 
-    maxHealth= MapPlayer->GetHealth();
+    maxHealth= MapPlayer->GetMaxHealth();
     currentHealth = maxHealth;
 }
 void UI::Update() {
@@ -153,9 +153,10 @@ void UI::Update() {
     PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer->m_Transform.translation.x/zoomDiff[0], MapPlayer->m_Transform.translation.y/zoomDiff[1] };
 
     //HealthUI
-    currentHealth = MapPlayer->GetHealth();
+    maxHealth = MapPlayer->GetMaxHealth();
+    currentHealth = MapPlayer->GetCurrentHealth();
     HealthBarImage->m_Transform.scale.x = (currentHealth<0)? 0: currentHealth / maxHealth*3;
-    m_healthText->m_Text->SetText(fmt::format("{}/{}", currentHealth, maxHealth));
+    m_healthText->m_Text->SetText(fmt::format("{}/{}", (int)currentHealth, (int)maxHealth));
     //CoinText
     m_coinText->m_Text->SetText(std::to_string(MapPlayer->GetCoin()));
 }

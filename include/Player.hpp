@@ -24,13 +24,15 @@ public:
     void Move(glm::vec2& velocity);
 
     void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
+    void OnTriggerStay(std::shared_ptr<BoxCollider> other) override;
 
     void Start();
     void Update() override;
     void FixedUpdate() override;
     void Damage(float damage);
     void SetHealth(float amount);
-    float GetHealth();
+    float GetMaxHealth();
+    float GetCurrentHealth() { return currentHealth; }
     bool GetIsInvincible() { return isInvincible; }
 
     void SetCoin(int amount) { coinAmount = amount; }
@@ -58,8 +60,9 @@ private:
     float m_LastShotTime=0;
     float m_ShotInterval=0.5f;
     float ammoDamage = 1;
-    float health = 100;
-    int coinAmount = 0;
+    float maxHealth = 100;
+    float currentHealth = maxHealth;
+    int coinAmount = 100;
 
     float dashTime = 0.2f;  
     float dashCooldown = 3.0f;  

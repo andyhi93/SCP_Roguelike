@@ -66,7 +66,8 @@ void ColliderManager::Update() {
     auto SolidCols=GetSolidColliders();
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
-        if (solidCol->tag=="Solid") solid->Update();
-        else if (solidCol->tag == "Solid"&&!solid)  std::cout << "nullptr\n";
+        if (solidCol->tag == "Solid") solid->Update();
+        else if (solidCol->tag == "Solid" && !solid)  std::cout << "nullptr\n";
+        else if (solidCol->tag == "Chest") solid->Update();
     }
 }

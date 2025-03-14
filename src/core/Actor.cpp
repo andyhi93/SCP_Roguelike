@@ -13,8 +13,7 @@ void Actor::SetDead() {
 void Actor::MoveX(float amount) {
     auto OtherSolidCol = CheckCollisionWithSolids();
     auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor) : nullptr;
-    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || OtherSolidCol->tag == "Door")))//remember x
-    {
+    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || OtherSolidCol->tag == "Door"))){
         int sign = (m_Transform.translation.x - OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
         while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
             m_Transform.translation.x += sign;

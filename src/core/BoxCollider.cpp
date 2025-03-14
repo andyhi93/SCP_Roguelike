@@ -44,6 +44,7 @@ void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
                 currentCollisions.insert(other);
             }
             else {
+                //std::cout <<this->tag <<" stay trigger with: " << other->tag << std::endl;
                 triggerCallback->OnTriggerStay(other);
             }
         }

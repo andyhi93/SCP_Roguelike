@@ -16,7 +16,7 @@ public:
     glm::vec2 normalize(glm::vec2 values);
 
     void SetHealth(float _health) { health = _health; }
-    float GetHealth() { return health; }
+    float GetMaxHealth() { return health; }
     bool isDropCoin = false;
     bool isGiveCoin = false;
     std::shared_ptr<Item> GetCoin();
