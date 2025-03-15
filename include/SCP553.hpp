@@ -7,6 +7,7 @@ public:
     SCP553();
     void Update() override;
     void OnCollisionEnter(std::shared_ptr<BoxCollider> other);
+    void Start() override;
 
     void Behavior();
     void SetPlayer(std::shared_ptr<Player> _player) override;

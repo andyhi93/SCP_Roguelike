@@ -31,12 +31,12 @@ public:
     };
     RoomType seRoom[8] = { StartRoom ,BossRoom,Room610,Room049_2,Room553_610 ,Room1048_743,Room1048_610,Room553_610_743ant };
     Building BuildingLast = TrapCol4;
-    std::vector<std::shared_ptr<Object>> InitRoom(RoomType _RoomType,int entrancePos);
+    std::vector<std::shared_ptr<Object>> InitRoom(RoomType _RoomType,int entrancePos,int maxEnemyAmount);
     std::vector<std::shared_ptr<Door>> doors;
+    bool hasDoor[4] = { false, false, false, false };//ESWN
 private:
     std::vector<std::string> roomImages;
     bool IsInit = false;
-    bool hasDoor[4] = { false, false, false, false };//ESWN
 };
 
 #endif

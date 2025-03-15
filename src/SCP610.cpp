@@ -2,7 +2,9 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
+SCP610::SCP610() : Enemy(glm::vec2{ 30,100 }){
+
+	m_collider->offset = { 0,-25 };
 	isDropCoin = true;
 
 	std::random_device rd;  // 隨機數種子
@@ -13,7 +15,7 @@ SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
 	m_BulletBox = std::make_shared<BulletBox>();
 	this->AddChild(m_BulletBox);
 
-	health = 5;
+	health = 1;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP610/scp610_walk1.png", RESOURCE_DIR "/SCP610/scp610_walk2.png",
@@ -32,6 +34,11 @@ SCP610::SCP610() : Enemy(glm::vec2{ 45,150 }){
 void SCP610::SetPlayer(std::shared_ptr<Player> _player) {
 	m_Player = _player;
 	this->AddChild(m_BulletBox);
+}
+void SCP610::SetActive(bool isActive) {
+	m_collider->isActive = isActive;
+	if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
+	if (!isActive) m_BulletBox->ChangeRoom();
 }
 void SCP610::Behavior() {
 	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
@@ -67,6 +74,7 @@ void SCP610::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		SetActive(false);
 	}
 	if (!isDead) {
 		FlipControl();

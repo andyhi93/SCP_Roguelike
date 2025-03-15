@@ -30,44 +30,53 @@ Tilemap::Tilemap() {
     m_Transform.translation = { 0, 0 };
     m_Transform.scale = { 7, 7 };
 }
-std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int entrancePos) {
+std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int entrancePos, int maxEnemyAmount) {
     std::vector<std::shared_ptr<Enemy>> EnemyObjs;
     std::vector<glm::vec2> EnemyObjPos;
     std::random_device rd;
     std::mt19937 gen(rd());
+    int enemyCount = 0;
     if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4 && enemyCount<= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP610>());
+            enemyCount++;
         }
     }
     if (_RoomType == Room049_2 || _RoomType == Room610_049_2 || _RoomType== Room1048_049_2) {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4 && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP049_2>());
+            enemyCount++;
         }
     }
     if (_RoomType == Room743ant || _RoomType== Room1048_743) {
         std::uniform_int_distribution<int> dis(0, 4);
         int rdnum = dis(gen);
-        for (int i = 0; i < rdnum; i++) {
+        for (int i = 0; i < rdnum && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP743A>());
+            enemyCount++;
         }
-        for (int i = 0; i < 4- rdnum; i++) {
+        for (int i = 0; i < 4- rdnum && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP743B>());
+            enemyCount++;
         }
     }
     if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610) {
         std::uniform_int_distribution<int> dis(0, 2);
         int rdnum = dis(gen);
-        for (int i = 0; i < rdnum; i++) {
+        for (int i = 0; i < rdnum && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP1048_B>());
+            enemyCount++;
         }
-        for (int i = 0; i < 2 - rdnum; i++) {
+        for (int i = 0; i < 2 - rdnum && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP1048_C>());
+            enemyCount++;
         }
     }
     if (_RoomType == Room553 || _RoomType == Room553_610) {
-        for (int i = 0; i < 6; i++) {
+        maxEnemyAmount += 2;
+        for (int i = 0; i < 6 && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP553>());
+            enemyCount++;
         }
     }
     int i = 0;
@@ -75,7 +84,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
     if (entrancePos == 1 || entrancePos == 3) EnemyObjPos = { {-690, 168},{ -500,0}, { -690,-168 }, { -500, -238 },{610,166},{440,0},{610,-144},{440,-280} };
     std::shuffle(EnemyObjPos.begin(), EnemyObjPos.end(), rd);
     for (auto& enemy : EnemyObjs) {
-        enemy->m_collider->isActive = false;
+        enemy->SetActive(false);
         enemy->SetZIndex(this->GetZIndex() + 0.5f);
         enemy->m_Transform.translation = EnemyObjPos[i];
         i = i > 6 ? 1 : i + 1;
@@ -116,7 +125,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             { -450,198 } ,{ -450,132 } ,{ -450,66},{ -450,0}  ,{ -450,-66} ,{ -450,-132 } ,{ -450,-198 },{ -450,-264 } ,{ -450,-330 } ,
             { -150,198 } ,{ -150,132 } ,{ -150,66},{ -150,0}  ,{ -150,-66} ,{ -150,-132 } ,{ -150,-198 },{ -150,-264 },{ -150,-330 } }; }
             for (int i = 0; i < BuildingObjPos.size(); i++) {
-                std::shared_ptr<Trap> trap = std::make_shared<Trap>(BuildingObjPos[i], glm::vec2{ 125,10 });
+                std::shared_ptr<Trap> trap = std::make_shared<Trap>(BuildingObjPos[i], glm::vec2{ 125,40 });
                 trap->Start();
                 trap->m_collider->isActive = false;
                 trap->m_collider->SetOffset({ 0,20 });

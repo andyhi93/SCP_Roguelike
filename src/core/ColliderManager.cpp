@@ -27,11 +27,9 @@ void ColliderManager::UpdateCollisions() {
             auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor);
             if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" 
                 || colliders[j]->tag == "Door1" || colliders[j]->tag == "Door2" || colliders[j]->tag == "Door3" || colliders[j]->tag == "Door4"
-                || colliders[j]->tag == "Table") && colliders[j]->isActive) {  }
+                || colliders[j]->tag == "Table") && colliders[i]->isActive && colliders[j]->isActive) {  }
             else if (!colliders[i]->isActive || !colliders[j]->isActive) continue; 
-
             colliders[i]->HandleCollision(colliders[j]);
-            if (colliders[j]->isSolid) continue;
             colliders[j]->HandleCollision(colliders[i]);
         }
     }
@@ -45,6 +43,15 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetSolidColliders() {
     }
     return solids;
 }
+std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetFlyColliders() {
+    std::vector<std::shared_ptr<BoxCollider>> solids;
+    for (auto& col : colliders) {
+        if (col->isActive && !col->isTrigger && col->isSolid && col->tag!="Trap" && col->tag!="Table") {
+            solids.push_back(col);
+        }
+    }
+    return solids;
+}
 std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetActorColliders() {
     std::vector<std::shared_ptr<BoxCollider>> actors;
     for (auto& col : colliders) {
@@ -53,6 +60,15 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetActorColliders() {
         }
     }
     return actors;
+}
+std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetEnemyColliders() {
+    std::vector<std::shared_ptr<BoxCollider>> enemys;
+    for (auto& col : colliders) {
+        if (col->isActive &&col->tag=="Enemy" && !col->isSolid) {
+            enemys.push_back(col);
+        }
+    }
+    return enemys;
 }
 std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetTableColliders() {
     std::vector<std::shared_ptr<BoxCollider>> tables;
@@ -69,6 +85,6 @@ void ColliderManager::Update() {
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
         if (solidCol->tag == "Solid") solid->Update();
-        else if (solidCol->tag == "Chest" && !solid)  std::cout << "nullptr\n";
+        //else if (solidCol->tag == "Chest" && !solid)  std::cout << "nullptr\n";
     }
 }

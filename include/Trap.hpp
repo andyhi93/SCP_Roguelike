@@ -3,18 +3,19 @@
 
 #include "core/Solid.hpp"
 
-class Trap : public Solid {
+class Trap : public Solid, public Trigger {
 public:
 	Trap(glm::vec2 pos, glm::vec2 size);
 	void Update();
 	void Start() override;
 	void SetActive();
 	bool isOpen = false;
+	void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
 private:
 	std::vector<std::string> trapImages;
 	float m_LastAttackTime = 0;
 	float attackTime = 3;
-	float attackSpeedUp = 7;
+	float attackSpeed = 7;
 };
 
 #endif

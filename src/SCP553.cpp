@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
+	canFly = true;
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> dis(0.0f, 2.0f);
@@ -25,6 +26,19 @@ SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
 	m_AnimationWalk->Play();
 	m_Transform.scale = { 3,3 };
 }
+void SCP553::Start() {
+	m_collider->parentActor = shared_from_this();
+	if (isDropCoin) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 4);
+		int cmd = dis(gen);
+		if (cmd == 0 || cmd == 1 || cmd == 2) isDropCoin = false;
+	}
+	m_meleeTrigger = std::make_shared<IMeleeTrigger>(m_collider->size);
+	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // ³]©w ownerEnemy
+	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
+}
 void SCP553::SetPlayer(std::shared_ptr<Player> _player) {
 	m_Player = _player;
 }
@@ -41,11 +55,14 @@ void SCP553::Behavior() {
 	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x*speed);
 	MoveY(direction.y* speed);
+
+	m_meleeTrigger->FlipTrigger();
 }
 void SCP553::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		SetActive(false);
 	}
 	if (!isDead) {
 		FlipControl();

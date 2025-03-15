@@ -31,7 +31,7 @@ public:
     void FixedUpdate() override;
     void Damage(float damage);
     void SetHealth(float amount);
-    float GetMaxHealth();
+    float GetHealth();
     float GetCurrentHealth() { return currentHealth; }
     bool GetIsInvincible() { return isInvincible; }
 
@@ -39,6 +39,8 @@ public:
     int GetCoin() { return coinAmount; }
 
     bool isDashing = false;
+
+    bool getCanDash() { return canDash; }
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;
@@ -60,7 +62,7 @@ private:
     float m_LastShotTime=0;
     float m_ShotInterval=1;
     float ammoDamage = 1;
-    float maxHealth = 100;
+    float maxHealth = 5;
     float currentHealth = maxHealth;
     int coinAmount = 100;
 

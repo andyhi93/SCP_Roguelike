@@ -36,7 +36,23 @@ void SCP743A::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 		}
 	}
 }
+
+void SCP743A::Start() {
+	m_collider->parentActor = shared_from_this();
+	if (isDropCoin) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 4);
+		int cmd = dis(gen);
+		if (cmd == 0 || cmd == 1 || cmd == 2) isDropCoin = false;
+	}
+	m_meleeTrigger = std::make_shared<IMeleeTrigger>(m_collider->size + glm::vec2{ 20,20 });
+	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // ³]©w ownerEnemy
+	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
+}
 void SCP743A::Behavior() {
+	m_meleeTrigger->FlipTrigger();
+
 	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
@@ -45,6 +61,7 @@ void SCP743A::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		SetActive(false);
 	}
 	if (!isDead) {
 		FlipControl();

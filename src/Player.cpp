@@ -7,6 +7,7 @@
 #include <Table.hpp>
 #include "Item.hpp"
 #include <Chest.hpp>
+#include <Trap.hpp>
 
 Player::Player(): Actor(glm::vec2{ 45,50 }){
     m_collider->offset = { 0,-25 };
@@ -76,8 +77,8 @@ void Player::PlayerControl() {
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
         glm::vec2 bulletDirection = Util::Input::GetCursorPosition() - m_Transform.translation;
-        auto bullet = std::make_shared<Bullet>(m_Transform.translation, ammoDamage, CollisionLayer::Player, 7.0f, 0, bulletDirection);
-        bullet->m_Transform.translation = m_Hand->m_Transform.translation;
+        auto bullet = std::make_shared<Bullet>(m_Hand->m_Transform.translation + glm::vec2{ 0,-15 }, ammoDamage, CollisionLayer::Player, 7.0f, 0, bulletDirection);
+        bullet->m_Transform.translation = m_Hand->m_Transform.translation + glm::vec2{0,-15};
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;
     }
@@ -107,6 +108,10 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor);
         if(!table->isBroken) table->BreakTable();
     }
+    if (isDashing && other->tag == "Enemy") {
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor);
+        if (enemy) enemy->Damage(ammoDamage);
+    }
 }
 void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (!other) return;
@@ -114,7 +119,8 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
 
     if (!isDashing && currentState != Hurt) {
         if (other->tag == "Trap") {
-            Damage(1.0f);
+            std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(other->parentActor);
+            if(trap->isOpen) Damage(1.0f);
         }
     }
     if (other->tag == "Item") {
@@ -156,12 +162,11 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
 void Player::Damage(float damage) {
     if (currentState != Hurt) {
         SetHealth(GetCurrentHealth() - damage);
-        m_collider->isActive = false;
         currentState = Hurt;
     }
 }
 void Player::SetHealth(float amount) { currentHealth = amount; }
-float Player::GetMaxHealth() { return maxHealth; }
+float Player::GetHealth() { return maxHealth; }
 void Player::Move(glm::vec2& velocity) {
 
     float currentTime = SDL_GetTicks() / 1000.0f;
@@ -171,9 +176,14 @@ void Player::Move(glm::vec2& velocity) {
 
     // 檢測是否按下 Shift 開始 Dash
     if (Util::Input::IsKeyDown(Util::Keycode::LSHIFT) && !isDashing && canDash) {
+        lastDashEndTime = currentTime;
         std::vector<std::shared_ptr<BoxCollider>> tables= ColliderManager::GetInstance().GetTableColliders();
         for(auto& table : tables){
             if(table->tag=="Table") table->isTrigger = true;
+        }
+        std::vector<std::shared_ptr<BoxCollider>> enemies = ColliderManager::GetInstance().GetEnemyColliders();
+        for (auto& enemy : enemies) {
+            if (enemy->tag == "Enemy") enemy->isTrigger = true;
         }
         isDashing = true;
         canDash = false;
@@ -188,8 +198,11 @@ void Player::Move(glm::vec2& velocity) {
             for (auto& table : tables) {
                 if (table->tag == "Table") table->isTrigger = false;
             }
+            std::vector<std::shared_ptr<BoxCollider>> enemies = ColliderManager::GetInstance().GetEnemyColliders();
+            for (auto& enemy : enemies) {
+                if (enemy->tag == "Enemy") enemy->isTrigger = false;
+            }
             isDashing = false;
-            lastDashEndTime = currentTime; 
         }
     }
     MoveX(velocity.x);
@@ -217,7 +230,7 @@ void Player::AnimationControl() {
         m_Hand->SetDrawable(m_Hand->m_Animation);
     }
     //flip
-    if (m_Hand->m_Transform.rotation > 88.5f && m_Hand->m_Transform.rotation < 91.5f) {
+    if (m_Hand->m_Transform.rotation > 0 && m_Hand->m_Transform.rotation < glm::radians(180.0f)) {
         m_Transform.scale.x = std::abs(m_Transform.scale.x);
         m_Hand->m_Transform.scale.x = std::abs(m_Transform.scale.x);
         isFaceRight = true;
@@ -235,7 +248,8 @@ void Player::HandControl() {
     glm::vec2 mousePos = Util::Input::GetCursorPosition();
     glm::vec2 direction = mousePos - m_Transform.translation;
     float angle = isFaceRight ? atan2(direction.y, direction.x) : -atan2(direction.y, direction.x);
-    m_Hand->m_Transform.rotation = isFaceRight ? angle + 90.0f : 180.0f - (angle + 90.0f);
+    m_Hand->m_Transform.rotation = isFaceRight ? angle + (glm::radians(90.0f)) : glm::radians(90.0f)- angle;
+    //std::cout << glm::degrees(m_Hand->m_Transform.rotation) << std::endl;
 }
 void Player::FixedUpdate() {
     m_BulletBox->FixedUpdate();
@@ -257,7 +271,6 @@ void Player::Update() {
             if (isInvincible && currentTime - lastHurtTime >= isInvincible) {
                 currentState = Idle;
                 isInvincible = false;
-                m_collider->isActive = true;
             }
         }
         PlayerControl();

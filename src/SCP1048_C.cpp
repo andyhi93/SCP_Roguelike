@@ -10,7 +10,6 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 	std::uniform_real_distribution<float> dis(0.0f, 3.0f);
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
-	std::cout << "collider:"<<m_collider->isTrigger << std::endl;
 
 	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
@@ -29,6 +28,11 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 	m_AnimationWalk->Play();
 	m_Transform.scale = { 4,4 };
 }
+void SCP1048_C::SetActive(bool isActive) {
+	m_collider->isActive = isActive;
+	if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
+	if (!isActive) m_BulletBox->ChangeRoom();
+}
 void SCP1048_C::SetPlayer(std::shared_ptr<Player> _player) {
 	m_Player = _player;
 	this->AddChild(m_BulletBox);
@@ -43,6 +47,7 @@ void SCP1048_C::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	}
 }
 void SCP1048_C::Behavior() {
+	m_meleeTrigger->FlipTrigger();
 
 	glm::vec2 direction = normalize( m_Player->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
@@ -73,11 +78,25 @@ void SCP1048_C::Shoot() {
 void SCP1048_C::FixedUpdate() {
 	m_BulletBox->FixedUpdate();
 }
+void SCP1048_C::Start() {
+	m_collider->parentActor = shared_from_this();
+	if (isDropCoin) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 4);
+		int cmd = dis(gen);
+		if (cmd == 0 || cmd == 1 || cmd == 2) isDropCoin = false;
+	}
+	m_meleeTrigger = std::make_shared<IMeleeTrigger>(m_collider->size + glm::vec2{ 20,20 });
+	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // ³]©w ownerEnemy
+	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
+}
 void SCP1048_C::Update() {
 	m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		SetActive(false);
 	}
 	if (!isDead) {
 		FlipControl();

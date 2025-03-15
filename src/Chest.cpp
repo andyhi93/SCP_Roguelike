@@ -19,8 +19,39 @@ Chest::Chest(glm::vec2 pos, glm::vec2 size) : Solid(pos,size){
 	openArea->m_collider->isActive = false;
 	
 }
+void Chest::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
+	if (other->tag == "Player" && !isOpen) {
+		m_UIeDescription->SetVisible(true);
+		UIeBackgroundImage->SetVisible(true);
+	}
+}
+void Chest::OnTriggerExit(std::shared_ptr<BoxCollider> other) {
+	if (other->tag == "Player" && !isOpen) {
+		m_UIeDescription->SetVisible(false);
+		UIeBackgroundImage->SetVisible(false);
+	}
+}
 void Chest::Start() {
 	openArea->m_collider->parentActor = std::dynamic_pointer_cast<Object>(shared_from_this());
+
+	openArea->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));
+
+	m_UIeDescription = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
+	m_UIeDescription->SetVisible(false);
+	m_UIeDescription->SetZIndex(this->GetZIndex() + 10.1f);
+	m_UIeDescription->Start();
+	m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+	m_UIeDescription->m_Transform.scale = { 0.7,0.7 };
+	m_UIeDescription->m_Text->SetText(fmt::format("{}", UIeText));
+	this->AddChild(m_UIeDescription);
+
+	UIeBackgroundImage = std::make_shared<Object>();
+	UIeBackgroundImage->SetVisible(false);
+	UIeBackgroundImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/background.png"));
+	UIeBackgroundImage->SetZIndex(this->GetZIndex() + 10);
+	UIeBackgroundImage->m_Transform.scale = { 3,3 };
+	UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+	this->AddChild(UIeBackgroundImage);
 }
 void Chest::SetActive(bool IsActive) {
 	openArea->m_collider->isActive = IsActive;
@@ -32,11 +63,14 @@ void Chest::Open(){
 	this->AddChild(treasure);
 	treasure->m_collider->isActive = true;
 	this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/Box2.png"));
+
+	m_UIeDescription->SetVisible(false);
+	UIeBackgroundImage->SetVisible(false);
 }
 
 void Chest::Update(){
 	//std::cout << "Chest isActive: " << m_collider->isActive << "\n";
-	if (treasure && treasure->isPick) {
+	if (treasure && ((!treasure->hasDescripting && treasure->isPick) || (treasure->hasDescripting && !treasure->isDescripting))) {
 		this->RemoveChild(treasure);
 		treasure = nullptr;
 	}

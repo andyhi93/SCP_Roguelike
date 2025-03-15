@@ -10,6 +10,7 @@ public:
     glm::vec2 velocity;
     std::shared_ptr<BoxCollider> m_collider;
     float xRemainder=0, yRemainder=0;
+    bool canFly = false;
 
     bool isDead = false;
     Actor(glm::vec2 size);

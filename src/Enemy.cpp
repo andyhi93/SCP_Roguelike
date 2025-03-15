@@ -17,6 +17,10 @@ void Enemy::Start() {
         if (cmd == 0 || cmd == 1 || cmd==2) isDropCoin = false;
     }
 }
+void Enemy::SetActive(bool isActive) {
+    m_collider->isActive = isActive;
+    if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
+}
 
 void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
     m_Player = _player; 
@@ -40,5 +44,36 @@ void Enemy::FlipControl() {
     else if(m_Player->m_Transform.translation.x - m_Transform.translation.x < 0.01f && isFaceRight){
         m_Transform.scale.x = -std::abs(m_Transform.scale.x);
         isFaceRight = false;
+    }
+}
+IMeleeTrigger::IMeleeTrigger(glm::vec2 size) :Actor(size) {
+    m_collider->isTrigger = true;
+    m_collider->tag = "Melee";
+    /*
+	m_meleeTrigger = std::make_shared<IMeleeTrigger>(m_collider->size);
+	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // 設定 ownerEnemy
+	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
+
+    //MeleeAttack Update
+    m_meleeTrigger->FlipTrigger();
+    */
+}
+void IMeleeTrigger::FlipTrigger() {
+    auto enemy = ownerEnemy.lock() ;    
+    if (enemy) {  // 確保 Enemy 仍然有效
+        if (enemy->GetIsFacingRight()) {
+            m_collider->position = enemy->m_Transform.translation + glm::vec2{ m_collider->size.x/2, 0};
+        }
+        else {
+            m_collider->position = enemy->m_Transform.translation - glm::vec2{ m_collider->size.x / 2, 0 };
+        }
+    }
+}
+void IMeleeTrigger::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
+    if (other->tag == "Player") {
+        auto player = std::dynamic_pointer_cast<Player>(other->parentActor);
+        if (player) {
+            player->Damage(MeleeDamage);
+        }
     }
 }

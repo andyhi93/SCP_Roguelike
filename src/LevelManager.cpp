@@ -64,7 +64,7 @@ void LevelManager::Update(){
     }
     map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
         [this](const std::shared_ptr<Item>& item) {
-            if (item->isPick) {
+            if (!item->hasDescripting &&item->isPick ||(item->hasDescripting && !item->isDescripting)) {
                 this->RemoveChild(item);
                 std::cout << "remove item\n";
                 ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
@@ -73,6 +73,24 @@ void LevelManager::Update(){
             return false;
         }),
         map[currentRoom.x][currentRoom.y].roomItems.end());
+
+    if (!isOpenCurrentDoor) {
+        if (!map[currentRoom.x][currentRoom.y].isClean) {
+            for (auto& obj : currentObjects) {
+                std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+                if (enemy && !enemy->isDead) {
+                    return;
+                }
+            }
+        }
+        map[currentRoom.x][currentRoom.y].isClean = true;
+        if (map[currentRoom.x][currentRoom.y].isClean) {
+            for (int i = 0; i < 4; i++) {
+                if (m_Tilemap->hasDoor[i]) m_Tilemap->doors[i]->DoorControl(true);
+            }
+        }
+        isOpenCurrentDoor = true;
+    }
 }
 void LevelManager::FixedUpdate() {
     for (auto& obj : currentObjects) {
@@ -86,7 +104,13 @@ void LevelManager::AddRoom(int x, int y) {
     roomCount++;
 }
 void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
+
     currentRoom += direction;
+
+    map[currentRoom.x][currentRoom.y].isVisible = true;
+    
+    isOpenCurrentDoor = false;
+
     m_Tilemap->SetDoors(map[currentRoom.x][currentRoom.y].doors[0],
         map[currentRoom.x][currentRoom.y].doors[1],
         map[currentRoom.x][currentRoom.y].doors[2],
@@ -126,20 +150,19 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(obj);
         std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
-            enemy->m_collider->isActive = false;
+            enemy->SetActive(false);
         }
         else if(table){
             table->m_collider->isActive = false;
         }
         else if (trap) {
-            trap->m_collider->isActive = false;
             trap->isOpen = false;
+        }
+        else if (chest) {
+            chest->SetActive(false);
         }
         else if(actor){
             actor->m_collider->isActive = false;
-        }
-        else if(chest){
-            chest->SetActive(false);
         }
         this->RemoveChild(obj);
     }
@@ -153,7 +176,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         if (enemy) {
             enemy->Start();
             enemy->SetPlayer(m_Player);
-            enemy->m_collider->isActive = true;
+            if(!enemy->isDead) enemy->SetActive(true);
         }
         else if (table && !table->isBroken) {
             table->m_collider->isActive = true;
@@ -200,6 +223,7 @@ void LevelManager::GenerateLevel() {
         startPos = { dist_x(rng), dist_y(rng) };
         AddRoom(startPos.x, startPos.y);
         map[startPos.x][startPos.y].roomType = Tilemap::StartRoom;
+        map[startPos.x][startPos.y].isVisible = true;
         currentRoom = startPos;
 
         std::queue<glm::ivec2> roomQueue;
@@ -339,7 +363,7 @@ void LevelManager::GenerateLevel() {
     }
     for (int x = 0; x < MAP_SIZE_WIDTH; x++) {
         for (int y = 0; y < MAP_SIZE_HEIGHT; y++) {
-            std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType, map[x][y].entrance);
+            std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom((Tilemap::RoomType)map[x][y].roomType, map[x][y].entrance,floor==1?4: (floor == 2 ? 6:8 ));
             if (!temp.empty()) {
                 for (auto& obj : temp) {
                     std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);

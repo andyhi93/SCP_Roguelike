@@ -38,6 +38,7 @@ private:
     int roomCount = 0;
     int floor = 0;
     glm::ivec2 currentRoom = { 0,0 };
+    bool isOpenCurrentDoor = false;
 
     bool IsValidRoom(int x, int y);
     void AddRoom(int x, int y);

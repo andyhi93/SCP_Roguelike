@@ -6,7 +6,7 @@ class SCP049_2 : public Enemy{
 public:
     SCP049_2();
     void Update() override;
-    void OnCollisionEnter(std::shared_ptr<BoxCollider> other);
+    void Start() override;
 
     void Behavior();
 protected:

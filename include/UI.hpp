@@ -20,6 +20,8 @@ public:
         bool doors[4] = { false, false, false, false };//ESWN
         int roomType;
         int entrance;
+        bool isClean = false;
+        bool isVisible = false;
         std::vector<std::shared_ptr<Object>> roomobjs = {};
         std::vector<std::shared_ptr<Item>> roomItems = {};
     };
@@ -47,6 +49,9 @@ private:
     std::vector<std::string> roomImages;
     std::vector<std::string> colorImages;
     void UpdateRoomDisplay(Room roomData,int x, int y);
+
+    std::shared_ptr<Object> DashUIImage = std::make_shared<Object>();
+    bool UICanDash = true;
 
     void setHealthUI();
     std::shared_ptr<Object> HealthFrameImage = std::make_shared<Object>();

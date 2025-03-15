@@ -8,6 +8,7 @@ public:
     SCP610();
     void Update() override;
     void FixedUpdate() override;
+    void SetActive(bool isActive) override;
 
     void Behavior();
     void Shoot() override;

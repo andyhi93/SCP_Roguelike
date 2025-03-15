@@ -8,7 +8,9 @@ class SCP1048_B : public Enemy, public IRangedAttack {
 public:
     SCP1048_B();
     void Update() override;
+    void Start() override;
     void FixedUpdate() override;
+    void SetActive(bool isActive) override;
     void OnCollisionEnter(std::shared_ptr<BoxCollider> other);
 
     void Behavior();

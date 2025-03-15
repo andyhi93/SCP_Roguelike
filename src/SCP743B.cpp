@@ -2,7 +2,8 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP743B::SCP743B() : Enemy(glm::vec2{ 45,150 }) {
+SCP743B::SCP743B() : Enemy(glm::vec2{ 45,45 }) {
+	canFly = true;
 	isDropCoin = true;
 
 	std::random_device rd;  
@@ -25,7 +26,12 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,150 }) {
 	SetDrawable(m_AnimationWalk);
 	m_AnimationDie->SetLooping(false);
 	m_AnimationWalk->Play();
-	m_Transform.scale = { 3,3 };
+	m_Transform.scale = { 2.5f,2.5f };
+}
+void SCP743B::SetActive(bool isActive) {
+	m_collider->isActive = isActive;
+	if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
+	if (!isActive) m_BulletBox->ChangeRoom();
 }
 void SCP743B::SetPlayer(std::shared_ptr<Player> _player) {
 	m_Player = _player;
@@ -63,6 +69,7 @@ void SCP743B::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		SetActive(false);
 	}
 	if (!isDead) {
 		FlipControl();

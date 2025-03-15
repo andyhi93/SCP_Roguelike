@@ -25,6 +25,10 @@ public:
     void SetItemType(ItemType type);
     ItemType GetItemType() { return ItemIndex; }
     std::shared_ptr<Item> SetSell();
+    std::shared_ptr<Item> SetPickUI();
+
+    void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
+    void OnTriggerExit(std::shared_ptr<BoxCollider> other) override;
 
     void Update() override;
     std::vector<float> pickUp();
@@ -38,6 +42,8 @@ public:
     float price = 10;
     bool canPick;
     bool isPick = false;
+    bool hasDescripting = true;
+    bool isDescripting = true;
 
     bool isUnlocked = true;
     static int lastItemIndex;
@@ -45,6 +51,18 @@ private:
     ItemType ItemIndex;
     std::shared_ptr<UIText> m_priceText;
     std::shared_ptr<Object> backgroundImage;
+
+    float endTime=0;
+    std::string nameText;
+    std::shared_ptr<UIText> m_nameDescription;
+    std::string effectText;
+    std::shared_ptr<UIText> m_effectDescription;
+    std::shared_ptr<Object> descriptionBackgroundImage;
+
+
+    std::string UIeText = "PRESS E TO PURCHASE";
+    std::shared_ptr<UIText> m_UIeDescription;
+    std::shared_ptr<Object> UIeBackgroundImage;
 };
 
 #endif

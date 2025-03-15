@@ -119,7 +119,9 @@ void Actor::MoveY(float amount) {
 }
 
 std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids() {
-    auto solids = ColliderManager::GetInstance().GetSolidColliders();
+    std::vector<std::shared_ptr<BoxCollider>> solids;
+    if(canFly) solids = ColliderManager::GetInstance().GetFlyColliders();
+    else solids = ColliderManager::GetInstance().GetSolidColliders();
     //std::cout << "solid size: " << solids.size() << std::endl;
     for (auto& solid : solids) {
         if (m_collider->CheckCollision(solid) && solid->isActive) {

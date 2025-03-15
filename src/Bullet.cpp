@@ -51,7 +51,7 @@ void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	if (layer == CollisionLayer::Player && other->tag == "Enemy") {
 		std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(collidedActor);
 		if (enemy && !enemy->isDead) {
-			enemy->SetHealth(enemy->GetMaxHealth() - damage);
+			enemy->Damage(damage);
 			std::cout << "Bullet hit Enemy" << std::endl;
 			islive = false;
 			return;

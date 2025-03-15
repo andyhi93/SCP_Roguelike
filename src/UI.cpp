@@ -38,6 +38,12 @@ UI::UI() {
     setHealthUI();
 }
 void UI::setHealthUI() {
+    DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI1.png"));
+    this->AddChild(DashUIImage);
+    DashUIImage->m_Transform.scale = { 4,4 };
+    DashUIImage->m_Transform.translation = { -500,408 };
+    DashUIImage->SetZIndex(10.2f);
+
     HealthFrameImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthFrame.png"));
     HealthBarImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthBar.png"));
     this->AddChild(HealthFrameImage);
@@ -81,7 +87,7 @@ void UI::Init(std::vector<Room> _RoomData) {
             roomShape.push_back(roomObject);
             roomColor.push_back(colorObject);
             mapArray[x][y] = _RoomData[roomIndex++];//from left bottom
-            if (mapArray[x][y].exists) {
+            if (mapArray[x][y].exists && mapArray[x][y].isVisible) {
                 std::string path = "";
                 for (int i = 0; i < 4; i++) {
                     if (mapArray[x][y].doors[i]) {
@@ -122,7 +128,7 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
     std::shared_ptr<Object> roomObject = roomShape[x + y * 3];
     std::shared_ptr<Object> colorObject = roomColor[x + y * 3];
 
-    if (roomData.exists) {
+    if (roomData.exists && roomData.isVisible) {
         // 根據房間門的開關來選擇顯示圖像
         std::string path = "";
         for (int i = 0; i < 4; i++) {
@@ -145,7 +151,7 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
 }
 void UI::GetPlayer(std::shared_ptr<Player> _player) { 
     MapPlayer = _player; 
-    maxHealth= MapPlayer->GetMaxHealth();
+    maxHealth= MapPlayer->GetHealth();
     currentHealth = maxHealth;
 }
 void UI::Update() {
@@ -153,10 +159,19 @@ void UI::Update() {
     PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer->m_Transform.translation.x/zoomDiff[0], MapPlayer->m_Transform.translation.y/zoomDiff[1] };
 
     //HealthUI
-    maxHealth = MapPlayer->GetMaxHealth();
+    maxHealth = MapPlayer->GetHealth();
     currentHealth = MapPlayer->GetCurrentHealth();
     HealthBarImage->m_Transform.scale.x = (currentHealth<0)? 0: currentHealth / maxHealth*3;
     m_healthText->m_Text->SetText(fmt::format("{}/{}", (int)currentHealth, (int)maxHealth));
     //CoinText
     m_coinText->m_Text->SetText(std::to_string(MapPlayer->GetCoin()));
+
+    if (MapPlayer->getCanDash() && !UICanDash) {
+        UICanDash = true;
+        DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI1.png"));
+    }
+    else if (!MapPlayer->getCanDash() && UICanDash) {
+        UICanDash = false;
+        DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI2.png"));
+    }
 }
