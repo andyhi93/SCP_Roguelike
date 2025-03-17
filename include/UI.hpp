@@ -28,7 +28,7 @@ public:
     void Update();
     void Init(std::vector<Room> _RoomData);
     void SetMap(std::vector<Room> _RoomData);
-    void GetPlayer(std::shared_ptr<Player> _player);
+    void GetPlayer(std::weak_ptr<Player> _player);
 
     enum RoomType {
         //func
@@ -38,7 +38,7 @@ public:
         BossRoom,
     };
     Room mapArray[3][3];
-    std::shared_ptr<Player> MapPlayer = std::make_shared<Player>();
+    std::weak_ptr<Player> MapPlayer = std::make_shared<Player>();
     std::shared_ptr<Object> Background=std::make_shared<Object>();
     std::shared_ptr<Object> PlayerPoint = std::make_shared<Object>();
     std::vector<std::shared_ptr<Object>> roomShape;

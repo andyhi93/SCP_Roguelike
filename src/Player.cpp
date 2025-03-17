@@ -84,32 +84,32 @@ void Player::PlayerControl() {
     }
 }
 void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
-    if (other->tag == "Door0" && m_LevelManager->m_Tilemap->doors[0]->isOpen) {
-        m_LevelManager->ChangeRoom(glm::ivec2(1, 0));
+    if (other->tag == "Door0" && m_LevelManager.lock()->m_Tilemap->doors[0]->isOpen) {
+        m_LevelManager.lock()->ChangeRoom(glm::ivec2(1, 0));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-793, -66);
     }
-    if (other->tag == "Door1" && m_LevelManager->m_Tilemap->doors[1]->isOpen) {
-        m_LevelManager->ChangeRoom(glm::ivec2(0, -1));
+    if (other->tag == "Door1" && m_LevelManager.lock()->m_Tilemap->doors[1]->isOpen) {
+        m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, -1));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-6, 348);
     }
-    if (other->tag == "Door2" && m_LevelManager->m_Tilemap->doors[2]->isOpen) {
-        m_LevelManager->ChangeRoom(glm::ivec2(-1, 0));
+    if (other->tag == "Door2" && m_LevelManager.lock()->m_Tilemap->doors[2]->isOpen) {
+        m_LevelManager.lock()->ChangeRoom(glm::ivec2(-1, 0));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(802, -67);
     }
-    if (other->tag == "Door3" && m_LevelManager->m_Tilemap->doors[3]->isOpen) {
-        m_LevelManager->ChangeRoom(glm::ivec2(0, 1));
+    if (other->tag == "Door3" && m_LevelManager.lock()->m_Tilemap->doors[3]->isOpen) {
+        m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, 1));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-9, -397);
     }
     if (other->tag == "Table") {
-        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor);
+        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor.lock());
         if(!table->isBroken) table->BreakTable();
     }
     if (isDashing && other->tag == "Enemy") {
-        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor);
+        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor.lock());
         if (enemy) enemy->Damage(ammoDamage);
     }
 }
@@ -119,12 +119,12 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
 
     if (!isDashing && currentState != Hurt) {
         if (other->tag == "Trap") {
-            std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(other->parentActor);
+            std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(other->parentActor.lock());
             if(trap->isOpen) Damage(1.0f);
         }
     }
     if (other->tag == "Item") {
-        std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(other->parentActor);
+        std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(other->parentActor.lock());
         if (!item) return;
         if (Util::Input::IsKeyDown(Util::Keycode::E) && !item->isUnlocked && coinAmount>=item->price) {
             std::cout << "buy\n";
@@ -151,7 +151,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
         }
     }
     else if (other->tag == "ChestTrigger") {
-        std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(other->parentActor);
+        std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(other->parentActor.lock());
         if (!chest) return;
         if (Util::Input::IsKeyDown(Util::Keycode::E) && !chest->isOpen) {
             std::cout << "chest open\n";
@@ -257,6 +257,7 @@ void Player::FixedUpdate() {
 void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
+    //std::cout << "Reference Count: " << shared_from_this().use_count() << std::endl;
     if (currentHealth <= 0 && currentState != Die) {
         currentState = Die;
         this->RemoveChild(m_Hand);
@@ -277,7 +278,7 @@ void Player::Update() {
         HandControl();
     }
     if (Util::Input::IsKeyPressed(Util::Keycode::SPACE)) {
-        for (auto& door : m_LevelManager->m_Tilemap->doors) {
+        for (auto& door : m_LevelManager.lock()->m_Tilemap->doors) {
             door->DoorControl(true);
         }
     }

@@ -13,7 +13,7 @@ void Actor::SetDead() {
 
 void Actor::MoveX(float amount) {
     auto OtherSolidCol = CheckCollisionWithSolids();
-    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor) : nullptr;
+    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
     if(!m_collider->isTrigger && (m_Transform.translation.x > 830 || m_Transform.translation.x < -830)){
         std::cout << "Out of map\n";
         m_Transform.translation.x = m_Transform.translation.x>830? 800:-800;
@@ -27,8 +27,8 @@ void Actor::MoveX(float amount) {
         m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
     auto OtherCollider = CheckCollisionWithActors();
-    auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor) : nullptr;
-    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor);
+    auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
+    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
         float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
@@ -66,8 +66,8 @@ void Actor::MoveX(float amount) {
 
 void Actor::MoveY(float amount) {
     auto OtherSolidCol = CheckCollisionWithSolids();
-    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor) : nullptr;
-    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor);
+    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
+    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
     if (!m_collider->isTrigger && !PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
         m_Transform.translation.y=m_Transform.translation.y > 354 ? 300 : -373;
         m_collider->position.y = m_Transform.translation.y;
@@ -82,7 +82,7 @@ void Actor::MoveY(float amount) {
         m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
     }
     auto OtherCollider = CheckCollisionWithActors();
-    auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor) : nullptr;
+    auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
         float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);

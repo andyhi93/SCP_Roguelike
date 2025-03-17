@@ -13,9 +13,9 @@ class Player : public Actor, public Trigger{
 public:
     std::shared_ptr<Hand> m_Hand;
     std::shared_ptr<BulletBox> m_BulletBox;
-    std::shared_ptr<LevelManager> m_LevelManager;
+    std::weak_ptr<LevelManager> m_LevelManager;
 
-    void SetLevelManager(std::shared_ptr<LevelManager> _LevelManager) { m_LevelManager = _LevelManager; }
+    void SetLevelManager(std::weak_ptr<LevelManager> _LevelManager) { m_LevelManager = _LevelManager; }
     
     Player();
     void PlayerControl();

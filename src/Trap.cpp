@@ -31,7 +31,7 @@ void Trap::Update(){
 void Trap::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	std::cout << "Trap\n";
 	if (other->tag == "Enemy" && isOpen) {
-		auto enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor);
+		auto enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor.lock());
 		if(enemy&& !enemy->canFly) enemy->Damage(1.0f);
 	}
 }

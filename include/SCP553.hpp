@@ -10,7 +10,7 @@ public:
     void Start() override;
 
     void Behavior();
-    void SetPlayer(std::shared_ptr<Player> _player) override;
+    void SetPlayer(std::weak_ptr<Player> _player) override;
 protected:
 private:
 };

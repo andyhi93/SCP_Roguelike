@@ -15,7 +15,7 @@ public:
     void Update();
     std::shared_ptr<Util::Animation> m_Animation;
     std::shared_ptr<Util::Animation> m_AnimationDash;
-    std::shared_ptr<Player> m_Player;
+    std::weak_ptr<Player> m_Player;
 
 protected:
 };

@@ -15,7 +15,7 @@ LevelManager::LevelManager() {
     m_MapUI->SetZIndex(10);
     GenerateLevel();
 }
-void LevelManager::setPlayer(std::shared_ptr<Player> _player) {
+void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;
     /*std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom(Tilemap::Room1048);
     currentObjects.clear();

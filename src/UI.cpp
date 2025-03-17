@@ -149,28 +149,28 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
         colorObject->SetDrawable(nullptr);
     }
 }
-void UI::GetPlayer(std::shared_ptr<Player> _player) { 
+void UI::GetPlayer(std::weak_ptr<Player> _player) { 
     MapPlayer = _player; 
-    maxHealth= MapPlayer->GetHealth();
+    maxHealth= MapPlayer.lock()->GetHealth();
     currentHealth = maxHealth;
 }
 void UI::Update() {
     glm::vec2 zoomDiff = { 1631 / 79 ,650 / 30 };
-    PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer->m_Transform.translation.x/zoomDiff[0], MapPlayer->m_Transform.translation.y/zoomDiff[1] };
+    PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer.lock()->m_Transform.translation.x/zoomDiff[0], MapPlayer.lock()->m_Transform.translation.y/zoomDiff[1] };
 
     //HealthUI
-    maxHealth = MapPlayer->GetHealth();
-    currentHealth = MapPlayer->GetCurrentHealth();
+    maxHealth = MapPlayer.lock()->GetHealth();
+    currentHealth = MapPlayer.lock()->GetCurrentHealth();
     HealthBarImage->m_Transform.scale.x = (currentHealth<0)? 0: currentHealth / maxHealth*3;
     m_healthText->m_Text->SetText(fmt::format("{}/{}", (int)currentHealth, (int)maxHealth));
     //CoinText
-    m_coinText->m_Text->SetText(std::to_string(MapPlayer->GetCoin()));
+    m_coinText->m_Text->SetText(std::to_string(MapPlayer.lock()->GetCoin()));
 
-    if (MapPlayer->getCanDash() && !UICanDash) {
+    if (MapPlayer.lock()->getCanDash() && !UICanDash) {
         UICanDash = true;
         DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI1.png"));
     }
-    else if (!MapPlayer->getCanDash() && UICanDash) {
+    else if (!MapPlayer.lock()->getCanDash() && UICanDash) {
         UICanDash = false;
         DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI2.png"));
     }

@@ -26,9 +26,9 @@ public:
     glm::vec2 size;
     glm::vec2 offset = { 0,0 };
     std::string tag="";
-    std::shared_ptr<Trigger> triggerCallback = nullptr; // 觸發回調
+    std::weak_ptr<Trigger> triggerCallback; // 觸發回調
     bool isActive = true;  // 是否啟用該 Collider
-    std::shared_ptr<Object> parentActor;
+    std::weak_ptr<Object> parentActor;
 
     BoxCollider(glm::vec2 _pos, glm::vec2 _size);
 

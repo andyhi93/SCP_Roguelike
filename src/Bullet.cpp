@@ -47,7 +47,7 @@ void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 		std::cout << "bullet hit sth\n";
 		return;
 	}
-	std::shared_ptr<Object> collidedActor = other->parentActor;
+	std::shared_ptr<Object> collidedActor = other->parentActor.lock();
 	if (layer == CollisionLayer::Player && other->tag == "Enemy") {
 		std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(collidedActor);
 		if (enemy && !enemy->isDead) {

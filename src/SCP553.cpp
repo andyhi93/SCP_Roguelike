@@ -39,20 +39,20 @@ void SCP553::Start() {
 	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // ³]©w ownerEnemy
 	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
 }
-void SCP553::SetPlayer(std::shared_ptr<Player> _player) {
+void SCP553::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
 }
 void SCP553::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
 		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-			m_Player->Damage(damage);
+			m_Player.lock()->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}
 	}
 }
 void SCP553::Behavior() {
-	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
+	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x*speed);
 	MoveY(direction.y* speed);
 

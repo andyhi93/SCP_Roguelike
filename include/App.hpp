@@ -32,8 +32,12 @@ private:
 
 private:
     State m_CurrentState = State::START;
-    std::shared_ptr<Player> m_Player = std::make_shared<Player>();
-    std::shared_ptr<LevelManager> m_LevelManager = std::make_shared<LevelManager>();
+    std::shared_ptr<Player> m_Player;
+    std::shared_ptr<LevelManager> m_LevelManager;
+
+    void InitMap();
+    void FreeMap();
+    bool isInitMap = false;
 
     Util::Renderer m_Root;
 

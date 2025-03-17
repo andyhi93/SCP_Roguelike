@@ -46,7 +46,7 @@ void SCP049_2::Start() {
 	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
 }
 void SCP049_2::Behavior() {
-	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
+	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x* speed);
 	MoveY(direction.y* speed);
 	//MeleeAttack

@@ -2,6 +2,7 @@
 #include "Player.hpp"
 #include "random"
 #include "Item.hpp"
+#include "BulletBox.hpp"
 
 Enemy::Enemy(glm::vec2 size) :Actor(size) {
     m_collider->tag = "Enemy";
@@ -22,7 +23,7 @@ void Enemy::SetActive(bool isActive) {
     if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
 }
 
-void Enemy::SetPlayer(std::shared_ptr<Player> _player) { 
+void Enemy::SetPlayer(std::weak_ptr<Player> _player) { 
     m_Player = _player; 
 }
 std::shared_ptr<Item> Enemy::GetCoin() {
@@ -37,11 +38,11 @@ glm::vec2 Enemy::normalize(glm::vec2 direction) {
     return { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
 }
 void Enemy::FlipControl() {
-    if (m_Player->m_Transform.translation.x-m_Transform.translation.x > 0.01f && !isFaceRight) {
+    if (m_Player.lock()->m_Transform.translation.x - m_Transform.translation.x > 0.01f && !isFaceRight) {
         m_Transform.scale.x = std::abs(m_Transform.scale.x);
         isFaceRight = true;
     }
-    else if(m_Player->m_Transform.translation.x - m_Transform.translation.x < 0.01f && isFaceRight){
+    else if(m_Player.lock()->m_Transform.translation.x - m_Transform.translation.x < 0.01f && isFaceRight){
         m_Transform.scale.x = -std::abs(m_Transform.scale.x);
         isFaceRight = false;
     }
@@ -71,9 +72,39 @@ void IMeleeTrigger::FlipTrigger() {
 }
 void IMeleeTrigger::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Player") {
-        auto player = std::dynamic_pointer_cast<Player>(other->parentActor);
+        auto player = std::dynamic_pointer_cast<Player>(other->parentActor.lock());
         if (player) {
             player->Damage(MeleeDamage);
         }
+    }
+}
+IRangedAttack::IRangedAttack(std::weak_ptr<Enemy> ownerEnemy,std::weak_ptr<Util::Animation> m_AnimationShoot,int ammoIndex) {
+    this->ownerEnemy = ownerEnemy;
+    this->m_AnimationShoot = m_AnimationShoot;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(1, shootSpeed-1);
+    m_LastShootTime = dis(gen);
+}
+void IRangedAttack::Shoot() {
+    float currentTime = SDL_GetTicks() / 1000.0f;
+    if (currentTime - m_LastShootTime >= shootSpeed) {
+        m_LastShootTime = currentTime;
+        isFire = false;
+    }
+    if (!isFire) {//Get Size tEST
+        ownerEnemy.lock()->state = Enemy::State::Attack;
+        isFire = true;
+        isAnimDone = false;
+        m_AnimationShoot.lock()->SetCurrentFrame(0);
+        ownerEnemy.lock()->SetDrawable(m_AnimationShoot.lock());
+        m_AnimationShoot.lock()->Play();
+        glm::vec2 bulletDirection = ownerEnemy.lock()->m_Player.lock()->m_Transform.translation - ownerEnemy.lock()->m_Transform.translation;
+        auto bullet = std::make_shared<Bullet>(ownerEnemy.lock()->m_Transform.translation, BulletDamage, CollisionLayer::Enemy, 10.0f, ammoIndex, bulletDirection);
+        bullet->m_Transform.translation = ownerEnemy.lock()->m_Transform.translation;
+        m_BulletBox->AddBullet(bullet);
+    }
+    if (!isAnimDone && m_AnimationShoot.lock()->GetCurrentFrameIndex()==m_AnimationShoot.lock()->GetFrameCount() - 1) {
+        isAnimDone = true;
     }
 }

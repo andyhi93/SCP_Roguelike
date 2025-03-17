@@ -31,7 +31,7 @@ void SCP743A::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
 		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-			m_Player->Damage(damage);
+			m_Player.lock()->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}
 	}
@@ -53,7 +53,7 @@ void SCP743A::Start() {
 void SCP743A::Behavior() {
 	m_meleeTrigger->FlipTrigger();
 
-	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
+	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 }

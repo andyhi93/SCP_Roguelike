@@ -20,6 +20,14 @@ public:
     std::vector<std::shared_ptr<BoxCollider>> GetTableColliders();
     std::vector<std::shared_ptr<BoxCollider>> GetEnemyColliders();
     std::vector<std::shared_ptr<BoxCollider>> GetActorColliders();
+
+    void ClearCollider() {
+        for (auto& collider : colliders) {
+            collider.reset();
+        }
+        colliders.clear();
+        std::cout << "ColliderManager size: " << colliders.size() << "\n";
+    }
 private:
     std::vector<std::shared_ptr<BoxCollider>> colliders;
     bool isReset = true;

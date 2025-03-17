@@ -7,14 +7,6 @@ SCP610::SCP610() : Enemy(glm::vec2{ 30,100 }){
 	m_collider->offset = { 0,-25 };
 	isDropCoin = true;
 
-	std::random_device rd;  // 隨機數種子
-	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
-	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
-
-	m_LastAttackTime = dis(gen);
-	m_BulletBox = std::make_shared<BulletBox>();
-	this->AddChild(m_BulletBox);
-
 	health = 1;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
@@ -31,46 +23,29 @@ SCP610::SCP610() : Enemy(glm::vec2{ 30,100 }){
 	m_AnimationWalk->Play();
 	m_Transform.scale = { 5,5 };
 }
-void SCP610::SetPlayer(std::shared_ptr<Player> _player) {
+void SCP610::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
-	this->AddChild(m_BulletBox);
 }
 void SCP610::SetActive(bool isActive) {
 	m_collider->isActive = isActive;
 	if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
-	if (!isActive) m_BulletBox->ChangeRoom();
+	if (!isActive && m_IRangedAttack) m_IRangedAttack->m_BulletBox->ChangeRoom();
 }
 void SCP610::Behavior() {
-	glm::vec2 direction = normalize(m_Player->m_Transform.translation - m_Transform.translation);
+	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
-	Shoot();
+	Shootable();
 }
-void SCP610::Shoot() {
-	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-		SetDrawable(m_AnimationAttack);
-		m_AnimationAttack->SetCurrentFrame(0);
-		m_AnimationAttack->Play();
-		m_LastAttackTime = currentTime;
-	}
-	if (m_AnimationAttack->GetCurrentFrameIndex() == 2 && !isFire) {
-		glm::vec2 bulletDirection = m_Player->m_Transform.translation - m_Transform.translation;
-		auto bullet = std::make_shared<Bullet>(m_Transform.translation, damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection);
-		bullet->m_Transform.translation = m_Transform.translation;
-		m_BulletBox->AddBullet(bullet);
-		isFire = true;
-	}
-	if (m_AnimationAttack->GetCurrentFrameIndex() == 3) {
-		SetDrawable(m_AnimationWalk);
-		isFire = false;
-	}
+void SCP610::Start() {
+	m_collider->parentActor = shared_from_this();
+	m_IRangedAttack=std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack,1);
+	this->AddChild(m_IRangedAttack->m_BulletBox);
 }
 void SCP610::FixedUpdate() {
-	m_BulletBox->FixedUpdate();
+	if(m_IRangedAttack) m_IRangedAttack->m_BulletBox->FixedUpdate();
 }
 void SCP610::Update() {
-	m_BulletBox->Update() ;	
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
@@ -79,5 +54,31 @@ void SCP610::Update() {
 	if (!isDead) {
 		FlipControl();
 		Behavior();
+		if (state!=State::Walk &&m_IRangedAttack->isAnimDone) {
+			SetDrawable(m_AnimationWalk);
+			state = State::Walk;
+		}
+	}
+}
+void SCP610::Shootable() {
+	float currentTime = SDL_GetTicks() / 1000.0f;
+	if (currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
+		m_IRangedAttack->m_LastShootTime = currentTime;
+		m_IRangedAttack->isFire = false;
+	}
+	if (!m_IRangedAttack->isFire) {//Get Size tEST
+		state = Enemy::State::Attack;
+		m_IRangedAttack->isFire = true;
+		m_IRangedAttack->isAnimDone = false;
+		m_IRangedAttack->m_AnimationShoot.lock()->SetCurrentFrame(0);
+		SetDrawable(m_IRangedAttack->m_AnimationShoot.lock());
+		m_IRangedAttack->m_AnimationShoot.lock()->Play();
+		glm::vec2 bulletDirection = m_Player.lock()->m_Transform.translation - m_Transform.translation;
+		auto bullet = std::make_shared<Bullet>(m_Transform.translation, m_IRangedAttack->BulletDamage, CollisionLayer::Enemy, 10.0f, m_IRangedAttack->ammoIndex, bulletDirection);
+		bullet->m_Transform.translation = m_Transform.translation;
+		//m_IRangedAttack->m_BulletBox->AddBullet(bullet);
+	}
+	if (!m_IRangedAttack->isAnimDone && m_IRangedAttack->m_AnimationShoot.lock()->GetCurrentFrameIndex() == m_IRangedAttack->m_AnimationShoot.lock()->GetFrameCount() - 1) {
+		m_IRangedAttack->isAnimDone = true;
 	}
 }

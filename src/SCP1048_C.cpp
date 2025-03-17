@@ -13,8 +13,6 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 
 	attackSpeedUp = 3;
 	m_LastAttackTime = dis(gen);
-	m_BulletBox = std::make_shared<BulletBox>();
-	this->AddChild(m_BulletBox);
 
 	health = 1;
 	speed = 1.0f;
@@ -31,52 +29,31 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 void SCP1048_C::SetActive(bool isActive) {
 	m_collider->isActive = isActive;
 	if (m_meleeTrigger) m_meleeTrigger->m_collider->isActive = isActive;
-	if (!isActive) m_BulletBox->ChangeRoom();
+	if (!isActive && m_IRangedAttack) m_IRangedAttack->m_BulletBox->ChangeRoom();
 }
-void SCP1048_C::SetPlayer(std::shared_ptr<Player> _player) {
+void SCP1048_C::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
-	this->AddChild(m_BulletBox);
 }
 void SCP1048_C::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
 		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-			m_Player->Damage(damage);
+			m_Player.lock()->Damage(damage);
 			m_LastAttackTime = currentTime;
 		}
 	}
 }
 void SCP1048_C::Behavior() {
+	Shootable();
 	m_meleeTrigger->FlipTrigger();
 
-	glm::vec2 direction = normalize( m_Player->m_Transform.translation - m_Transform.translation);
+	glm::vec2 direction = normalize( m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
 	float currentTime = SDL_GetTicks() / 1000.0f;
-	Shoot();
-}
-void SCP1048_C::Shoot() {
-	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-		SetDrawable(m_AnimationAttack);
-		m_AnimationAttack->SetCurrentFrame(0);
-		m_AnimationAttack->Play();
-		m_LastAttackTime = currentTime;
-		isFire = false;
-	}
-	if (m_AnimationAttack->GetCurrentFrameIndex() == 1 && !isFire) {
-		std::vector<glm::vec2> bulletDirection = { {0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{-1,1},{1,-1} };
-		for (int i = 0; i < 8; i++) {
-			auto bullet = std::make_shared<Bullet>(m_Transform.translation, damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection[i]);
-			bullet->m_Transform.translation = m_Transform.translation;
-			m_BulletBox->AddBullet(bullet);
-		}
-		isFire = true;
-		SetDrawable(m_AnimationWalk);
-	}
 }
 void SCP1048_C::FixedUpdate() {
-	m_BulletBox->FixedUpdate();
+	m_IRangedAttack->m_BulletBox->FixedUpdate();
 }
 void SCP1048_C::Start() {
 	m_collider->parentActor = shared_from_this();
@@ -90,9 +67,14 @@ void SCP1048_C::Start() {
 	m_meleeTrigger = std::make_shared<IMeleeTrigger>(m_collider->size + glm::vec2{ 20,20 });
 	m_meleeTrigger->ownerEnemy = std::dynamic_pointer_cast<Enemy>(shared_from_this());  // ³]©w ownerEnemy
 	m_meleeTrigger->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(m_meleeTrigger));
+
+
+	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack,1);
+	this->AddChild(m_IRangedAttack->m_BulletBox);
+
 }
 void SCP1048_C::Update() {
-	m_BulletBox->Update();
+	m_IRangedAttack->m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
@@ -101,5 +83,29 @@ void SCP1048_C::Update() {
 	if (!isDead) {
 		FlipControl();
 		Behavior();
+		if (state != State::Walk && m_IRangedAttack->isAnimDone) {
+			SetDrawable(m_AnimationWalk);
+			state = State::Walk;
+		}
+	}
+}
+void SCP1048_C::Shootable() {
+	float currentTime = SDL_GetTicks() / 1000.0f;
+	if (currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
+		SetDrawable(m_AnimationAttack);
+		m_AnimationAttack->SetCurrentFrame(0);
+		m_AnimationAttack->Play();
+		m_IRangedAttack->m_LastShootTime = currentTime;
+		m_IRangedAttack->isFire = false;
+	}
+	if (m_AnimationAttack->GetCurrentFrameIndex() == 1 && !m_IRangedAttack->isFire) {
+		std::vector<glm::vec2> bulletDirection = { {0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{-1,1},{1,-1} };
+		for (int i = 0; i < 8; i++) {
+			auto bullet = std::make_shared<Bullet>(m_Transform.translation, damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection[i]);
+			bullet->m_Transform.translation = m_Transform.translation;
+			m_IRangedAttack->m_BulletBox->AddBullet(bullet);
+		}
+		m_IRangedAttack->isFire = true;
+		SetDrawable(m_AnimationWalk);
 	}
 }

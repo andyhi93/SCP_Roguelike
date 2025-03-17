@@ -8,7 +8,7 @@ ColliderManager& ColliderManager::GetInstance() {
 
 void ColliderManager::RegisterCollider(std::shared_ptr<BoxCollider> collider) {
     colliders.push_back(collider);
-    std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(collider->parentActor);
+    std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(collider->parentActor.lock());
     if(collider->tag=="Solid") solid->Start();
     isReset = false;
 }
@@ -24,7 +24,7 @@ void ColliderManager::UpdateCollisions() {
                 isReset = true;
                 break;
             }
-            auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor);
+            auto PlayerActor = std::dynamic_pointer_cast<Player>(colliders[i]->parentActor.lock());
             if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" 
                 || colliders[j]->tag == "Door1" || colliders[j]->tag == "Door2" || colliders[j]->tag == "Door3" || colliders[j]->tag == "Door4"
                 || colliders[j]->tag == "Table") && colliders[i]->isActive && colliders[j]->isActive) {  }
@@ -83,7 +83,7 @@ void ColliderManager::Update() {
     UpdateCollisions();
     auto SolidCols=GetSolidColliders();
     for (auto solidCol : SolidCols) {
-        std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor);
+        std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor.lock());
         if (solidCol->tag == "Solid") solid->Update();
         //else if (solidCol->tag == "Chest" && !solid)  std::cout << "nullptr\n";
     }

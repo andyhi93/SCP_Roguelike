@@ -8,7 +8,24 @@
 class Player;
 class Item;
 class Enemy;
+class BulletBox;
+class IRangedAttack: public Object {
+public:
+    IRangedAttack(std::weak_ptr<Enemy> ownerEnemy, std::weak_ptr<Util::Animation> m_AnimationShoot,int ammoIndex);
+    std::weak_ptr<Enemy> ownerEnemy;
+    std::weak_ptr<Util::Animation> m_AnimationShoot;
+    float BulletDamage = 1;
 
+    virtual void Shoot();
+    std::shared_ptr<BulletBox> m_BulletBox=std::make_shared<BulletBox>();
+    bool isAnimDone = false;
+    float shootSpeed = 5;
+    int ammoIndex=1;
+    float m_LastShootTime = 0.0f;
+    bool isFire = false;
+
+protected:
+};
 class IMeleeTrigger : public Actor,public Trigger {
 public:
     std::weak_ptr<Enemy> ownerEnemy;
@@ -24,7 +41,7 @@ public:
     virtual void Start();
     virtual void Update()=0;
     Enemy(glm::vec2 size);
-    virtual void SetPlayer(std::shared_ptr<Player> _player);//child obj need add app
+    virtual void SetPlayer(std::weak_ptr<Player> _player);//child obj need add app
     glm::vec2 normalize(glm::vec2 values);
 
     virtual void SetActive(bool isActive);
@@ -38,13 +55,8 @@ public:
 
 
     std::shared_ptr<IMeleeTrigger> m_meleeTrigger;
-protected:
-    std::shared_ptr<Util::Animation> m_AnimationWalk;
-    std::shared_ptr<Util::Animation> m_AnimationAttack;
-    std::shared_ptr<Util::Animation> m_AnimationDie;
-
-    std::shared_ptr<Player> m_Player;
-    void FlipControl();
+    std::shared_ptr<IRangedAttack> m_IRangedAttack;
+    std::weak_ptr<Player> m_Player;
 
     enum State
     {
@@ -53,6 +65,13 @@ protected:
         Die,
     };
     State state = Walk;
+protected:
+    std::shared_ptr<Util::Animation> m_AnimationWalk;
+    std::shared_ptr<Util::Animation> m_AnimationAttack;
+    std::shared_ptr<Util::Animation> m_AnimationDie;
+
+    void FlipControl();
+
     bool isFaceRight = true;
     bool isMoving = false;
     float speed = 5;

@@ -56,9 +56,7 @@ void Texture::UpdateData(GLint format, int width, int height,
     glTexImage2D(GL_TEXTURE_2D, 0, GlFormatToGlInternalFormat(format), width,
                  height, 0, format, GL_UNSIGNED_BYTE, data);
 
-    // 有更改成GL_NEAREST，因為像素圖繪失真，原為GL_LINEAR
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    // 有更改成GL_NEAREST，因為像素圖繪失真，原為GL_LINEAR
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 } // namespace Core

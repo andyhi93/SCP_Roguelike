@@ -24,7 +24,7 @@ public:
     std::shared_ptr<UI> m_MapUI;
     std::vector<std::shared_ptr<Object>> currentObjects = {};
 
-    void setPlayer(std::shared_ptr<Player> _player);
+    void setPlayer(std::weak_ptr<Player> _player);
 
     void Update();
     void FixedUpdate() override;
@@ -43,7 +43,7 @@ private:
     bool IsValidRoom(int x, int y);
     void AddRoom(int x, int y);
 
-    std::shared_ptr<Player> m_Player;
+    std::weak_ptr<Player> m_Player;
 
 };
 
