@@ -70,13 +70,13 @@ void Player::PlayerControl() {
     Move(velocity);
     //get mousePos
     if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_RB)) {
-        LOG_INFO("CursorPosition:{} {}", Util::Input::GetCursorPosition().x, Util::Input::GetCursorPosition().y);
+        LOG_INFO("CursorPosition:{} {}", GetCursorPosition().x, GetCursorPosition().y);
         LOG_INFO("PlayerPosition:{} {}", m_Transform.translation.x, m_Transform.translation.y);
     }
 
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
-        glm::vec2 bulletDirection = Util::Input::GetCursorPosition() - m_Transform.translation;
+        glm::vec2 bulletDirection = GetCursorPosition() - m_Transform.translation;
         auto bullet = std::make_shared<Bullet>(m_Hand->m_Transform.translation + glm::vec2{ 0,-15 }, ammoDamage, CollisionLayer::Player, 7.0f, 0, bulletDirection);
         bullet->m_Transform.translation = m_Hand->m_Transform.translation + glm::vec2{0,-15};
         m_BulletBox->AddBullet(bullet);
@@ -245,7 +245,7 @@ void Player::HandControl() {
     glm::vec2 offset = isFaceRight ? glm::vec2(-12, 20) : glm::vec2(12, 20);
     m_Hand->m_Transform.translation = m_Transform.translation + offset;
 
-    glm::vec2 mousePos = Util::Input::GetCursorPosition();
+    glm::vec2 mousePos = GetCursorPosition();
     glm::vec2 direction = mousePos - m_Transform.translation;
     float angle = isFaceRight ? atan2(direction.y, direction.x) : -atan2(direction.y, direction.x);
     m_Hand->m_Transform.rotation = isFaceRight ? angle + (glm::radians(90.0f)) : glm::radians(90.0f)- angle;

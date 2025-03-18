@@ -2,8 +2,8 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,100 }){
-	m_collider->offset = { 0,-25 };
+SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,80 }){
+	m_collider->offset = { 0,-10 };
 	isDropCoin = true;
 
 	std::random_device rd;  // 隨機數種子
@@ -12,8 +12,6 @@ SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,100 }){
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 
-	m_LastAttackTime = dis(gen);
-	attackSpeedUp = 1;
 
 	health = 1;
 	speed = 2.0f;

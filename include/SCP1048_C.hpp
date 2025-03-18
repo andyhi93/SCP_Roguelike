@@ -11,6 +11,7 @@ public:
     void SetActive(bool isActive) override;
     void OnCollisionEnter(std::shared_ptr<BoxCollider> other);
     void Shootable();
+    int shootIndex = 0;
 
     void Behavior();
     void SetPlayer(std::weak_ptr<Player> _player) override;

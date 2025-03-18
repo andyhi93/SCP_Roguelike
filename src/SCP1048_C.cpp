@@ -5,14 +5,7 @@
 SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 	isDropCoin = true;
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(0.0f, 3.0f);
-
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
-
-	attackSpeedUp = 3;
-	m_LastAttackTime = dis(gen);
 
 	health = 1;
 	speed = 1.0f;
@@ -35,12 +28,8 @@ void SCP1048_C::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
 }
 void SCP1048_C::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
-	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
-			m_Player.lock()->Damage(damage);
-			m_LastAttackTime = currentTime;
-		}
+		m_Player.lock()->Damage(damage);
 	}
 }
 void SCP1048_C::Behavior() {
@@ -99,7 +88,15 @@ void SCP1048_C::Shootable() {
 		m_IRangedAttack->isFire = false;
 	}
 	if (m_AnimationAttack->GetCurrentFrameIndex() == 1 && !m_IRangedAttack->isFire) {
-		std::vector<glm::vec2> bulletDirection = { {0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{-1,1},{1,-1} };
+		std::vector<glm::vec2> bulletDirection;
+		if(shootIndex){
+			bulletDirection = { {0,1},{0,-1},{1,0},{-1,0},{1,1},{-1,-1},{-1,1},{1,-1} };
+			shootIndex = 0;
+		}
+		else{
+			bulletDirection = { {1,0.5},{1,-0.5},{-1,0.5},{-1,-0.5},{0.5,1},{0.5,-1},{-0.5,1},{-0.5,-1}, };
+			shootIndex = 1;
+		}
 		for (int i = 0; i < 8; i++) {
 			auto bullet = std::make_shared<Bullet>(m_Transform.translation, damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection[i]);
 			bullet->m_Transform.translation = m_Transform.translation;

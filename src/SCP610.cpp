@@ -2,9 +2,9 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP610::SCP610() : Enemy(glm::vec2{ 30,100 }){
+SCP610::SCP610() : Enemy(glm::vec2{ 30,80 }){
 
-	m_collider->offset = { 0,-25 };
+	m_collider->offset = { 0,-10 };
 	isDropCoin = true;
 
 	health = 1;
@@ -76,7 +76,7 @@ void SCP610::Shootable() {
 		glm::vec2 bulletDirection = m_Player.lock()->m_Transform.translation - m_Transform.translation;
 		auto bullet = std::make_shared<Bullet>(m_Transform.translation, m_IRangedAttack->BulletDamage, CollisionLayer::Enemy, 10.0f, m_IRangedAttack->ammoIndex, bulletDirection);
 		bullet->m_Transform.translation = m_Transform.translation;
-		//m_IRangedAttack->m_BulletBox->AddBullet(bullet);
+		m_IRangedAttack->m_BulletBox->AddBullet(bullet);
 	}
 	if (!m_IRangedAttack->isAnimDone && m_IRangedAttack->m_AnimationShoot.lock()->GetCurrentFrameIndex() == m_IRangedAttack->m_AnimationShoot.lock()->GetFrameCount() - 1) {
 		m_IRangedAttack->isAnimDone = true;

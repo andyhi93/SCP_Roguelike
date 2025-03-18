@@ -6,16 +6,7 @@ SCP1048_B::SCP1048_B() : Enemy(glm::vec2{ 47,76 }) {
 	isDropCoin = true;
 	canFly = true;
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(0.0f, 2.0f);
-	std::uniform_int_distribution<int> idis(0, 3);
-	targetIndex = idis(gen);
-
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
-
-	attackSpeedUp = 3;
-	m_LastAttackTime = dis(gen);
 
 	health = 1;
 	speed = 7.0f;
@@ -54,12 +45,8 @@ void SCP1048_B::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
 }
 void SCP1048_B::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
-	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player.lock()->Damage(damage);
-			m_LastAttackTime = currentTime;
-		}
 	}
 }
 void SCP1048_B::Behavior() {

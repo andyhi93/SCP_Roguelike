@@ -6,13 +6,6 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,45 }) {
 	canFly = true;
 	isDropCoin = true;
 
-	std::random_device rd;  
-	std::mt19937 gen(rd()); 
-	std::uniform_real_distribution<float> dis(0.0f, 2.0f); 
-
-	attackSpeedUp = 3;
-	m_LastAttackTime = dis(gen);
-
 	health = 1;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(

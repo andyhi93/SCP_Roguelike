@@ -75,8 +75,6 @@ protected:
     bool isFaceRight = true;
     bool isMoving = false;
     float speed = 5;
-    float attackSpeedUp = 5;
-    float m_LastAttackTime = 0.0f;   
 
     float health = 10;
     float damage = 1;

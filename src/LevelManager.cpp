@@ -151,6 +151,9 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
             enemy->SetActive(false);
+            if (enemy->m_IRangedAttack) {
+                enemy->m_IRangedAttack->m_BulletBox->RemoveAll();
+            }
         }
         else if(table){
             table->m_collider->isActive = false;

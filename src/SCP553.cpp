@@ -4,14 +4,8 @@
 #include <random>
 SCP553::SCP553() : Enemy(glm::vec2{ 50,50 }) {
 	canFly = true;
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(0.0f, 2.0f);
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
-
-	attackSpeedUp = 3;
-	m_LastAttackTime = dis(gen);
 
 	health = 2;
 	speed = 3.0f;
@@ -43,12 +37,8 @@ void SCP553::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
 }
 void SCP553::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
-	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player.lock()->Damage(damage);
-			m_LastAttackTime = currentTime;
-		}
 	}
 }
 void SCP553::Behavior() {

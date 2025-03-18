@@ -5,14 +5,6 @@
 SCP743A::SCP743A() : Enemy(glm::vec2{ 80,30 }) {
 	isDropCoin = true;
 
-	std::random_device rd;  // 隨機數種子
-	std::mt19937 gen(rd()); // 使用 Mersenne Twister PRNG
-	std::uniform_real_distribution<float> dis(0.0f, 5.0f); // 生成 0 到 5 之間的 float
-
-	//m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));
-	m_LastAttackTime = dis(gen);
-	attackSpeedUp = 1;
-
 	health = 1;
 	speed = 5.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
@@ -28,12 +20,8 @@ SCP743A::SCP743A() : Enemy(glm::vec2{ 80,30 }) {
 	m_Transform.scale = { 4,4 };
 }
 void SCP743A::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
-	float currentTime = SDL_GetTicks() / 1000.0f;
 	if (other->tag == "Player") {
-		if (currentTime - m_LastAttackTime >= attackSpeedUp) {
 			m_Player.lock()->Damage(damage);
-			m_LastAttackTime = currentTime;
-		}
 	}
 }
 
