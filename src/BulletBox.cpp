@@ -31,12 +31,13 @@ void BulletBox::AutoRemove() {
 	}
 }
 void BulletBox::ChangeRoom() {
-	for (auto& bullet : bullets) {
-		bullet->SetIsLive(false);
-	}
+	RemoveAll();
 }
 void BulletBox::RemoveAll() {
-	bullets.clear();
+	for (auto& bullet : bullets) {
+		this->RemoveChild(bullet);
+		bullets.clear();
+	}
 }
 void BulletBox::AddBullet(std::shared_ptr<Bullet> bullet) {
 	bullet->Start();

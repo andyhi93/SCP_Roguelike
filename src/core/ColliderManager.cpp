@@ -28,7 +28,7 @@ void ColliderManager::UpdateCollisions() {
             if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" 
                 || colliders[j]->tag == "Door1" || colliders[j]->tag == "Door2" || colliders[j]->tag == "Door3" || colliders[j]->tag == "Door4"
                 || colliders[j]->tag == "Table") && colliders[i]->isActive && colliders[j]->isActive) {  }
-            else if (!colliders[i]->isActive || !colliders[j]->isActive) continue; 
+            else if (!colliders[i]->isActive || !colliders[j]->isActive || (PlayerActor&& PlayerActor->isDashing && (colliders[j]->tag == "Enemy" || colliders[j]->tag == "Trap"))) continue;
             colliders[i]->HandleCollision(colliders[j]);
             colliders[j]->HandleCollision(colliders[i]);
         }

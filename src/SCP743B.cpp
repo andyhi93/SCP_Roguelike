@@ -20,6 +20,7 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,45 }) {
 	m_Transform.scale = { 2.5f,2.5f };
 }
 void SCP743B::Start() {
+	m_collider->parentActor = shared_from_this();
 	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack,2);
 	this->AddChild(m_IRangedAttack->m_BulletBox);
 	m_IRangedAttack->shootSpeed = 3.0f;

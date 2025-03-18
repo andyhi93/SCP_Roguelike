@@ -73,7 +73,7 @@ void IMeleeTrigger::FlipTrigger() {
 void IMeleeTrigger::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Player") {
         auto player = std::dynamic_pointer_cast<Player>(other->parentActor.lock());
-        if (player) {
+        if (player && !player->isDashing) {
             player->Damage(MeleeDamage);
         }
     }

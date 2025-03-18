@@ -59,7 +59,7 @@ void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	}
 	else if (layer == CollisionLayer::Enemy && other->tag == "Player") {
 		std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(collidedActor);
-		if (!player->GetIsInvincible()) {
+		if (!player->GetIsInvincible() && !player->isDashing) {
 			player->Damage(1);
 			std::cout << "Bullet hit Player" << std::endl;
 			islive = false;

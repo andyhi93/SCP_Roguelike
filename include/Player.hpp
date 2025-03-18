@@ -80,13 +80,13 @@ private:
     float m_LastShotTime=0;
     float m_ShotInterval=1;
     float ammoDamage = 1;
-    float maxHealth = 5;
+    float maxHealth = 100;
     float currentHealth = maxHealth;
     int coinAmount = 100;
 
-    float dashTime = 0.2f;  
-    float dashCooldown = 3.0f;  
-    float dashSpeedMultiplier = 5.0f;  
+    float dashTime = 0.4f;  
+    float dashCooldown = 2.0f;  
+    float dashSpeedMultiplier = 3.0f;  
     float dashStartTime = 0.0f;  
     float lastDashEndTime = -dashCooldown;  
     bool canDash = true;  

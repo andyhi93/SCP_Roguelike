@@ -10,7 +10,6 @@
 void App::InitMap() {
     //Layer
     m_LevelManager = std::make_shared<LevelManager>();
-    m_Player = std::make_shared<Player>();
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
 
@@ -36,13 +35,16 @@ void App::FreeMap() {
     m_Root.RemoveChild(m_Player);
     m_Root.RemoveChild(m_LevelManager);
 
-    m_Player.reset();
     m_LevelManager.reset();
     ColliderManager::GetInstance().ClearCollider();
 }
-
+void App::ResetGame() {
+    FreeMap();
+    m_Player.reset();
+}
 void App::Start() {
     LOG_TRACE("Start");
+    m_Player = std::make_shared<Player>();
 
     m_CurrentState = State::UPDATE;
 }

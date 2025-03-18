@@ -160,7 +160,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     }
 }
 void Player::Damage(float damage) {
-    if (currentState != Hurt) {
+    if (currentState != Hurt && currentHealth>0 && !isDashing && !isInvincible) {
         SetHealth(GetCurrentHealth() - damage);
         currentState = Hurt;
     }
@@ -258,7 +258,7 @@ void Player::Update() {
     m_Hand->Update();
     m_BulletBox->Update();
     //std::cout << "Reference Count: " << shared_from_this().use_count() << std::endl;
-    if (currentHealth <= 0 && currentState != Die) {
+    if (currentHealth < 1 && currentState != Die) {
         currentState = Die;
         this->RemoveChild(m_Hand);
     }

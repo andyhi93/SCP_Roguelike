@@ -37,6 +37,7 @@ private:
 
     void InitMap();
     void FreeMap();
+    void ResetGame();
     bool isInitMap = false;
 
     Util::Renderer m_Root;
