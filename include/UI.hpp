@@ -26,9 +26,9 @@ public:
         std::vector<std::shared_ptr<Item>> roomItems = {};
     };
     void Update();
-    void Init(std::vector<Room> _RoomData);
+    void InitMapUI(std::vector<Room> _RoomData);
     void SetMap(std::vector<Room> _RoomData);
-    void GetPlayer(std::weak_ptr<Player> _player);
+    void SetPlayer(std::weak_ptr<Player> _player);
 
     enum RoomType {
         //func

@@ -5,13 +5,14 @@
 #include <iostream>
 #include <cmath>
 #include "Enemy.hpp"
-#include "SCP610.hpp"
-#include "SCP049_2.hpp"
-#include "SCP743A.hpp"
-#include "SCP743B.hpp"
-#include "SCP1048_B.hpp"
-#include "SCP1048_C.hpp"
-#include "SCP553.hpp"
+#include "Camera.hpp"
+#include "Enemies/SCP610.hpp"
+#include "Enemies/SCP049_2.hpp"
+#include "Enemies/SCP743A.hpp"
+#include "Enemies/SCP743B.hpp"
+#include "Enemies/SCP1048_B.hpp"
+#include "Enemies/SCP1048_C.hpp"
+#include "Enemies/SCP553.hpp"
 #include "Table.hpp"
 #include "Trap.hpp"
 #include "Item.hpp"
@@ -171,6 +172,9 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
 }
 
 void Tilemap::Update() {
+    if (Camera::GetInstance().isActive) {
+        m_Transform.translation = -Camera::GetInstance().GetCameraWorldCoord();
+    }
 }
 void Tilemap::Init() {
     std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 450} };

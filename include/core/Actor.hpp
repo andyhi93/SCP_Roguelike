@@ -4,6 +4,7 @@
 #include "BoxCollider.hpp"
 #include "ColliderManager.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
 
 class Actor : public Object, public std::enable_shared_from_this<Actor> {
 public:

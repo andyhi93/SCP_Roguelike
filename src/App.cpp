@@ -7,7 +7,19 @@
 #include "Core/Solid.hpp"
 #include <iostream>
 
+void App::Start() {
+    LOG_TRACE("Start");
+    m_Menu = std::make_shared<Menu>();
+
+
+    isSetMenu = true;
+    m_Menu->OpenMenu();
+    m_Root.AddChild(m_Menu);
+
+    m_CurrentState = State::UPDATE;
+}
 void App::InitMap() {
+    m_Player->m_Transform.translation = { 0,0 };
     //Layer
     m_LevelManager = std::make_shared<LevelManager>();
     std::shared_ptr<Object> empty;
@@ -29,7 +41,7 @@ void App::InitMap() {
     m_LevelManager->setPlayer(m_Player);
     m_Player->SetLevelManager(m_LevelManager);
 
-    m_LevelManager->m_MapUI->GetPlayer(m_Player);
+    m_LevelManager->m_MapUI->SetPlayer(m_Player);
 }
 void App::FreeMap() {
     m_Root.RemoveChild(m_Player);
@@ -42,14 +54,8 @@ void App::ResetGame() {
     FreeMap();
     m_Player.reset();
 }
-void App::Start() {
-    LOG_TRACE("Start");
-    m_Player = std::make_shared<Player>();
-
-    m_CurrentState = State::UPDATE;
-}
 void App::FixedUpdate() {
-    if (isInitMap) {
+    if (isInitMap && !isStop) {
         m_Player->FixedUpdate();
         m_LevelManager->FixedUpdate();
     }
@@ -62,12 +68,55 @@ float App::GetDeltaTime() {
     return deltaTime;
 }
 void App::Update() {
+    m_Root.Update();
     //std::cout << "Ref count: " << m_Player.use_count() << std::endl;
-    if (isInitMap) {
+    if (isInitMap && !isStop) {
         ColliderManager::GetInstance().Update();
         m_Player->Update();
         m_LevelManager->Update();
-        m_Root.Update();
+    }
+
+    m_Menu->Update();
+    if (isSetMenu) { 
+        if (currentGameState == StartMenu) {
+            if (m_Menu->startButton->isClick()) {
+                m_Player = std::make_shared<Player>();
+                m_Menu->CloseMenu();
+                m_Root.RemoveChild(m_Menu);
+                currentGameState = MobFloor;
+                m_Menu->isStartMenu = false;
+                isSetMenu = false;
+                isInitMap = true;
+                InitMap();
+            }
+            if (m_Menu->exitButton->isClick()) {
+                m_CurrentState = State::END;
+            }
+        }
+        else {
+            if (m_Menu->resumeButton->isClick()) {
+                isSetMenu = false;
+                m_Menu->CloseMenu();
+                m_Root.RemoveChild(m_Menu);
+                isStop = false;
+            }
+            if (m_Menu->menuButton->isClick()&& isInitMap) {
+                currentGameState = StartMenu;
+                m_Menu->isStartMenu = true;
+                m_Menu->OpenMenu();
+                isInitMap = false;
+                isStop = false;
+                FreeMap();
+            }
+        }
+    }
+    else {
+        if (currentGameState != StartMenu /* && !isSetMenu */ && Util::Input::IsKeyDown(Util::Keycode::ESCAPE)) {
+            isSetMenu = true;
+            m_Menu->OpenMenu();
+            m_Root.AddChild(m_Menu);
+            isStop = true;
+        }
     }
     if (Util::Input::IsKeyUp(Util::Keycode::I) && !isInitMap) {
         isInitMap = true;
@@ -82,10 +131,10 @@ void App::Update() {
      * Do not touch the code below as they serve the purpose for
      * closing the window.
      */
-    if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) ||
+    /*if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) ||
         Util::Input::IfExit()) {
         m_CurrentState = State::END;
-    }
+    }*/
     //FixedUpdate
     float deltaTime = GetDeltaTime(); 
     m_AccumulatedTime += deltaTime;

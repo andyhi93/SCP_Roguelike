@@ -51,14 +51,27 @@ void Actor::MoveX(float amount) {
             }
             else if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
             {
-                m_Transform.translation.x += sign;
-                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                move -= sign;
+                if (Camera::GetInstance().isActive && PlayerActor) {
+                    Camera::GetInstance().SetCameraWorldCoord({ Camera::GetInstance().GetCameraWorldCoord().x + sign,0 });
+                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
+                }
+                else {
+                    m_Transform.translation.x += sign;
+                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                    move -= sign;
+                }
             }
             else {
-                m_Transform.translation.x -= sign;
-                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                break;
+                if (Camera::GetInstance().isActive && PlayerActor) {
+                    Camera::GetInstance().SetCameraWorldCoord({ Camera::GetInstance().GetCameraWorldCoord().x - sign,0 });
+                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
+                    break;
+                }
+                else {
+                    m_Transform.translation.x -= sign;
+                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                    break;
+                }
             }
         }
     }
@@ -105,14 +118,27 @@ void Actor::MoveY(float amount) {
             }
             else if (!CheckCollisionWithSolids() || (m_collider->isTrigger&& !(PlayerActor)))
             {
-                m_Transform.translation.y += sign;
-                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                move -= sign;
+                if (Camera::GetInstance().isActive && PlayerActor) {
+                    Camera::GetInstance().SetCameraWorldCoord({ 0,Camera::GetInstance().GetCameraWorldCoord().y + sign });
+                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
+                }
+                else {
+                    m_Transform.translation.y += sign;
+                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                    move -= sign;
+                }
             }
             else {
-                m_Transform.translation.y -= sign;
-                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                break;
+                if (Camera::GetInstance().isActive && PlayerActor) {
+                    Camera::GetInstance().SetCameraWorldCoord({ 0,Camera::GetInstance().GetCameraWorldCoord().y - sign });
+                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
+                    break;
+                }
+                else {
+                    m_Transform.translation.y -= sign;
+                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                    break;
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-#include "SCP610.hpp"
+#include "Enemies/SCP610.hpp"
 #include "Player.hpp"
 #include <iostream>
 #include <random>

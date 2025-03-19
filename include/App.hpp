@@ -8,7 +8,8 @@
 #include "Player.hpp"
 #include "LevelManager.hpp"
 #include "Core/ColliderManager.hpp"
-#include "Table.hpp"
+#include "Menu.hpp"
+
 class App {
 public:
     enum class State {
@@ -34,6 +35,7 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
     std::shared_ptr<LevelManager> m_LevelManager;
+    std::shared_ptr<Menu> m_Menu;
 
     void InitMap();
     void FreeMap();
@@ -45,6 +47,16 @@ private:
     //FixedUpdate
     float m_FixedDeltaTime = 0.016f; 
     float m_AccumulatedTime = 0.0f;  
+
+    enum GameState {
+        StartMenu,
+        MobFloor,
+        Boss,
+    };
+    GameState currentGameState = StartMenu;
+    bool isSetMenu = false;
+
+    bool isStop = false;
 };
 
 #endif

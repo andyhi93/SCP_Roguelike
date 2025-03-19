@@ -108,7 +108,7 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor.lock());
         if(!table->isBroken) table->BreakTable();
     }
-    if (isDashing && other->tag == "Enemy") {
+    if (other->tag == "Enemy") {
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor.lock());
         if (enemy) enemy->Damage(ammoDamage);
     }

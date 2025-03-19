@@ -4,13 +4,16 @@
 #include "BoxCollider.hpp"
 #include "ColliderManager.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
 
 class Solid : public Object, public std::enable_shared_from_this<Solid> {
 public:
     std::shared_ptr<BoxCollider> m_collider;
-    static std::vector<std::shared_ptr<BoxCollider>> walls;
+    static std::vector<std::shared_ptr<Solid>> walls;
     virtual void Start();
     void Update();
+
+    glm::vec2 relativePos;
 
     Solid(glm::vec2 pos, glm::vec2 size);
     static void InitializeColliders();

@@ -46,6 +46,7 @@ bool LevelManager::IsValidRoom(int x, int y) {
 }
 void LevelManager::Update(){
     m_MapUI->Update();
+    m_Tilemap->Update();
     std::vector<std::shared_ptr<Object>> newCoins;
     for (auto& obj : currentObjects) {
         obj->Update();

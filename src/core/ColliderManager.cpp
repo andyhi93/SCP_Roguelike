@@ -28,7 +28,7 @@ void ColliderManager::UpdateCollisions() {
             if (PlayerActor && PlayerActor->GetIsInvincible() && (colliders[j]->tag == "Item" 
                 || colliders[j]->tag == "Door1" || colliders[j]->tag == "Door2" || colliders[j]->tag == "Door3" || colliders[j]->tag == "Door4"
                 || colliders[j]->tag == "Table") && colliders[i]->isActive && colliders[j]->isActive) {  }
-            else if (!colliders[i]->isActive || !colliders[j]->isActive || (PlayerActor&& PlayerActor->isDashing && (colliders[j]->tag == "Enemy" || colliders[j]->tag == "Trap"))) continue;
+            else if (!colliders[i]->isActive || !colliders[j]->isActive ) continue;
             colliders[i]->HandleCollision(colliders[j]);
             colliders[j]->HandleCollision(colliders[i]);
         }
@@ -82,9 +82,11 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetTableColliders() {
 void ColliderManager::Update() {
     UpdateCollisions();
     auto SolidCols=GetSolidColliders();
+    int i = 0;
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor.lock());
-        if (solidCol->tag == "Solid") solid->Update();
-        //else if (solidCol->tag == "Chest" && !solid)  std::cout << "nullptr\n";
+        if (solid) solid->Update();
+        //if (solid && solid->m_collider->tag == "Wall") i += 1;
     }
+    //std::cout << "Wall count: " << i << "\n";
 }

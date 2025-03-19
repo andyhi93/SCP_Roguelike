@@ -71,7 +71,7 @@ void UI::setHealthUI() {
     m_coinText->m_Text->SetText("0");
     this->AddChild(m_coinText);
 }
-void UI::Init(std::vector<Room> _RoomData) {
+void UI::InitMapUI(std::vector<Room> _RoomData) {
     int roomIndex = 0;
     if (_RoomData.size() != 9) std::cout << "MapUI Init Wrong: RoomSize isn't 9!" << std::endl;
     for(int y=0;y<3;y++){
@@ -111,7 +111,7 @@ void UI::Init(std::vector<Room> _RoomData) {
 void UI::SetMap(std::vector<Room> _RoomData) {
     if (!isInit) {
         isInit = true;
-        Init(_RoomData);
+        InitMapUI(_RoomData);
     }
     else {
         for (int y = 0; y < 3; y++) {
@@ -149,7 +149,7 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
         colorObject->SetDrawable(nullptr);
     }
 }
-void UI::GetPlayer(std::weak_ptr<Player> _player) { 
+void UI::SetPlayer (std::weak_ptr<Player> _player) { 
     MapPlayer = _player; 
     maxHealth= MapPlayer.lock()->GetHealth();
     currentHealth = maxHealth;
