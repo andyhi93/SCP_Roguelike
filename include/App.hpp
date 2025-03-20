@@ -9,6 +9,7 @@
 #include "LevelManager.hpp"
 #include "Core/ColliderManager.hpp"
 #include "Menu.hpp"
+#include "Core/Camera.hpp"
 
 class App {
 public:

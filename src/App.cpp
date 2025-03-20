@@ -56,7 +56,10 @@ void App::ResetGame() {
 }
 void App::InitBossMap() {
     m_Player->m_Transform.translation = { 0,0 };
+    m_Player->m_WorldCoord = { 0,0 };
     m_LevelManager = std::make_shared<LevelManager>(false);
+    m_LevelManager->setPlayer(m_Player);
+    m_LevelManager->InitBossRoom();
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
 

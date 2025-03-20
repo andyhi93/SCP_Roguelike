@@ -255,7 +255,7 @@ void Player::FixedUpdate() {
     m_BulletBox->FixedUpdate();
 }
 void Player::Update() {
-    std::cout << "WorldCoord: " << WorldCoord.x << " ," << WorldCoord.y << "\n";
+    //std::cout << "WorldCoord: " << m_WorldCoord.x << " ," << m_WorldCoord.y << "\n"<<"PlayerPos: "<<m_Transform.translation.x<<" ,"<<m_Transform.translation.y<<"\n";
     m_Hand->Update();
     m_BulletBox->Update();
     //std::cout << "Reference Count: " << shared_from_this().use_count() << std::endl;

@@ -6,6 +6,7 @@
 #include "core/Object.hpp"
 #include "UI.hpp"
 #include "Enemy.hpp"
+#include "Core/Camera.hpp"
 
 class Player;
 constexpr int MAP_SIZE_WIDTH = 5;
@@ -29,6 +30,8 @@ public:
     void Update();
     void FixedUpdate() override;
 
+    void InitBossRoom();
+    std::shared_ptr<Camera> m_Camera;
 private:
     bool isMobFloor;
 

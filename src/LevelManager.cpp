@@ -22,6 +22,12 @@ LevelManager::LevelManager(bool _isMobFloor) {
         auto objs = m_Tilemap->InitBossRoom(Tilemap::BossType::SCP049);
     }
 }
+void LevelManager::InitBossRoom() {
+    if (auto lockedChild = m_Player.lock()) {}
+    else { std::cout << "nullptr Player\n"; }
+    std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap };
+    m_Camera = std::make_shared<Camera>(temp);
+}
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;
 }
@@ -37,6 +43,12 @@ bool LevelManager::IsValidRoom(int x, int y) {
     return (neighborCount <= 1);
 }
 void LevelManager::Update(){
+    if (!isMobFloor) { 
+        m_Camera->CameraFollowWith(m_Player.lock()->m_WorldCoord); 
+        //std::cout << "camera worldcoord: " << m_Camera->GetCameraWorldCoord().translation.x << " ," << m_Camera->GetCameraWorldCoord().translation.y<<"\n"
+        //    <<"player worldcoord: "<< m_Player.lock()->m_WorldCoord.x<<" ,"<< m_Player.lock()->m_WorldCoord.y<<"\n";
+        m_Camera->Update();
+    }
     //std::cout << "in fun(): sp.use_count() == " << m_MapUI.use_count()<< "\n";
     if (!isMobFloor) return;
     m_MapUI->Update();

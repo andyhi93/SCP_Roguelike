@@ -5,7 +5,6 @@
 #include <iostream>
 #include <cmath>
 #include "Enemy.hpp"
-#include "Camera.hpp"
 #include "Enemies/SCP610.hpp"
 #include "Enemies/SCP049_2.hpp"
 #include "Enemies/SCP743A.hpp"
@@ -247,6 +246,7 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
 
 std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType) {
     this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Room/BossRoom.png"));
+    m_WorldCoord= { 0,1380 };
     m_Transform.translation = { 0,1380 };
     return {};
 }
