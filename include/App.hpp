@@ -37,8 +37,10 @@ private:
     std::shared_ptr<LevelManager> m_LevelManager;
     std::shared_ptr<Menu> m_Menu;
 
-    void InitMap();
-    void FreeMap();
+    void InitMobMap();
+    void FreeMobMap();
+    void InitBossMap();
+    void FreeBossMap();
     void ResetGame();
     bool isInitMap = false;
 

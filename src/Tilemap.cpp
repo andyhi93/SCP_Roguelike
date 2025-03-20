@@ -172,9 +172,6 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
 }
 
 void Tilemap::Update() {
-    if (Camera::GetInstance().isActive) {
-        m_Transform.translation = -Camera::GetInstance().GetCameraWorldCoord();
-    }
 }
 void Tilemap::Init() {
     std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 450} };
@@ -182,6 +179,7 @@ void Tilemap::Init() {
     std::string path = "";
     for (int i = 0; i < 4; i++) {
         std::shared_ptr<Door> temp_door = std::make_shared<Door>(doorPos[i],doorSize[i]);
+        //temp_door->Start();
         temp_door->m_collider->tag = "Door"+ std::to_string(i);
         if (i == 3) {
             temp_door->m_Transform.translation = doorPos[i] - glm::vec2{0, 60};
@@ -207,6 +205,17 @@ void Tilemap::Init() {
             temp_door->SetVisible(false);
         }
     }
+    std::vector<std::vector<glm::vec2>> wallData = { {glm::vec2(845, -303), glm::vec2(10, 335)},{glm::vec2(845, 263), glm::vec2(10, 538)},
+        {glm::vec2(-485, -475), glm::vec2(830, 10)},{glm::vec2(475, -475), glm::vec2(830, 10)},{glm::vec2(-870, -303), glm::vec2(60, 335)},{glm::vec2(-870, 263), glm::vec2(63, 538)},
+        {glm::vec2(-485, 425), glm::vec2(830, 100)},{glm::vec2(440, 425), glm::vec2(770, 100)}, };
+    for (int i = 0; i < 8; i++) {
+        std::shared_ptr<Solid> tempWall = std::make_shared<Solid>(wallData[i][0], wallData[i][1]);
+        tempWall->m_collider->tag = "Wall";
+        tempWall->m_collider->isSolid = true;
+        tempWall->Start();
+        walls.push_back(tempWall);
+    }
+
     this->SetDrawable(std::make_shared<Util::Image>(roomImages[std::stoi(path, nullptr, 2)]));
 }
 void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
@@ -233,4 +242,11 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
         }
         this->SetDrawable(std::make_shared<Util::Image>(roomImages[std::stoi(path, nullptr, 2)]));
     }
+}
+
+
+std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType) {
+    this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Room/BossRoom.png"));
+    m_Transform.translation = { 0,1380 };
+    return {};
 }

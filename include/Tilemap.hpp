@@ -34,6 +34,12 @@ public:
     std::vector<std::shared_ptr<Object>> InitRoom(RoomType _RoomType,int entrancePos,int maxEnemyAmount);
     std::vector<std::shared_ptr<Door>> doors;
     bool hasDoor[4] = { false, false, false, false };//ESWN
+
+    std::vector<std::shared_ptr<Solid>> walls;
+
+
+    enum BossType { SCP049, SCP743 };
+    std::vector<std::shared_ptr<Object>> InitBossRoom(BossType _BossType);
 private:
     std::vector<std::string> roomImages;
     bool IsInit = false;

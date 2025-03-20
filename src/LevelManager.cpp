@@ -8,30 +8,22 @@
 #include "Item.hpp"
 #include <Chest.hpp>
 
-LevelManager::LevelManager() {
-    m_MapUI= std::make_shared<UI>();
-    this->AddChild(m_Tilemap);
-    this->AddChild(m_MapUI);
-    m_MapUI->SetZIndex(10);
-    GenerateLevel();
+LevelManager::LevelManager(bool _isMobFloor) {
+    isMobFloor = _isMobFloor;
+    if (isMobFloor) {
+        m_MapUI = std::make_shared<UI>();
+        this->AddChild(m_Tilemap);
+        this->AddChild(m_MapUI);
+        m_MapUI->SetZIndex(10);
+        GenerateLevel();
+    }
+    else {
+        this->AddChild(m_Tilemap);
+        auto objs = m_Tilemap->InitBossRoom(Tilemap::BossType::SCP049);
+    }
 }
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;
-    /*std::vector<std::shared_ptr<Object>> temp = m_Tilemap->InitRoom(Tilemap::Room1048);
-    currentObjects.clear();
-    for (auto& obj : temp) {
-        std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
-        if (enemy) {
-            enemy->Start();
-            enemy->SetPlayer(m_Player);
-            enemy->m_collider->isActive = true;
-            this->AddChild(enemy);
-            currentObjects.push_back(enemy);
-        }
-        else {
-            this->AddChild(obj);
-        }
-    }*/
 }
 bool LevelManager::IsValidRoom(int x, int y) {
     if (x < 0 || x >= MAP_SIZE_WIDTH || y < 0 || y >= MAP_SIZE_HEIGHT) return false;
@@ -45,6 +37,8 @@ bool LevelManager::IsValidRoom(int x, int y) {
     return (neighborCount <= 1);
 }
 void LevelManager::Update(){
+    //std::cout << "in fun(): sp.use_count() == " << m_MapUI.use_count()<< "\n";
+    if (!isMobFloor) return;
     m_MapUI->Update();
     m_Tilemap->Update();
     std::vector<std::shared_ptr<Object>> newCoins;

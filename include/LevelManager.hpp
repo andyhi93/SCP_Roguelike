@@ -15,7 +15,7 @@ constexpr int MAX_ROOMS = 10;
 
 class LevelManager : public Object {
 public:
-    LevelManager();
+    LevelManager(bool _isMobFloor);
     void GenerateLevel();
     void PrintMap();
     void ChangeRoom(glm::ivec2 direction);
@@ -30,6 +30,7 @@ public:
     void FixedUpdate() override;
 
 private:
+    bool isMobFloor;
 
     UI::Room map[MAP_SIZE_WIDTH][MAP_SIZE_HEIGHT];
     glm::ivec2 startPos;

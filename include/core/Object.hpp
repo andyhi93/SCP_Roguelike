@@ -5,6 +5,7 @@
 
 class Object : public Util::GameObject {
 public:
+    glm::vec2 WorldCoord = { 0,0 };
     virtual void Update(){}
     virtual void FixedUpdate(){}
     enum class CollisionLayer {

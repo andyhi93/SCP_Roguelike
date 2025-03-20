@@ -25,7 +25,7 @@ void BoxCollider::SetOffset(glm::vec2 offset) {
 }
 // 用於觸發進入、停留和退出事件
 void BoxCollider::HandleCollision(std::shared_ptr<BoxCollider> other) {
-    if (triggerCallback.lock() && (this->isTrigger ^ other->isTrigger) && other && this->isActive && other->isActive) {
+    if (triggerCallback.lock() && other && (this->isTrigger ^ other->isTrigger)  && this->isActive && other->isActive) {
         bool isColliding = CheckCollision(other);
         bool wasColliding = currentCollisions.count(other) > 0;
         if (isColliding) {

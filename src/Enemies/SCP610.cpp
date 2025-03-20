@@ -38,6 +38,13 @@ void SCP610::Behavior() {
 	Shootable();
 }
 void SCP610::Start() {
+	if (isDropCoin) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dis(0, 4);
+		int cmd = dis(gen);
+		if (cmd == 0 || cmd == 1 || cmd == 2) isDropCoin = false;
+	}
 	m_collider->parentActor = shared_from_this();
 	m_IRangedAttack=std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack,1);
 	this->AddChild(m_IRangedAttack->m_BulletBox);
@@ -46,6 +53,7 @@ void SCP610::FixedUpdate() {
 	if(m_IRangedAttack) m_IRangedAttack->m_BulletBox->FixedUpdate();
 }
 void SCP610::Update() {
+	m_IRangedAttack->m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();

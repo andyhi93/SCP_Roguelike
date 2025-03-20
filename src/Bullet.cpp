@@ -17,6 +17,8 @@ Bullet::Bullet(glm::vec2 pos, float _damage, CollisionLayer _layer, float _speed
 	damage = _damage;
 	direction = _direction;
 	direction = { direction.x / sqrt(direction.x * direction.x + direction.y * direction.y),direction.y / sqrt(direction.x * direction.x + direction.y * direction.y) };
+	direction = { direction.x * speed ,direction.y * speed };
+	//std::cout << "speed: " << direction.x << " ," << direction.y << "\n";
 }
 void Bullet::Start() {
 	m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));//for trigger func
@@ -33,12 +35,13 @@ void Bullet::OutOfBounds() {
 	float y = m_Transform.translation.y;
 
 	if (x < -1920 || x > 1920 || y < -1080 || y > 1080) {
+		std::cout << "out of screen\n";
 		islive = false;
 	}
 }
 void Bullet::Move() {
-	MoveX(direction.x * speed);
-	MoveY(direction.y * speed);
+	MoveX(direction.x);
+	MoveY(direction.y);
 }
 
 void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {

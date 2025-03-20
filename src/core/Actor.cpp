@@ -18,13 +18,16 @@ void Actor::MoveX(float amount) {
         std::cout << "Out of map\n";
         m_Transform.translation.x = m_Transform.translation.x>830? 800:-800;
         m_collider->position.x = m_Transform.translation.x;
+        WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
     }
-    if (OtherSolid && (m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || OtherSolidCol->tag == "Door"))){
+    if (OtherSolid && (!m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || 
+        OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3"))){
         int sign = (-m_Transform.translation.x) < 0 ? -1 : 1;
         while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
             m_Transform.translation.x += sign;
+            m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+            WorldCoord.x += sign;
         }
-        m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
@@ -32,8 +35,14 @@ void Actor::MoveX(float amount) {
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
         float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
-        if (diff > 0) m_Transform.translation.x += 1;
-        else if (diff < 0) m_Transform.translation.x -= 1;
+        if (diff > 0) {
+            m_Transform.translation.x += 1;
+            WorldCoord.x += 1;
+        }
+        else if (diff < 0) {
+            m_Transform.translation.x -= 1;
+            WorldCoord.x -= 1;
+        }
         m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
     xRemainder += amount;
@@ -51,27 +60,16 @@ void Actor::MoveX(float amount) {
             }
             else if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
             {
-                if (Camera::GetInstance().isActive && PlayerActor) {
-                    Camera::GetInstance().SetCameraWorldCoord({ Camera::GetInstance().GetCameraWorldCoord().x + sign,0 });
-                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
-                }
-                else {
-                    m_Transform.translation.x += sign;
-                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                    move -= sign;
-                }
+                m_Transform.translation.x += sign;
+                WorldCoord += sign;
+                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                move -= sign;
             }
             else {
-                if (Camera::GetInstance().isActive && PlayerActor) {
-                    Camera::GetInstance().SetCameraWorldCoord({ Camera::GetInstance().GetCameraWorldCoord().x - sign,0 });
-                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
-                    break;
-                }
-                else {
-                    m_Transform.translation.x -= sign;
-                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                    break;
-                }
+                m_Transform.translation.x -= sign;
+                WorldCoord -= sign;
+                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                break;
             }
         }
     }
@@ -84,23 +82,31 @@ void Actor::MoveY(float amount) {
     if (!m_collider->isTrigger && !PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
         m_Transform.translation.y=m_Transform.translation.y > 354 ? 300 : -373;
         m_collider->position.y = m_Transform.translation.y;
+        WorldCoord.y= m_Transform.translation.y > 354 ? 300 : -373;
     }
-    if (OtherSolid && (!m_collider->isTrigger && (OtherSolidCol->tag == "Wall" ||
+    if (OtherSolid && (!m_collider->isTrigger && !OtherSolidCol->isTrigger &&(OtherSolidCol->tag == "Wall" ||
         OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4")))//remember x
     {
         int sign = (-m_Transform.translation.y) < 0 ? -1 : 1;
         while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
             m_Transform.translation.y += sign;
+            WorldCoord.y += sign;
+            m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
         }
-        m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
     }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
         float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
-        if (diff > 0) m_Transform.translation.y += 1;
-        else if (diff < 0) m_Transform.translation.y -= 1;
+        if (diff > 0) {
+            m_Transform.translation.y += 1;
+            WorldCoord.y += 1;
+        }
+        else if (diff < 0) {
+            m_Transform.translation.y -= 1;
+            WorldCoord.y -= 1;
+        }
         m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
     }
     yRemainder += amount;
@@ -118,27 +124,16 @@ void Actor::MoveY(float amount) {
             }
             else if (!CheckCollisionWithSolids() || (m_collider->isTrigger&& !(PlayerActor)))
             {
-                if (Camera::GetInstance().isActive && PlayerActor) {
-                    Camera::GetInstance().SetCameraWorldCoord({ 0,Camera::GetInstance().GetCameraWorldCoord().y + sign });
-                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
-                }
-                else {
-                    m_Transform.translation.y += sign;
-                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                    move -= sign;
-                }
+                m_Transform.translation.y += sign;
+                WorldCoord.y += sign;
+                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                move -= sign;
             }
             else {
-                if (Camera::GetInstance().isActive && PlayerActor) {
-                    Camera::GetInstance().SetCameraWorldCoord({ 0,Camera::GetInstance().GetCameraWorldCoord().y - sign });
-                    //std::cout << Camera::GetInstance().GetCameraWorldCoord().x << ", " << Camera::GetInstance().GetCameraWorldCoord().y << "\n";
-                    break;
-                }
-                else {
-                    m_Transform.translation.y -= sign;
-                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                    break;
-                }
+                m_Transform.translation.y -= sign;
+                WorldCoord.y -= sign;
+                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                break;
             }
         }
     }
@@ -146,7 +141,7 @@ void Actor::MoveY(float amount) {
 
 std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids() {
     std::vector<std::shared_ptr<BoxCollider>> solids;
-    if(canFly) solids = ColliderManager::GetInstance().GetFlyColliders();
+    if(canFly) solids = ColliderManager::GetInstance().GetWallColliders();
     else solids = ColliderManager::GetInstance().GetSolidColliders();
     //std::cout << "solid size: " << solids.size() << std::endl;
     for (auto& solid : solids) {

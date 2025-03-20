@@ -18,10 +18,10 @@ void App::Start() {
 
     m_CurrentState = State::UPDATE;
 }
-void App::InitMap() {
+void App::InitMobMap() {
     m_Player->m_Transform.translation = { 0,0 };
     //Layer
-    m_LevelManager = std::make_shared<LevelManager>();
+    m_LevelManager = std::make_shared<LevelManager>(true);
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
 
@@ -35,7 +35,7 @@ void App::InitMap() {
         i++;
     }
 
-    Solid::InitializeColliders();
+    //Solid::InitializeColliders();
 
     m_Player->Start();
     m_LevelManager->setPlayer(m_Player);
@@ -43,7 +43,7 @@ void App::InitMap() {
 
     m_LevelManager->m_MapUI->SetPlayer(m_Player);
 }
-void App::FreeMap() {
+void App::FreeMobMap() {
     m_Root.RemoveChild(m_Player);
     m_Root.RemoveChild(m_LevelManager);
 
@@ -51,8 +51,29 @@ void App::FreeMap() {
     ColliderManager::GetInstance().ClearCollider();
 }
 void App::ResetGame() {
-    FreeMap();
+    FreeMobMap();
     m_Player.reset();
+}
+void App::InitBossMap() {
+    m_Player->m_Transform.translation = { 0,0 };
+    m_LevelManager = std::make_shared<LevelManager>(false);
+    std::shared_ptr<Object> empty;
+    std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
+
+    int i = 0;
+    for each (auto & obj in Objects) {
+        if (obj) {
+            obj->SetZIndex(i);
+            m_Root.AddChild(obj);
+        }
+        else { LOG_INFO("Error: Null GameObject:{}", i); }
+        i++;
+    }
+    m_LevelManager->setPlayer(m_Player);
+    m_Player->SetLevelManager(m_LevelManager);
+}
+void App::FreeBossMap() {
+
 }
 void App::FixedUpdate() {
     if (isInitMap && !isStop) {
@@ -87,7 +108,7 @@ void App::Update() {
                 m_Menu->isStartMenu = false;
                 isSetMenu = false;
                 isInitMap = true;
-                InitMap();
+                InitMobMap();
             }
             if (m_Menu->exitButton->isClick()) {
                 m_CurrentState = State::END;
@@ -106,7 +127,7 @@ void App::Update() {
                 m_Menu->OpenMenu();
                 isInitMap = false;
                 isStop = false;
-                FreeMap();
+                FreeMobMap();
             }
         }
     }
@@ -120,11 +141,16 @@ void App::Update() {
     }
     if (Util::Input::IsKeyUp(Util::Keycode::I) && !isInitMap) {
         isInitMap = true;
-        InitMap();
+        InitMobMap();
     }
     if (Util::Input::IsKeyUp(Util::Keycode::O) && isInitMap) {
         isInitMap = false;
-        FreeMap();
+        FreeMobMap();
+    }
+    if (Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap) {
+        currentGameState = Boss;
+        FreeMobMap();
+        InitBossMap();
     }
     
     /*
