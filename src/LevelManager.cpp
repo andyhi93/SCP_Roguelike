@@ -25,8 +25,9 @@ LevelManager::LevelManager(bool _isMobFloor) {
 void LevelManager::InitBossRoom() {
     if (auto lockedChild = m_Player.lock()) {}
     else { std::cout << "nullptr Player\n"; }
-    std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap };
+    std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap};
     m_Camera = std::make_shared<Camera>(temp);
+    for (auto& wall : m_Tilemap->bossWalls) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(wall)); }
 }
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;

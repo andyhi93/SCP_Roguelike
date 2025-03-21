@@ -13,8 +13,6 @@ public:
     virtual void Start();
     void Update();
 
-    glm::vec2 relativePos;
-
     Solid(glm::vec2 pos, glm::vec2 size);
     static void InitializeColliders();
     virtual ~Solid() {

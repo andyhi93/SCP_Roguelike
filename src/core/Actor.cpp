@@ -12,26 +12,29 @@ void Actor::SetDead() {
 }
 
 void Actor::MoveX(float amount) {
-    auto OtherSolidCol = CheckCollisionWithSolids();
-    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
-    if(!m_collider->isTrigger && (m_Transform.translation.x > 830 || m_Transform.translation.x < -830)){
-        std::cout << "Out of map\n";
-        m_Transform.translation.x = m_Transform.translation.x>830? 800:-800;
-        m_collider->position.x = m_Transform.translation.x;
-        m_WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
-    }
-    if (OtherSolid && (!m_collider->isTrigger && (OtherSolidCol->tag == "Wall" || 
-        OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3"))){
-        int sign = (-m_Transform.translation.x) < 0 ? -1 : 1;
-        while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
-            m_Transform.translation.x += sign;
-            m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-            m_WorldCoord.x += sign;
+    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
+    if (!m_collider->isTrigger && !PlayerActor) {
+        auto OtherSolidCol = CheckCollisionWithSolids();
+        auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
+        if (m_Transform.translation.x > 830 || m_Transform.translation.x < -830) {
+            std::cout << "Out of map\n";
+            m_Transform.translation.x = m_Transform.translation.x > 830 ? 800 : -800;
+            m_collider->position.x = m_Transform.translation.x;
+            m_WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
+        }
+        if (OtherSolid && (OtherSolidCol->tag == "Wall" ||
+            OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3")) {
+            int sign = (-m_Transform.translation.x) < 0 ? -1 : 1;
+            while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
+                m_Transform.translation.x += sign;
+                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                m_WorldCoord.x += sign;
+                std::cout << "stuck wall\n";
+            }
         }
     }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
-    auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
         float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
@@ -76,22 +79,23 @@ void Actor::MoveX(float amount) {
 }
 
 void Actor::MoveY(float amount) {
-    auto OtherSolidCol = CheckCollisionWithSolids();
-    auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
     auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
-    if (!m_collider->isTrigger && !PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
-        m_Transform.translation.y=m_Transform.translation.y > 354 ? 300 : -373;
-        m_collider->position.y = m_Transform.translation.y;
-        m_WorldCoord.y= m_Transform.translation.y > 354 ? 300 : -373;
-    }
-    if (OtherSolid && (!m_collider->isTrigger && !OtherSolidCol->isTrigger &&(OtherSolidCol->tag == "Wall" ||
-        OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4")))//remember x
-    {
-        int sign = (-m_Transform.translation.y) < 0 ? -1 : 1;
-        while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
-            m_Transform.translation.y += sign;
-            m_WorldCoord.y += sign;
-            m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+    if (!m_collider->isTrigger && !PlayerActor) {
+        auto OtherSolidCol = CheckCollisionWithSolids();
+        auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
+        if (!PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
+            m_Transform.translation.y = m_Transform.translation.y > 354 ? 300 : -373;
+            m_collider->position.y = m_Transform.translation.y;
+            m_WorldCoord.y = m_Transform.translation.y > 354 ? 300 : -373;
+        }
+        if (OtherSolid && ((OtherSolidCol->tag == "Wall" ||
+            OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4"))){
+            int sign = (-m_Transform.translation.y) < 0 ? -1 : 1;
+            while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
+                m_Transform.translation.y += sign;
+                m_WorldCoord.y += sign;
+                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+            }
         }
     }
     auto OtherCollider = CheckCollisionWithActors();

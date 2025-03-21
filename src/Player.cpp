@@ -68,11 +68,6 @@ void Player::PlayerControl() {
         currentState = (currentState == Hurt) ? Hurt : Idle;
     }
     Move(velocity);
-    //get mousePos
-    if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_RB)) {
-        LOG_INFO("CursorPosition:{} {}", GetCursorPosition().x, GetCursorPosition().y);
-        LOG_INFO("PlayerPosition:{} {}", m_Transform.translation.x, m_Transform.translation.y);
-    }
 
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {

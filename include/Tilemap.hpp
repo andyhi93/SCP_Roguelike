@@ -10,7 +10,7 @@ class Enemy;
 class Tilemap : public Object {
 public:
     Tilemap();
-    void Init();
+    void InitDoor();
 
     void Update();
     void SetDoors(bool east, bool south , bool west, bool north);
@@ -35,11 +35,12 @@ public:
     std::vector<std::shared_ptr<Door>> doors;
     bool hasDoor[4] = { false, false, false, false };//ESWN
 
-    std::vector<std::shared_ptr<Solid>> walls;
+    std::vector<std::shared_ptr<Solid>> mobWalls;
 
 
     enum BossType { SCP049, SCP743 };
     std::vector<std::shared_ptr<Object>> InitBossRoom(BossType _BossType);
+    std::vector<std::shared_ptr<Solid>> bossWalls;
 private:
     std::vector<std::string> roomImages;
     bool IsInit = false;

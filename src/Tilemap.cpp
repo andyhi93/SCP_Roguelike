@@ -19,18 +19,22 @@
 #include <random>
 
 Tilemap::Tilemap() {
-    roomImages = { RESOURCE_DIR "/Room/room_0000.png" ,RESOURCE_DIR "/Room/room_0001.png"
-    ,RESOURCE_DIR "/Room/room_0010.png",RESOURCE_DIR "/Room/room_0011.png"
-    ,RESOURCE_DIR "/Room/room_0100.png" ,RESOURCE_DIR "/Room/room_0101.png"
-    ,RESOURCE_DIR "/Room/room_0110.png" ,RESOURCE_DIR "/Room/room_0111.png"
-    ,RESOURCE_DIR "/Room/room_1000.png" ,RESOURCE_DIR "/Room/room_1001.png"
-    ,RESOURCE_DIR "/Room/room_1010.png" ,RESOURCE_DIR "/Room/room_1011.png"
-    ,RESOURCE_DIR "/Room/room_1100.png" ,RESOURCE_DIR "/Room/room_1101.png"
-    ,RESOURCE_DIR "/Room/room_1110.png" ,RESOURCE_DIR "/Room/room_1111.png" };
     m_Transform.translation = { 0, 0 };
     m_Transform.scale = { 7, 7 };
 }
 std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int entrancePos, int maxEnemyAmount) {
+    std::vector<std::vector<glm::vec2>> wallData = { {glm::vec2(845, -303), glm::vec2(10, 335)},{glm::vec2(845, 263), glm::vec2(10, 538)},
+        {glm::vec2(-485, -475), glm::vec2(830, 10)},{glm::vec2(475, -475), glm::vec2(830, 10)},{glm::vec2(-870, -303), glm::vec2(60, 335)},{glm::vec2(-870, 263), glm::vec2(63, 538)},
+        {glm::vec2(-485, 425), glm::vec2(830, 100)},{glm::vec2(440, 425), glm::vec2(770, 100)}, };
+    for (int i = 0; i < 8; i++) {
+        std::shared_ptr<Solid> tempWall = std::make_shared<Solid>(wallData[i][0], wallData[i][1]);
+        tempWall->m_collider->tag = "Wall";
+        tempWall->m_collider->isSolid = true;
+        tempWall->Start();
+        mobWalls.push_back(tempWall);
+    }
+
+
     std::vector<std::shared_ptr<Enemy>> EnemyObjs;
     std::vector<glm::vec2> EnemyObjPos;
     std::random_device rd;
@@ -172,8 +176,8 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
 
 void Tilemap::Update() {
 }
-void Tilemap::Init() {
-    std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 450} };
+void Tilemap::InitDoor() {
+    std::vector<glm::vec2> doorPos = { glm::vec2 {870, -70} ,glm::vec2 {-7 ,-500} ,glm::vec2 {-870 ,-70 },glm::vec2 {-7, 390} };
     std::vector<glm::vec2> doorSize = { glm::vec2 {60, 120} ,glm::vec2 {126, 57} ,glm::vec2 {60, 123},glm::vec2 {126, 150} };
     std::string path = "";
     for (int i = 0; i < 4; i++) {
@@ -181,7 +185,9 @@ void Tilemap::Init() {
         //temp_door->Start();
         temp_door->m_collider->tag = "Door"+ std::to_string(i);
         if (i == 3) {
-            temp_door->m_Transform.translation = doorPos[i] - glm::vec2{0, 60};
+            temp_door->m_collider->offset = { 0,60 };
+            temp_door->m_Transform.translation = doorPos[i];
+            temp_door->m_collider->position = temp_door->m_collider->offset + temp_door->m_Transform.translation;
         }
         else {
             temp_door->m_Transform.translation = doorPos[i];
@@ -204,17 +210,14 @@ void Tilemap::Init() {
             temp_door->SetVisible(false);
         }
     }
-    std::vector<std::vector<glm::vec2>> wallData = { {glm::vec2(845, -303), glm::vec2(10, 335)},{glm::vec2(845, 263), glm::vec2(10, 538)},
-        {glm::vec2(-485, -475), glm::vec2(830, 10)},{glm::vec2(475, -475), glm::vec2(830, 10)},{glm::vec2(-870, -303), glm::vec2(60, 335)},{glm::vec2(-870, 263), glm::vec2(63, 538)},
-        {glm::vec2(-485, 425), glm::vec2(830, 100)},{glm::vec2(440, 425), glm::vec2(770, 100)}, };
-    for (int i = 0; i < 8; i++) {
-        std::shared_ptr<Solid> tempWall = std::make_shared<Solid>(wallData[i][0], wallData[i][1]);
-        tempWall->m_collider->tag = "Wall";
-        tempWall->m_collider->isSolid = true;
-        tempWall->Start();
-        walls.push_back(tempWall);
-    }
-
+    roomImages = { RESOURCE_DIR "/Room/room_0000.png" ,RESOURCE_DIR "/Room/room_0001.png"
+    ,RESOURCE_DIR "/Room/room_0010.png",RESOURCE_DIR "/Room/room_0011.png"
+    ,RESOURCE_DIR "/Room/room_0100.png" ,RESOURCE_DIR "/Room/room_0101.png"
+    ,RESOURCE_DIR "/Room/room_0110.png" ,RESOURCE_DIR "/Room/room_0111.png"
+    ,RESOURCE_DIR "/Room/room_1000.png" ,RESOURCE_DIR "/Room/room_1001.png"
+    ,RESOURCE_DIR "/Room/room_1010.png" ,RESOURCE_DIR "/Room/room_1011.png"
+    ,RESOURCE_DIR "/Room/room_1100.png" ,RESOURCE_DIR "/Room/room_1101.png"
+    ,RESOURCE_DIR "/Room/room_1110.png" ,RESOURCE_DIR "/Room/room_1111.png" };
     this->SetDrawable(std::make_shared<Util::Image>(roomImages[std::stoi(path, nullptr, 2)]));
 }
 void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
@@ -223,7 +226,7 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
     hasDoor[2] = west;
     hasDoor[3] = north;
     if (!IsInit) {
-        Init();
+        InitDoor();
         IsInit = true;
     }
     else {
@@ -243,8 +246,18 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
     }
 }
 
-
-std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType) {
+std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
+    std::vector<std::vector<glm::vec2>> wallData = { {{-410,-75},{49,492}},{{400,-76},{49,494}},{{-210,171},{318,165}},{{210,170},{310,167}},{{0,-300},{700,50}}, //L R TL TR B
+        {{-75,464},{50,470}},{{80,464},{50,470}},//Bottom pipe L&R
+        {{-655,700},{1200,50}},{{655,700},{1200,50}} //BL BR
+    };
+    for (int i = 0; i < wallData.size(); i++) {
+        std::shared_ptr<Solid> tempWall = std::make_shared<Solid>(wallData[i][0], wallData[i][1]);
+        tempWall->m_collider->tag = "Wall";
+        tempWall->m_collider->isSolid = true;
+        tempWall->Start();
+        bossWalls.push_back(tempWall);
+    }
     this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Room/BossRoom.png"));
     m_WorldCoord= { 0,1380 };
     m_Transform.translation = { 0,1380 };

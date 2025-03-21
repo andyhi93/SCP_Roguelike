@@ -83,12 +83,9 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetTableColliders() {
 }
 void ColliderManager::Update() {
     UpdateCollisions();
-    /*auto SolidCols = GetWallColliders();
-    int i = 0;
+    auto SolidCols = GetWallColliders();
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor.lock());
         if (solid) solid->Update();
-        if (solid && solid->m_collider->tag == "Wall") i += 1;
     }
-    std::cout << "Wall count: " << i << "\n";*/
 }
