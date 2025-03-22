@@ -13,7 +13,7 @@ void Actor::SetDead() {
 
 void Actor::MoveX(float amount) {
     auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
-    if (!m_collider->isTrigger && !PlayerActor) {
+    if (!m_collider->isTrigger && !isCameraOn) {
         auto OtherSolidCol = CheckCollisionWithSolids();
         auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (m_Transform.translation.x > 830 || m_Transform.translation.x < -830) {
@@ -22,16 +22,16 @@ void Actor::MoveX(float amount) {
             m_collider->position.x = m_Transform.translation.x;
             m_WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
         }
-        if (OtherSolid && (OtherSolidCol->tag == "Wall" ||
+        /*if (OtherSolid && (OtherSolidCol->tag == "Wall" ||
             OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3")) {
-            int sign = (-m_Transform.translation.x) < 0 ? -1 : 1;
+            int sign = (m_Transform.translation.x-OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
             while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
                 m_Transform.translation.x += sign;
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 m_WorldCoord.x += sign;
-                std::cout << "stuck wall\n";
+                std::cout << "stuck wallX\n";
             }
-        }
+        }*/
     }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
@@ -54,9 +54,9 @@ void Actor::MoveX(float amount) {
     {
         xRemainder -= move;
         int sign = move > 0 ? 1 : -1;
-        m_collider->position.x += sign;
         while (move != 0)
         {
+            m_collider->position.x += sign;
             if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 break;
@@ -80,7 +80,7 @@ void Actor::MoveX(float amount) {
 
 void Actor::MoveY(float amount) {
     auto PlayerActor = std::dynamic_pointer_cast<Player>(m_collider->parentActor.lock());
-    if (!m_collider->isTrigger && !PlayerActor) {
+    if (!m_collider->isTrigger && !isCameraOn) {
         auto OtherSolidCol = CheckCollisionWithSolids();
         auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (!PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
@@ -88,15 +88,16 @@ void Actor::MoveY(float amount) {
             m_collider->position.y = m_Transform.translation.y;
             m_WorldCoord.y = m_Transform.translation.y > 354 ? 300 : -373;
         }
-        if (OtherSolid && ((OtherSolidCol->tag == "Wall" ||
+        /*if (OtherSolid && ((OtherSolidCol->tag == "Wall" ||
             OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4"))){
-            int sign = (-m_Transform.translation.y) < 0 ? -1 : 1;
+            int sign = (m_Transform.translation.y - OtherSolid->m_Transform.translation.y) < 0 ? -1 : 1;
             while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
                 m_Transform.translation.y += sign;
                 m_WorldCoord.y += sign;
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                std::cout << "stuck wallY\n";
             }
-        }
+        }*/
     }
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
@@ -119,14 +120,14 @@ void Actor::MoveY(float amount) {
     {
         yRemainder -= move;
         int sign = move > 0 ? 1 : -1;
-        m_collider->position.y += sign;
         while (move != 0)
         {
-            if (!playerIsDashing &&!CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
+            m_collider->position.y += sign;
+            if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 break;
             }
-            else if (!CheckCollisionWithSolids() || (m_collider->isTrigger&& !(PlayerActor)))
+            else if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
             {
                 m_Transform.translation.y += sign;
                 m_WorldCoord.y += sign;

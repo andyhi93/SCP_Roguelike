@@ -23,6 +23,8 @@ public:
     bool isGetLevelManager = false;
     bool isGetPlayer = false;
     CollisionLayer getLayer() { return layer; }
+
+    bool isInCamera = false;
 private:
     float damage;
     float speed;

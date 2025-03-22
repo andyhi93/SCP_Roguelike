@@ -12,6 +12,7 @@
 #include "Enemies/SCP1048_B.hpp"
 #include "Enemies/SCP1048_C.hpp"
 #include "Enemies/SCP553.hpp"
+#include "Enemies/SCP049.hpp"
 #include "Table.hpp"
 #include "Trap.hpp"
 #include "Item.hpp"
@@ -246,10 +247,12 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
     }
 }
 
-std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
-    std::vector<std::vector<glm::vec2>> wallData = { {{-410,-75},{49,492}},{{400,-76},{49,494}},{{-210,171},{318,165}},{{210,170},{310,167}},{{0,-300},{700,50}}, //L R TL TR B
+std::shared_ptr<Enemy> Tilemap::InitBossRoom(BossType _BossType){
+    std::vector<std::vector<glm::vec2>> wallData = { {{-410,-75},{49,492}},{{400,-76},{49,494}},{{-210,171},{318,165}},{{210,170},{310,167}},{{0,-300},{700,50}}, //BOTTOM L R TL TR B
         {{-75,464},{50,470}},{{80,464},{50,470}},//Bottom pipe L&R
-        {{-655,700},{1200,50}},{{655,700},{1200,50}} //BL BR
+        {{-650,700},{1200,50}},{{655,700},{1200,50}},{{-1200,1246},{62,1176}},{{1200,1246},{62,1176}},{{-650,1730},{1176,142}},{{630,1730},{1176,142}}, //BL BR L R TL TR
+        {{-130,2000},{138,544}},{{110,2000},{138,544}}, //Top pipe L&R
+        {{-315,2270},{510,60}},{{295,2270},{510,60}},{{-540,2750},{64,838}},{{525,2750},{64,838}},{{0,2985},{1130,180}} //TOP BL BR L R T
     };
     for (int i = 0; i < wallData.size(); i++) {
         std::shared_ptr<Solid> tempWall = std::make_shared<Solid>(wallData[i][0], wallData[i][1]);
@@ -258,8 +261,38 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
         tempWall->Start();
         bossWalls.push_back(tempWall);
     }
+
+    std::vector<std::vector<glm::vec2>> doorData = { {{0,690},{60,120}} ,{{0,1685},{126, 150}} };
+    for (int i = 0; i < 2; i++) {
+        std::shared_ptr<Door> temp_door = std::make_shared<Door>(doorData[i][0], doorData[i][1]);
+        temp_door->m_collider->tag = "Door" + std::to_string(i);
+        if (i == 1) {
+            temp_door->m_collider->offset = { 0,50 };
+            temp_door->m_collider->position = temp_door->m_collider->offset + temp_door->m_Transform.translation;
+        }
+        temp_door->Start();
+        temp_door->m_collider->isSolid = true;
+        temp_door->SetZIndex(this->GetZIndex() + 0.1f);
+        this->AddChild(temp_door);
+        doors.push_back(temp_door);
+        if (i == 1) temp_door->SetIsTop(true);
+        else {
+            temp_door->m_Transform.rotation = (i+1 * 90) * (M_PI / 180.0);
+        }
+        temp_door->SetDrawable(std::make_shared<Util::Image>(temp_door->doorImage[0]));
+    }
+    doors[0]->DoorControl(true);
+    doors[1]->DoorControl(true);
+
     this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Room/BossRoom.png"));
     m_WorldCoord= { 0,1380 };
     m_Transform.translation = { 0,1380 };
-    return {};
+
+    auto Boss = std::make_shared<SCP049>();
+    Boss->m_Transform.translation = { -1068,1056 };
+    Boss->m_WorldCoord = { -1068,1056 };
+    Boss->SetZIndex(this->GetZIndex() + 0.5f);
+    this->AddChild(Boss);
+    if (_BossType == BossType::RoomSCP049) return Boss;
+    return nullptr;
 }

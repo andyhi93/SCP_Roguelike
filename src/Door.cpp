@@ -25,5 +25,3 @@ void Door::DoorControl(bool cmd) {
         this->SetDrawable(std::make_shared<Util::Image>(doorImage[0]));
     }
 }
-void Door::Update() {
-}

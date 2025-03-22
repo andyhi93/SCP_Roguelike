@@ -38,8 +38,8 @@ public:
     std::vector<std::shared_ptr<Solid>> mobWalls;
 
 
-    enum BossType { SCP049, SCP743 };
-    std::vector<std::shared_ptr<Object>> InitBossRoom(BossType _BossType);
+    enum BossType { RoomSCP049, RoomSCP743 };
+    std::shared_ptr<Enemy> InitBossRoom(BossType _BossType);
     std::vector<std::shared_ptr<Solid>> bossWalls;
 private:
     std::vector<std::string> roomImages;

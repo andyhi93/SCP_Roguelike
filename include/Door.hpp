@@ -11,7 +11,6 @@ public:
 
     Door(glm::vec2 pos, glm::vec2 size);
 
-    void Update();
 
     void SetIsTop(bool _isTop);
     std::vector<std::string> doorImage;

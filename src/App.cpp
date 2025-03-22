@@ -49,6 +49,7 @@ void App::FreeMobMap() {
 
     m_LevelManager.reset();
     ColliderManager::GetInstance().ClearCollider();
+    ColliderManager::GetInstance().RegisterCollider(m_Player->m_collider);
 }
 void App::ResetGame() {
     FreeMobMap();

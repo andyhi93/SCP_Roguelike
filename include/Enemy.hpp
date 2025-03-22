@@ -77,6 +77,7 @@ protected:
     float speed = 5;
 
     float health = 10;
+    float maxHealth;
     float damage = 1;
 };
 

@@ -19,7 +19,8 @@ LevelManager::LevelManager(bool _isMobFloor) {
     }
     else {
         this->AddChild(m_Tilemap);
-        auto objs = m_Tilemap->InitBossRoom(Tilemap::BossType::SCP049);
+        auto boss = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
+        currentObjects.push_back(boss);
     }
 }
 void LevelManager::InitBossRoom() {
@@ -28,6 +29,13 @@ void LevelManager::InitBossRoom() {
     std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap};
     m_Camera = std::make_shared<Camera>(temp);
     for (auto& wall : m_Tilemap->bossWalls) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(wall)); }
+    for (auto& door : m_Tilemap->doors) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(door)); }
+    auto boss = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
+    boss->Start();
+    boss->isCameraOn = true;
+    boss->SetPlayer(m_Player);
+    m_Player.lock()->isCameraOn = true;
+    m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(boss));
 }
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;
@@ -49,6 +57,22 @@ void LevelManager::Update(){
         //std::cout << "camera worldcoord: " << m_Camera->GetCameraWorldCoord().translation.x << " ," << m_Camera->GetCameraWorldCoord().translation.y<<"\n"
         //    <<"player worldcoord: "<< m_Player.lock()->m_WorldCoord.x<<" ,"<< m_Player.lock()->m_WorldCoord.y<<"\n";
         m_Camera->Update();
+        currentObjects[0]->Update();
+        
+        for (auto& bullet : m_Player.lock()->m_BulletBox->bullets) {
+            if (!bullet->isInCamera) {
+                bullet->isInCamera = true;
+                m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+            }
+        }
+
+        auto boss = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
+        for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
+            if (!bullet->isInCamera) {
+                bullet->isInCamera = true;
+                m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+            }
+        }
     }
     //std::cout << "in fun(): sp.use_count() == " << m_MapUI.use_count()<< "\n";
     if (!isMobFloor) return;

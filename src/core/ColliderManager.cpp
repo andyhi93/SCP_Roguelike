@@ -86,6 +86,8 @@ void ColliderManager::Update() {
     auto SolidCols = GetWallColliders();
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor.lock());
-        if (solid) solid->Update();
+        if (solid) {
+            solid->Update();
+        }
     }
 }
