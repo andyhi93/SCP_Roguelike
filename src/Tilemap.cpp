@@ -247,7 +247,8 @@ void Tilemap::SetDoors(bool east, bool south, bool west, bool north) {
     }
 }
 
-std::shared_ptr<Enemy> Tilemap::InitBossRoom(BossType _BossType){
+std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
+    std::vector<std::shared_ptr<Object>> objs = {};
     std::vector<std::vector<glm::vec2>> wallData = { {{-410,-75},{49,492}},{{400,-76},{49,494}},{{-210,171},{318,165}},{{210,170},{310,167}},{{0,-300},{700,50}}, //BOTTOM L R TL TR B
         {{-75,464},{50,470}},{{80,464},{50,470}},//Bottom pipe L&R
         {{-650,700},{1200,50}},{{655,700},{1200,50}},{{-1200,1246},{62,1176}},{{1200,1246},{62,1176}},{{-650,1730},{1176,142}},{{630,1730},{1176,142}}, //BL BR L R TL TR
@@ -262,7 +263,7 @@ std::shared_ptr<Enemy> Tilemap::InitBossRoom(BossType _BossType){
         bossWalls.push_back(tempWall);
     }
 
-    std::vector<std::vector<glm::vec2>> doorData = { {{0,690},{60,120}} ,{{0,1685},{126, 150}} };
+    std::vector<std::vector<glm::vec2>> doorData = { {{0,690},{60,69}} ,{{0,1685},{126, 150}} };
     for (int i = 0; i < 2; i++) {
         std::shared_ptr<Door> temp_door = std::make_shared<Door>(doorData[i][0], doorData[i][1]);
         temp_door->m_collider->tag = "Door" + std::to_string(i);
@@ -288,11 +289,23 @@ std::shared_ptr<Enemy> Tilemap::InitBossRoom(BossType _BossType){
     m_WorldCoord= { 0,1380 };
     m_Transform.translation = { 0,1380 };
 
+
     auto Boss = std::make_shared<SCP049>();
+    Boss->Start();
     Boss->m_Transform.translation = { -1068,1056 };
     Boss->m_WorldCoord = { -1068,1056 };
     Boss->SetZIndex(this->GetZIndex() + 0.5f);
+    Boss->isCameraOn = true;
     this->AddChild(Boss);
-    if (_BossType == BossType::RoomSCP049) return Boss;
-    return nullptr;
+    objs.push_back(Boss);
+
+    auto chest = std::make_shared<Chest>(glm::vec2{ 0,2576 }, glm::vec2{ 150,100 });
+    chest->m_WorldCoord = glm::vec2{ 0,2576 };
+    chest->Start();
+    chest->SetZIndex(this->GetZIndex() + 0.1f);
+    this->AddChild(chest);
+    chest->Start();
+    chest->m_collider->isActive = false;
+    objs.push_back(chest);
+    return objs;
 }

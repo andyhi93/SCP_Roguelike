@@ -5,35 +5,37 @@
 #include "UIText.hpp"
 #include <iostream>
 
-UI::UI() {
-    this->AddChild(Background);
-    m_Transform.translation = { 637 ,330 };
-    Background->SetZIndex(10);
-    Background->m_Transform.translation = { 637 ,330 };
-    Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_background.png"));
-    Background->m_Transform.scale = { 6,6 };
+UI::UI(bool isBossRoom) {
+    if (!isBossRoom) {
+        this->AddChild(Background);
+        m_Transform.translation = { 637 ,330 };
+        Background->SetZIndex(10);
+        Background->m_Transform.translation = { 637 ,330 };
+        Background->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_background.png"));
+        Background->m_Transform.scale = { 6,6 };
 
-    this->AddChild(PlayerPoint);
-    PlayerPoint->m_Transform.translation = { 637 ,330 };
-    PlayerPoint->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_point.png"));
-    PlayerPoint->m_Transform.scale = { 6,6 };
-    PlayerPoint->SetZIndex(10.3);
+        this->AddChild(PlayerPoint);
+        PlayerPoint->m_Transform.translation = { 637 ,330 };
+        PlayerPoint->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Map/map_point.png"));
+        PlayerPoint->m_Transform.scale = { 6,6 };
+        PlayerPoint->SetZIndex(10.3);
 
-    roomImages = { RESOURCE_DIR "/Map/map1.png" ,RESOURCE_DIR "/Map/map2.png" ,
-    RESOURCE_DIR "/Map/map3.png" ,RESOURCE_DIR "/Map/map4.png" ,
-    RESOURCE_DIR "/Map/map5.png" ,RESOURCE_DIR "/Map/map6.png" ,
-    RESOURCE_DIR "/Map/map7.png" ,RESOURCE_DIR "/Map/map8.png" ,
-    RESOURCE_DIR "/Map/map9.png" ,RESOURCE_DIR "/Map/map10.png" ,
-    RESOURCE_DIR "/Map/map11.png" ,RESOURCE_DIR "/Map/map12.png" ,
-    RESOURCE_DIR "/Map/map13.png" ,RESOURCE_DIR "/Map/map14.png" ,
-    RESOURCE_DIR "/Map/map15.png" ,RESOURCE_DIR "/Map/map16.png" ,
-    };
-    colorImages = {
-        RESOURCE_DIR "/Map/map_spawn.png",
-        RESOURCE_DIR "/Map/map_store.png" ,
-        RESOURCE_DIR "/Map/map_treasure.png",
-        RESOURCE_DIR "/Map/map_boss.png",
-    };
+        roomImages = { RESOURCE_DIR "/Map/map1.png" ,RESOURCE_DIR "/Map/map2.png" ,
+        RESOURCE_DIR "/Map/map3.png" ,RESOURCE_DIR "/Map/map4.png" ,
+        RESOURCE_DIR "/Map/map5.png" ,RESOURCE_DIR "/Map/map6.png" ,
+        RESOURCE_DIR "/Map/map7.png" ,RESOURCE_DIR "/Map/map8.png" ,
+        RESOURCE_DIR "/Map/map9.png" ,RESOURCE_DIR "/Map/map10.png" ,
+        RESOURCE_DIR "/Map/map11.png" ,RESOURCE_DIR "/Map/map12.png" ,
+        RESOURCE_DIR "/Map/map13.png" ,RESOURCE_DIR "/Map/map14.png" ,
+        RESOURCE_DIR "/Map/map15.png" ,RESOURCE_DIR "/Map/map16.png" ,
+        };
+        colorImages = {
+            RESOURCE_DIR "/Map/map_spawn.png",
+            RESOURCE_DIR "/Map/map_store.png" ,
+            RESOURCE_DIR "/Map/map_treasure.png",
+            RESOURCE_DIR "/Map/map_boss.png",
+        };
+    }
 
     setHealthUI();
 }
@@ -41,24 +43,24 @@ void UI::setHealthUI() {
     DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI1.png"));
     this->AddChild(DashUIImage);
     DashUIImage->m_Transform.scale = { 4,4 };
-    DashUIImage->m_Transform.translation = { -500,408 };
+    DashUIImage->m_Transform.translation = { -520,428 };
     DashUIImage->SetZIndex(10.2f);
 
     HealthFrameImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthFrame.png"));
     HealthBarImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/HealthBar.png"));
     this->AddChild(HealthFrameImage);
     HealthFrameImage->m_Transform.scale = { 3,3 };
-    HealthFrameImage->m_Transform.translation = { -712,408 };
+    HealthFrameImage->m_Transform.translation = { -732,428 };
     HealthFrameImage->SetZIndex(10.2f);
     this->AddChild(HealthBarImage);
     HealthBarImage->m_Transform.scale = { 3,3 };
-    HealthBarImage->m_Transform.translation = { -808,408 };
+    HealthBarImage->m_Transform.translation = { -828,428 };
     HealthBarImage->SetZIndex(10);
 
     m_healthText = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
     m_healthText->SetZIndex(10.1f);
     m_healthText->Start();
-    m_healthText->m_Transform.translation = { -690,408 };
+    m_healthText->m_Transform.translation = { -710,428 };
     m_healthText->m_Transform.scale = { 0.7,0.7 };
     m_healthText->m_Text->SetText(fmt::format("{}/{}", currentHealth, maxHealth));
     this->AddChild(m_healthText);
@@ -66,7 +68,7 @@ void UI::setHealthUI() {
     m_coinText = std::make_unique<UIText>(RESOURCE_DIR "/UI/PixelText.ttf", 50);
     m_coinText->SetZIndex(10.1f);
     m_coinText->Start();
-    m_coinText->m_Transform.translation = { -780,335 };
+    m_coinText->m_Transform.translation = { -800,355 };
     m_coinText->m_Transform.scale = { 1,1 };
     m_coinText->m_Text->SetText("0");
     this->AddChild(m_coinText);
@@ -152,12 +154,13 @@ void UI::UpdateRoomDisplay(Room roomData,int x, int y) {
 void UI::SetPlayer (std::weak_ptr<Player> _player) { 
     MapPlayer = _player; 
     maxHealth= MapPlayer.lock()->GetHealth();
-    currentHealth = maxHealth;
+    currentHealth = MapPlayer.lock()->GetCurrentHealth();
 }
 void UI::Update() {
-    glm::vec2 zoomDiff = { 1631 / 79 ,650 / 30 };
-    PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{MapPlayer.lock()->m_Transform.translation.x/zoomDiff[0], MapPlayer.lock()->m_Transform.translation.y/zoomDiff[1] };
-
+    if (PlayerPoint) {
+        glm::vec2 zoomDiff = { 1631 / 79 ,650 / 30 };
+        PlayerPoint->m_Transform.translation = m_Transform.translation + glm::vec2{ MapPlayer.lock()->m_Transform.translation.x / zoomDiff[0], MapPlayer.lock()->m_Transform.translation.y / zoomDiff[1] };
+    }
     //HealthUI
     maxHealth = MapPlayer.lock()->GetHealth();
     currentHealth = MapPlayer.lock()->GetCurrentHealth();

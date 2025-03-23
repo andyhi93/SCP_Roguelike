@@ -41,7 +41,7 @@ void App::InitMobMap() {
     m_LevelManager->setPlayer(m_Player);
     m_Player->SetLevelManager(m_LevelManager);
 
-    m_LevelManager->m_MapUI->SetPlayer(m_Player);
+    m_LevelManager->m_UI->SetPlayer(m_Player);
 }
 void App::FreeMobMap() {
     m_Root.RemoveChild(m_Player);

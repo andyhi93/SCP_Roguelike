@@ -8,7 +8,7 @@ ColliderManager& ColliderManager::GetInstance() {
 
 void ColliderManager::RegisterCollider(std::shared_ptr<BoxCollider> collider) {
     colliders.push_back(collider);
-    isReset = false;
+    //isReset = false;
 }
 void ColliderManager::UnregisterCollider(std::shared_ptr<BoxCollider> collider) {
     colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());

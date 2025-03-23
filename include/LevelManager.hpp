@@ -22,7 +22,7 @@ public:
     void ChangeRoom(glm::ivec2 direction);
 
     std::shared_ptr<Tilemap> m_Tilemap = std::make_shared<Tilemap>();
-    std::shared_ptr<UI> m_MapUI;
+    std::shared_ptr<UI> m_UI;
     std::vector<std::shared_ptr<Object>> currentObjects = {};
 
     void setPlayer(std::weak_ptr<Player> _player);
@@ -49,6 +49,7 @@ private:
 
     std::weak_ptr<Player> m_Player;
 
+    bool isEnterRoom = false;//BossRoom
 };
 
 #endif

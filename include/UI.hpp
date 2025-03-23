@@ -13,7 +13,7 @@ class Player;
 class UIText;
 class UI : public Object {
 public:
-    UI();
+    UI(bool isBossRoom);
 
     struct Room {
         bool exists = false;

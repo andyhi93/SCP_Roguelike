@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 #include "Player.hpp"
+#include "Enemies/SCP049.hpp"
 #include "Table.hpp"
 #include <Trap.hpp>
 #include "Item.hpp"
@@ -10,32 +11,35 @@
 
 LevelManager::LevelManager(bool _isMobFloor) {
     isMobFloor = _isMobFloor;
+    //std::cout << "isMobFloor:"<<isMobFloor<<"\n";
     if (isMobFloor) {
-        m_MapUI = std::make_shared<UI>();
+        m_UI = std::make_shared<UI>(false);
         this->AddChild(m_Tilemap);
-        this->AddChild(m_MapUI);
-        m_MapUI->SetZIndex(10);
+        this->AddChild(m_UI);
+        m_UI->SetZIndex(10);
         GenerateLevel();
-    }
-    else {
-        this->AddChild(m_Tilemap);
-        auto boss = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
-        currentObjects.push_back(boss);
     }
 }
 void LevelManager::InitBossRoom() {
+    std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap };
+    m_Camera = std::make_shared<Camera>(temp);
+    m_UI = std::make_shared<UI>(true);
+    this->AddChild(m_UI);
+    m_UI->SetZIndex(10);
+    this->AddChild(m_Tilemap);
+    auto objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
+    for (auto& obj : objs) {
+        currentObjects.push_back(obj);
+        m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(obj));
+    }
+    m_UI->SetPlayer(m_Player);
     if (auto lockedChild = m_Player.lock()) {}
     else { std::cout << "nullptr Player\n"; }
-    std::vector<std::weak_ptr<Object>> temp = { m_Player, m_Tilemap};
-    m_Camera = std::make_shared<Camera>(temp);
     for (auto& wall : m_Tilemap->bossWalls) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(wall)); }
     for (auto& door : m_Tilemap->doors) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(door)); }
     auto boss = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
-    boss->Start();
-    boss->isCameraOn = true;
     boss->SetPlayer(m_Player);
     m_Player.lock()->isCameraOn = true;
-    m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(boss));
 }
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
     m_Player = _player;
@@ -52,13 +56,19 @@ bool LevelManager::IsValidRoom(int x, int y) {
     return (neighborCount <= 1);
 }
 void LevelManager::Update(){
+    m_UI->Update();
+    m_Tilemap->Update();
     if (!isMobFloor) { 
+        if(!isEnterRoom && m_Player.lock()->m_WorldCoord.y > 800){
+            std::cout << "=====================================enter room=====================================\n";
+            isEnterRoom = true;
+            for (auto& door : m_Tilemap->doors) door->DoorControl(false);
+            isOpenCurrentDoor = false;
+        }
         m_Camera->CameraFollowWith(m_Player.lock()->m_WorldCoord); 
         //std::cout << "camera worldcoord: " << m_Camera->GetCameraWorldCoord().translation.x << " ," << m_Camera->GetCameraWorldCoord().translation.y<<"\n"
         //    <<"player worldcoord: "<< m_Player.lock()->m_WorldCoord.x<<" ,"<< m_Player.lock()->m_WorldCoord.y<<"\n";
         m_Camera->Update();
-        currentObjects[0]->Update();
-        
         for (auto& bullet : m_Player.lock()->m_BulletBox->bullets) {
             if (!bullet->isInCamera) {
                 bullet->isInCamera = true;
@@ -66,18 +76,50 @@ void LevelManager::Update(){
             }
         }
 
-        auto boss = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
-        for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
-            if (!bullet->isInCamera) {
-                bullet->isInCamera = true;
-                m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+        for (auto& obj : currentObjects) {
+            obj->Update(); 
+            auto boss = std::dynamic_pointer_cast<SCP049>(currentObjects[0]);
+            for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
+                if (!bullet->isInCamera) {
+                    bullet->isInCamera = true;
+                    m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+                }
+            }
+            if (boss && boss->isSummon) {
+                auto mob = boss->summon();
+                currentObjects.push_back(mob);
+                m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(mob));
             }
         }
     }
     //std::cout << "in fun(): sp.use_count() == " << m_MapUI.use_count()<< "\n";
+
+    map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
+        [this](const std::shared_ptr<Item>& item) {
+            if (!item->hasDescripting && item->isPick || (item->hasDescripting && !item->isDescripting)) {
+                this->RemoveChild(item);
+                std::cout << "remove item\n";
+                ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
+                return true;
+            }
+            return false;
+        }),
+        map[currentRoom.x][currentRoom.y].roomItems.end());
+    if (!isMobFloor&&!isOpenCurrentDoor) {
+        if (!map[currentRoom.x][currentRoom.y].isClean) {
+            for (auto& obj : currentObjects) {
+                std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
+                if (enemy && !enemy->isDead) {
+                    return;
+                }
+            }
+        }
+        for (auto& door : m_Tilemap->doors) {
+            door->DoorControl(true);
+        }
+        isOpenCurrentDoor = true;
+    }
     if (!isMobFloor) return;
-    m_MapUI->Update();
-    m_Tilemap->Update();
     std::vector<std::shared_ptr<Object>> newCoins;
     for (auto& obj : currentObjects) {
         obj->Update();
@@ -94,18 +136,6 @@ void LevelManager::Update(){
     for (auto& coin : newCoins) {
         currentObjects.push_back(coin);
     }
-    map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
-        [this](const std::shared_ptr<Item>& item) {
-            if (!item->hasDescripting &&item->isPick ||(item->hasDescripting && !item->isDescripting)) {
-                this->RemoveChild(item);
-                std::cout << "remove item\n";
-                ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
-                return true;
-            }
-            return false;
-        }),
-        map[currentRoom.x][currentRoom.y].roomItems.end());
-
     if (!isOpenCurrentDoor) {
         if (!map[currentRoom.x][currentRoom.y].isClean) {
             for (auto& obj : currentObjects) {
@@ -115,10 +145,17 @@ void LevelManager::Update(){
                 }
             }
         }
-        map[currentRoom.x][currentRoom.y].isClean = true;
-        if (map[currentRoom.x][currentRoom.y].isClean) {
-            for (int i = 0; i < 4; i++) {
-                if (m_Tilemap->hasDoor[i]) m_Tilemap->doors[i]->DoorControl(true);
+        if (isMobFloor) {
+            map[currentRoom.x][currentRoom.y].isClean = true;
+            if (map[currentRoom.x][currentRoom.y].isClean) {
+                for (int i = 0; i < 4; i++) {
+                    if (m_Tilemap->hasDoor[i]) m_Tilemap->doors[i]->DoorControl(true);
+                }
+            }
+            else {
+                for (auto& door : m_Tilemap->doors) {
+                    door->DoorControl(true);
+                }
             }
         }
         isOpenCurrentDoor = true;
@@ -173,7 +210,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         }
         std::cout << "\n";
     }
-    m_MapUI->SetMap(RoomForMap);
+    m_UI->SetMap(RoomForMap);
 
     for (auto& obj : currentObjects) {
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
@@ -423,7 +460,7 @@ void LevelManager::GenerateLevel() {
         std::cout << room.exists;
     }
     std::cout << std::endl;
-    m_MapUI->SetMap(RoomForMap);
+    m_UI->SetMap(RoomForMap);
     PrintMap();
 }
 

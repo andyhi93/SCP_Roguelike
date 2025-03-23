@@ -48,7 +48,7 @@ void Bullet::Move() {
 void Bullet::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	if (other->tag == "Wall" || other->tag == "Door0" || other->tag == "Door1" || other->tag == "Door2" || other->tag == "Door3") {
 		islive = false;
-		std::cout << "bullet hit sth\n";
+		std::cout << "bullet hit wall\n";
 		return;
 	}
 	std::shared_ptr<Object> collidedActor = other->parentActor.lock();
