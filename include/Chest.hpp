@@ -9,7 +9,7 @@ public:
     Chest(glm::vec2 pos, glm::vec2 size);
 
     void Start();
-    void Update();
+    void Update() override;
     void Open();
     void SetActive(bool IsActive);
 

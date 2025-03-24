@@ -300,9 +300,10 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
     objs.push_back(Boss);
 
     auto chest = std::make_shared<Chest>(glm::vec2{ 0,2576 }, glm::vec2{ 150,100 });
+    chest->isCameraOn = true;
     chest->m_WorldCoord = glm::vec2{ 0,2576 };
-    chest->Start();
     chest->SetZIndex(this->GetZIndex() + 0.1f);
+    chest->SetActive(true);
     this->AddChild(chest);
     chest->Start();
     chest->m_collider->isActive = false;

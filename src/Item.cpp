@@ -188,6 +188,13 @@ void Item::Update() {
 	if (endTime != 0 && currentTime > endTime) {
 		isDescripting = false;
 	}
+	if (isCameraOn) {
+		if(m_nameDescription) m_nameDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,105 };
+		if(m_effectDescription)m_effectDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,-207 };
+		if(descriptionBackgroundImage)descriptionBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,-50 };
+		m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+		UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+	}
 }
 void Item::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
 	if (other->tag == "Player" && !isPick && hasDescripting) {

@@ -69,7 +69,19 @@ void Chest::Open(){
 }
 
 void Chest::Update(){
-	//std::cout << "Chest isActive: " << m_collider->isActive << "\n";
+	if (isCameraOn) {
+		m_collider->position = m_Transform.translation + m_collider->offset;
+		std::cout << "pos: " << m_Transform.translation.x << ", " << m_Transform.translation.y << "\nColPos: " << m_collider->position.x << ", " << m_collider->position.y << "\n";
+		m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+		UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+		openArea->m_collider->position = m_Transform.translation;
+		if (treasure) {
+			treasure->isCameraOn = true;
+			treasure->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,-150 };
+			treasure->m_collider->position = m_Transform.translation + glm::vec2{ 0,-150 };
+			treasure->Update();
+		}
+	}
 	if (treasure && ((!treasure->hasDescripting && treasure->isPick) || (treasure->hasDescripting && !treasure->isDescripting))) {
 		this->RemoveChild(treasure);
 		treasure = nullptr;

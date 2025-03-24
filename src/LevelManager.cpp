@@ -77,7 +77,7 @@ void LevelManager::Update(){
         }
 
         for (auto& obj : currentObjects) {
-            obj->Update(); 
+            if(obj) obj->Update();
             auto boss = std::dynamic_pointer_cast<SCP049>(currentObjects[0]);
             for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
                 if (!bullet->isInCamera) {

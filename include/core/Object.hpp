@@ -6,6 +6,7 @@
 class Object : public Util::GameObject {
 public:
     glm::vec2 m_WorldCoord = { 0,0 };
+    bool isCameraOn = false;
     virtual void Update(){}
     virtual void FixedUpdate(){}
     enum class CollisionLayer {
