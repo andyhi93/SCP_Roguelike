@@ -69,9 +69,9 @@ void SCP610::Update() {
 	}
 }
 void SCP610::Shootable() {
-	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
-		m_IRangedAttack->m_LastShootTime = currentTime;
+	m_IRangedAttack->currentTime = SDL_GetTicks() / 1000.0f;
+	if (m_IRangedAttack->currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
+		m_IRangedAttack->m_LastShootTime = m_IRangedAttack->currentTime;
 		m_IRangedAttack->isFire = false;
 	}
 	if (!m_IRangedAttack->isFire) {//Get Size tEST
@@ -83,8 +83,8 @@ void SCP610::Shootable() {
 		m_IRangedAttack->m_AnimationShoot.lock()->Play();
 		glm::vec2 bulletDirection = m_Player.lock()->m_Transform.translation - m_Transform.translation;
 		auto bullet = std::make_shared<Bullet>(m_Transform.translation, m_IRangedAttack->BulletDamage, CollisionLayer::Enemy, 10.0f, m_IRangedAttack->ammoIndex, bulletDirection);
-		bullet->m_Transform.translation = m_Transform.translation;
 		m_IRangedAttack->m_BulletBox->AddBullet(bullet);
+		//std::cout << "=================================bullet make===============================\n";
 	}
 	if (!m_IRangedAttack->isAnimDone && m_IRangedAttack->m_AnimationShoot.lock()->GetCurrentFrameIndex() == m_IRangedAttack->m_AnimationShoot.lock()->GetFrameCount() - 1) {
 		m_IRangedAttack->isAnimDone = true;

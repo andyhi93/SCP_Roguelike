@@ -4,12 +4,14 @@
 #include <iostream>
 #include "Player.hpp"
 #include "Enemies/SCP049.hpp"
+#include "Elevator.hpp"
 #include "Table.hpp"
 #include <Trap.hpp>
 #include "Item.hpp"
 #include <Chest.hpp>
 
-LevelManager::LevelManager(bool _isMobFloor) {
+LevelManager::LevelManager(bool _isMobFloor,int floor) {
+    this->floor = floor;
     isMobFloor = _isMobFloor;
     //std::cout << "isMobFloor:"<<isMobFloor<<"\n";
     if (isMobFloor) {
@@ -76,19 +78,25 @@ void LevelManager::Update(){
             }
         }
 
-        for (auto& obj : currentObjects) {
-            if(obj) obj->Update();
-            auto boss = std::dynamic_pointer_cast<SCP049>(currentObjects[0]);
-            for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
-                if (!bullet->isInCamera) {
-                    bullet->isInCamera = true;
-                    m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+        std::vector<std::shared_ptr<Object>> tempObjects = currentObjects;
+        for (auto& obj : tempObjects) {
+            if (!obj) continue;
+            auto boss = std::dynamic_pointer_cast<SCP049>(obj);
+            if(!boss || (boss && isEnterRoom)) obj->Update();
+            if (boss) {
+                for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
+                    if (bullet && !bullet->isInCamera) {
+                        bullet->isInCamera = true;
+                        m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
+                    }
                 }
-            }
-            if (boss && boss->isSummon) {
-                auto mob = boss->summon();
-                currentObjects.push_back(mob);
-                m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(mob));
+                if (boss->isSummon) {
+                    auto mob = boss->summon();
+                    if (mob) {
+                        m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(mob));
+                        currentObjects.push_back(mob);  // 用另一個 vector 暫存
+                    }
+                }
             }
         }
     }
@@ -216,6 +224,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
         std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
+        std::shared_ptr<Elevator> elevator = std::dynamic_pointer_cast<Elevator>(obj);
         std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(obj);
         std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
@@ -231,6 +240,9 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         else if (trap) {
             trap->isOpen = false;
         }
+        else if (elevator) {
+            elevator->SetActive(false);
+        }
         else if (chest) {
             chest->SetActive(false);
         }
@@ -244,6 +256,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(obj);
         std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(obj);
+        std::shared_ptr<Elevator> elevator = std::dynamic_pointer_cast<Elevator>(obj);
         std::shared_ptr<Actor> actor = std::dynamic_pointer_cast<Actor>(obj);
         std::shared_ptr<Chest> chest = std::dynamic_pointer_cast<Chest>(obj);
         if (enemy) {
@@ -257,6 +270,9 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         else if (trap) {
             trap->Start();
             trap->isOpen = true;
+        }
+        else if (elevator) {
+            if(floor!=1 || elevator->isBossRoom) elevator->SetActive(true);
         }
         else if (actor) {
             actor->m_collider->isActive = true;
@@ -275,7 +291,6 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
     }
 }
 void LevelManager::GenerateLevel() {
-    floor++;
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_int_distribution<int> dist_x(0, MAP_SIZE_WIDTH - 1);
@@ -462,6 +477,16 @@ void LevelManager::GenerateLevel() {
     std::cout << std::endl;
     m_UI->SetMap(RoomForMap);
     PrintMap();
+    if (floor != 1) {
+        for (auto& obj : map[currentRoom.x][currentRoom.y].roomobjs) {
+            std::shared_ptr<Elevator> elevator = std::dynamic_pointer_cast<Elevator>(obj);
+            if (elevator) {
+                elevator->SetActive(true);
+            }
+            currentObjects.push_back(obj);
+            this->AddChild(obj);
+        }
+    }
 }
 
 void LevelManager::PrintMap() {

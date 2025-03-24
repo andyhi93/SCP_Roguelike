@@ -108,6 +108,10 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor.lock());
         if (enemy) enemy->Damage(ammoDamage);
     }
+    if (other->tag == "Elevator") {
+        isElevate = true;
+        std::cout << "Elevatorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr\n";
+    }
 }
 void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (!other) return;

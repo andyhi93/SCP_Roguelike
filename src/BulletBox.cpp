@@ -27,7 +27,7 @@ void BulletBox::AutoRemove() {
 		bullets.end());
 	size_t afterSize = bullets.size();
 	if (beforeSize != afterSize) {
-		std::cout << "Removed " << (beforeSize - afterSize) << " bullets still last " <<(afterSize)<<"bullets" << std::endl;
+		//std::cout << "Removed " << (beforeSize - afterSize) << " bullets still last " <<(afterSize)<<"bullets" << std::endl;
 	}
 }
 void BulletBox::ChangeRoom() {

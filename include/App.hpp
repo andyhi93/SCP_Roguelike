@@ -60,6 +60,8 @@ private:
     bool isSetMenu = false;
 
     bool isStop = false;
+
+    int floor = 1;
 };
 
 #endif

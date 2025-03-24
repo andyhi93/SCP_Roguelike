@@ -78,12 +78,12 @@ void SCP1048_C::Update() {
 	}
 }
 void SCP1048_C::Shootable() {
-	float currentTime = SDL_GetTicks() / 1000.0f;
-	if (currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
+	m_IRangedAttack->currentTime = SDL_GetTicks() / 1000.0f;
+	if (m_IRangedAttack->currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
 		SetDrawable(m_AnimationAttack);
 		m_AnimationAttack->SetCurrentFrame(0);
 		m_AnimationAttack->Play();
-		m_IRangedAttack->m_LastShootTime = currentTime;
+		m_IRangedAttack->m_LastShootTime = m_IRangedAttack->currentTime;
 		m_IRangedAttack->isFire = false;
 	}
 	if (m_AnimationAttack->GetCurrentFrameIndex() == 1 && !m_IRangedAttack->isFire) {
@@ -98,7 +98,6 @@ void SCP1048_C::Shootable() {
 		}
 		for (int i = 0; i < 8; i++) {
 			auto bullet = std::make_shared<Bullet>(m_Transform.translation, damage, CollisionLayer::Enemy, 10.0f, 1, bulletDirection[i]);
-			bullet->m_Transform.translation = m_Transform.translation;
 			m_IRangedAttack->m_BulletBox->AddBullet(bullet);
 		}
 		m_IRangedAttack->isFire = true;

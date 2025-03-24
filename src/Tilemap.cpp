@@ -17,6 +17,7 @@
 #include "Trap.hpp"
 #include "Item.hpp"
 #include "Chest.hpp"
+#include "Elevator.hpp"
 #include <random>
 
 Tilemap::Tilemap() {
@@ -139,6 +140,20 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             }
         }
     }
+    if (_RoomType == StartRoom) {
+        auto elevator = std::make_shared<Elevator>(glm::vec2{ -400,385 }, glm::vec2{100,100});
+        elevator->SetZIndex(this->GetZIndex() + 0.1f);
+        elevator->SetActive(false);
+        elevator->isStartRoom = true;
+        Obj.push_back(elevator);
+    }
+    if (_RoomType == BossRoom) {
+        auto elevator = std::make_shared<Elevator>(glm::vec2{ -400,385 }, glm::vec2{ 100,100 });
+        elevator->SetZIndex(this->GetZIndex() + 0.1f);
+        elevator->SetActive(false);
+        Obj.push_back(elevator);
+        elevator->isBossRoom = true;
+    }
     if (_RoomType == shop) {
         std::unordered_set<int> generatedItems; 
 
@@ -165,7 +180,6 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
         auto chest = std::make_shared<Chest>(glm::vec2{0,0},glm::vec2{150,100});
         chest->Start();
         chest->SetZIndex(this->GetZIndex() + 0.1f);
-        chest->Start();
         chest->m_collider->isActive = false;
         Obj.push_back(chest);
     }
@@ -306,7 +320,14 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
     chest->SetActive(true);
     this->AddChild(chest);
     chest->Start();
-    chest->m_collider->isActive = false;
     objs.push_back(chest);
+
+    auto elevator = std::make_shared<Elevator>(glm::vec2{ -239,2907 }, glm::vec2{ 100,100 });
+    elevator->m_WorldCoord = glm::vec2{ -239,2915 };
+    elevator->isCameraOn = true;
+    elevator->SetZIndex(this->GetZIndex() + 0.1f);
+    elevator->SetActive(true);
+    this->AddChild(elevator);
+    objs.push_back(elevator);
     return objs;
 }

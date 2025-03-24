@@ -44,7 +44,7 @@ public:
         }
         return false;
     }
-    int GetEventIndex() { return eventIndex; }
+    inline int GetEventIndex() { return eventIndex; }
 private:
     glm::vec2 GetCursorPosition() {
         int win_w, win_h;

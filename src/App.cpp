@@ -21,7 +21,7 @@ void App::Start() {
 void App::InitMobMap() {
     m_Player->m_Transform.translation = { 0,0 };
     //Layer
-    m_LevelManager = std::make_shared<LevelManager>(true);
+    m_LevelManager = std::make_shared<LevelManager>(true,floor);
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
 
@@ -58,7 +58,7 @@ void App::ResetGame() {
 void App::InitBossMap() {
     m_Player->m_Transform.translation = { 0,0 };
     m_Player->m_WorldCoord = { 0,0 };
-    m_LevelManager = std::make_shared<LevelManager>(false);
+    m_LevelManager = std::make_shared<LevelManager>(false,2);
     m_LevelManager->setPlayer(m_Player);
     m_LevelManager->InitBossRoom();
     std::shared_ptr<Object> empty;
@@ -77,7 +77,13 @@ void App::InitBossMap() {
     m_Player->SetLevelManager(m_LevelManager);
 }
 void App::FreeBossMap() {
+    ++floor;
+    m_Root.RemoveChild(m_Player);
+    m_Root.RemoveChild(m_LevelManager);
 
+    m_LevelManager.reset();
+    ColliderManager::GetInstance().ClearCollider();
+    ColliderManager::GetInstance().RegisterCollider(m_Player->m_collider);
 }
 void App::FixedUpdate() {
     if (isInitMap && !isStop) {
@@ -151,10 +157,19 @@ void App::Update() {
         isInitMap = false;
         FreeMobMap();
     }
-    if (Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap) {
-        currentGameState = Boss;
-        FreeMobMap();
-        InitBossMap();
+    if (!currentGameState==StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
+        if (currentGameState == MobFloor) {
+            m_Player->isElevate = false;
+            currentGameState = Boss;
+            FreeMobMap();
+            InitBossMap();
+        }
+        else if (currentGameState == Boss) {
+            m_Player->isElevate = false;
+            currentGameState = MobFloor;
+            FreeBossMap();
+            InitMobMap();
+        }
     }
     
     /*

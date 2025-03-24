@@ -23,7 +23,7 @@ public:
     };
     Item(glm::vec2 pos, ItemType type);
     void SetItemType(ItemType type);
-    ItemType GetItemType() { return ItemIndex; }
+    inline ItemType GetItemType() { return ItemIndex; }
     std::shared_ptr<Item> SetSell();
     std::shared_ptr<Item> SetPickUI();
 

@@ -16,7 +16,7 @@ constexpr int MAX_ROOMS = 10;
 
 class LevelManager : public Object {
 public:
-    LevelManager(bool _isMobFloor);
+    LevelManager(bool _isMobFloor,int floor);
     void GenerateLevel();
     void PrintMap();
     void ChangeRoom(glm::ivec2 direction);
@@ -32,6 +32,7 @@ public:
 
     void InitBossRoom();
     std::shared_ptr<Camera> m_Camera;
+    int floor = 0;
 private:
     bool isMobFloor;
 
@@ -40,7 +41,6 @@ private:
     glm::ivec2 bossPos;
 
     int roomCount = 0;
-    int floor = 0;
     glm::ivec2 currentRoom = { 0,0 };
     bool isOpenCurrentDoor = false;
 

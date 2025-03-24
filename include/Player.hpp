@@ -32,15 +32,17 @@ public:
     void Damage(float damage);
     void SetHealth(float amount);
     float GetHealth();
-    float GetCurrentHealth() { return currentHealth; }
-    bool GetIsInvincible() { return isInvincible; }
+    inline float GetCurrentHealth() { return currentHealth; }
+    inline bool GetIsInvincible() { return isInvincible; }
 
     void SetCoin(int amount) { coinAmount = amount; }
-    int GetCoin() { return coinAmount; }
+    inline int GetCoin() { return coinAmount; }
 
     bool isDashing = false;
 
-    bool getCanDash() { return canDash; }
+    inline bool getCanDash() { return canDash; }
+
+    bool isElevate = false;
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;

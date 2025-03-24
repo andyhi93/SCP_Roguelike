@@ -102,7 +102,7 @@ void Actor::MoveY(float amount) {
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
-    if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
+    if (!m_collider->isTrigger&&!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead) {
         float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
         if (diff > 0) {
             m_Transform.translation.y += 1;

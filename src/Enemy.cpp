@@ -87,7 +87,7 @@ IRangedAttack::IRangedAttack(std::weak_ptr<Enemy> ownerEnemy,std::weak_ptr<Util:
     m_LastShootTime = dis(gen);
 }
 void IRangedAttack::Shoot() {
-    float currentTime = SDL_GetTicks() / 1000.0f;
+    currentTime = SDL_GetTicks() / 1000.0f;
     if (currentTime - m_LastShootTime >= shootSpeed) {
         m_LastShootTime = currentTime;
         isFire = false;

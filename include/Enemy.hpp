@@ -23,6 +23,7 @@ public:
     int ammoIndex=1;
     float m_LastShootTime = 0.0f;
     bool isFire = false;
+    float currentTime = 0;
 
 protected:
 };
@@ -46,12 +47,12 @@ public:
 
     virtual void SetActive(bool isActive);
     void SetHealth(float _health) { health = _health; }
-    float GetHealth() { return health; }
+    inline float GetHealth() { return health; }
     void Damage(float damage) { SetHealth(GetHealth() - damage); }
     bool isDropCoin = false;
     bool isGiveCoin = false;
     std::shared_ptr<Item> GetCoin();
-    bool GetIsFacingRight() { return isFaceRight; }
+    inline bool GetIsFacingRight() { return isFaceRight; }
 
 
     std::shared_ptr<IMeleeTrigger> m_meleeTrigger;
