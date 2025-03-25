@@ -35,7 +35,7 @@ void SCP610::Behavior() {
 	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 	MoveX(direction.x * speed);
 	MoveY(direction.y * speed);
-	Shootable();
+	m_IRangedAttack->Shoot();
 }
 void SCP610::Start() {
 	if (isDropCoin) {
@@ -68,7 +68,7 @@ void SCP610::Update() {
 		}
 	}
 }
-void SCP610::Shootable() {
+/*void SCP610::Shootable() {
 	m_IRangedAttack->currentTime = SDL_GetTicks() / 1000.0f;
 	if (m_IRangedAttack->currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
 		m_IRangedAttack->m_LastShootTime = m_IRangedAttack->currentTime;
@@ -89,4 +89,4 @@ void SCP610::Shootable() {
 	if (!m_IRangedAttack->isAnimDone && m_IRangedAttack->m_AnimationShoot.lock()->GetCurrentFrameIndex() == m_IRangedAttack->m_AnimationShoot.lock()->GetFrameCount() - 1) {
 		m_IRangedAttack->isAnimDone = true;
 	}
-}
+}*/

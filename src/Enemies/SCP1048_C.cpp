@@ -80,9 +80,6 @@ void SCP1048_C::Update() {
 void SCP1048_C::Shootable() {
 	m_IRangedAttack->currentTime = SDL_GetTicks() / 1000.0f;
 	if (m_IRangedAttack->currentTime - m_IRangedAttack->m_LastShootTime >= m_IRangedAttack->shootSpeed) {
-		SetDrawable(m_AnimationAttack);
-		m_AnimationAttack->SetCurrentFrame(0);
-		m_AnimationAttack->Play();
 		m_IRangedAttack->m_LastShootTime = m_IRangedAttack->currentTime;
 		m_IRangedAttack->isFire = false;
 	}

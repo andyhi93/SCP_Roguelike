@@ -54,6 +54,7 @@ void App::FreeMobMap() {
 void App::ResetGame() {
     FreeMobMap();
     m_Player.reset();
+    floor = 1;
 }
 void App::InitBossMap() {
     m_Player->m_Transform.translation = { 0,0 };
