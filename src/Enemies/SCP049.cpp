@@ -188,7 +188,7 @@ void SCP049::Shootable() {
 		}
 	}
 }
-std::shared_ptr<Object> SCP049::summon() {
+std::vector<std::shared_ptr<Object>> SCP049::summon() {
 	isSummon = false;
 	currentAttackState = StopShoot;
 	auto scp049_2 = std::make_shared<SCP049_2>();
@@ -200,5 +200,5 @@ std::shared_ptr<Object> SCP049::summon() {
 	scp049_2->m_collider->position = m_Transform.translation + glm::vec2{ (isFaceRight) ? 120 : -120,0 };
 	scp049_2->m_Transform.translation = m_Transform.translation + glm::vec2{ (isFaceRight) ? 120 : -120,0 };
 	scp049_2->m_WorldCoord=m_WorldCoord+ glm::vec2{ (isFaceRight) ? 120 : -120,0 };
-	return scp049_2;
+	return { scp049_2 };
 }

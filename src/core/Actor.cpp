@@ -37,16 +37,19 @@ void Actor::MoveX(float amount) {
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
-        float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
-        if (diff > 0) {
-            m_Transform.translation.x += 1;
-            m_WorldCoord.x += 1;
+        if (glm::length(xRemainder) < glm::length(OtherActor->xRemainder)) {
+            float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
+            if (diff > 0) {
+                m_Transform.translation.x += 1;
+                m_WorldCoord.x += 1;
+            }
+            else if (diff < 0) {
+                m_Transform.translation.x -= 1;
+                m_WorldCoord.x -= 1;
+            }
+            m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+            return;
         }
-        else if (diff < 0) {
-            m_Transform.translation.x -= 1;
-            m_WorldCoord.x -= 1;
-        }
-        m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
     }
     xRemainder += amount;
     int move = (int)round(xRemainder);
@@ -103,16 +106,19 @@ void Actor::MoveY(float amount) {
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
     if (!m_collider->isTrigger&&!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead) {
-        float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
-        if (diff > 0) {
-            m_Transform.translation.y += 1;
-            m_WorldCoord.y += 1;
+        if (glm::length(yRemainder) < glm::length(OtherActor->yRemainder)) {
+            float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
+            if (diff > 0) {
+                m_Transform.translation.y += 1;
+                m_WorldCoord.y += 1;
+            }
+            else if (diff < 0) {
+                m_Transform.translation.y -= 1;
+                m_WorldCoord.y -= 1;
+            }
+            m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+            return;
         }
-        else if (diff < 0) {
-            m_Transform.translation.y -= 1;
-            m_WorldCoord.y -= 1;
-        }
-        m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
     }
     yRemainder += amount;
     int move = (int)round(yRemainder);

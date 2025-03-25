@@ -61,6 +61,8 @@ void App::InitBossMap() {
     m_Player->m_WorldCoord = { 0,0 };
     m_LevelManager = std::make_shared<LevelManager>(false,2);
     m_LevelManager->setPlayer(m_Player);
+    if (floor == 1 || floor == 3) m_LevelManager->isSCP049 = true;
+    else m_LevelManager->isSCP049 = false;
     m_LevelManager->InitBossRoom();
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };

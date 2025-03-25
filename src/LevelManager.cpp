@@ -9,6 +9,7 @@
 #include <Trap.hpp>
 #include "Item.hpp"
 #include <Chest.hpp>
+#include <Enemies/SCP743.hpp>
 
 LevelManager::LevelManager(bool _isMobFloor,int floor) {
     this->floor = floor;
@@ -29,7 +30,9 @@ void LevelManager::InitBossRoom() {
     this->AddChild(m_UI);
     m_UI->SetZIndex(10);
     this->AddChild(m_Tilemap);
-    auto objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
+    std::vector<std::shared_ptr<Object>> objs;
+    if(isSCP049) objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
+    else objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP743);
     for (auto& obj : objs) {
         currentObjects.push_back(obj);
         m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(obj));
@@ -81,20 +84,23 @@ void LevelManager::Update(){
         std::vector<std::shared_ptr<Object>> tempObjects = currentObjects;
         for (auto& obj : tempObjects) {
             if (!obj) continue;
-            auto boss = std::dynamic_pointer_cast<SCP049>(obj);
-            if(!boss || (boss && isEnterRoom)) obj->Update();
-            if (boss) {
+            auto bossSummon = std::dynamic_pointer_cast<IBoss>(obj);
+            auto boss = std::dynamic_pointer_cast<Enemy>(obj);
+            if(!bossSummon || (bossSummon && isEnterRoom)) obj->Update();
+            if (bossSummon) {
                 for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
                     if (bullet && !bullet->isInCamera) {
                         bullet->isInCamera = true;
                         m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
                     }
                 }
-                if (boss->isSummon) {
-                    auto mob = boss->summon();
-                    if (mob) {
-                        m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(mob));
-                        currentObjects.push_back(mob);  // 用另一個 vector 暫存
+                if (bossSummon->isSummon) {
+                    auto mobs = bossSummon->summon();
+                    for (auto& mob : mobs) {
+                        if (mob) {
+                            m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(mob));
+                            currentObjects.push_back(mob);  // 用另一個 vector 暫存
+                        }
                     }
                 }
             }

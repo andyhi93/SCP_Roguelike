@@ -33,6 +33,7 @@ public:
     void InitBossRoom();
     std::shared_ptr<Camera> m_Camera;
     int floor = 0;
+    bool isSCP049 = true;
 private:
     bool isMobFloor;
 
@@ -50,6 +51,7 @@ private:
     std::weak_ptr<Player> m_Player;
 
     bool isEnterRoom = false;//BossRoom
+
 };
 
 #endif

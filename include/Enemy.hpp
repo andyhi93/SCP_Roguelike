@@ -9,6 +9,12 @@ class Player;
 class Item;
 class Enemy;
 class BulletBox;
+
+class IBoss {
+public:
+    virtual std::vector<std::shared_ptr<Object>> summon()=0;
+    bool isSummon = false;
+};
 class IRangedAttack: public Object {
 public:
     IRangedAttack(std::weak_ptr<Enemy> ownerEnemy, std::weak_ptr<Util::Animation> m_AnimationShoot,int ammoIndex);

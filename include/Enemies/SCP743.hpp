@@ -1,10 +1,10 @@
-#ifndef SCP049_HPP
-#define SCP049_HPP
+#ifndef SCP743_HPP
+#define SCP743_HPP
 
 #include "Enemy.hpp"
-class SCP049 : public Enemy {
+class SCP743 : public Enemy, public IBoss {
 public:
-    SCP049();
+    SCP743();
     void Start() override;
     void Update() override;
     void FixedUpdate() override;
@@ -14,8 +14,7 @@ public:
     void Behavior();
     void SetPlayer(std::weak_ptr<Player> _player) override;
 
-    std::shared_ptr<Object> summon();
-    bool isSummon = false;
+    std::vector<std::shared_ptr<Object>> summon() override;
 protected:
 private:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
@@ -37,6 +36,10 @@ private:
     std::shared_ptr<Object> HealthBackground = std::make_shared<Object>();
     std::shared_ptr<Object> HealthBarImage = std::make_shared<Object>();
     std::shared_ptr<Object> HealthNameImage = std::make_shared<Object>();
+
+    bool IsSummonA = true;
+    bool IsSummonUp = true;
+    int secondIndex = 0;
 };
 
 #endif

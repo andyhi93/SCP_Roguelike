@@ -11,7 +11,8 @@ Bullet::Bullet(glm::vec2 pos, float _damage, CollisionLayer _layer, float _speed
 	m_collider->tag = "Bullet";
 	m_Transform.translation = pos;
 	m_collider->position = pos;
-	std::vector<std::string> bullet_images = { RESOURCE_DIR "/purple_ammo.png", RESOURCE_DIR "/red_ammo.png",RESOURCE_DIR "/choco_ammo.png",RESOURCE_DIR "/SCP049/knife.png" };
+	std::vector<std::string> bullet_images = { RESOURCE_DIR "/purple_ammo.png", RESOURCE_DIR "/red_ammo.png",RESOURCE_DIR "/choco_ammo.png",
+		RESOURCE_DIR "/SCP049/knife.png",RESOURCE_DIR "/BigChoco_ammo.png" };
 	m_Transform.scale = { 1,1 };
 	this->SetDrawable(std::make_shared<Util::Image>(bullet_images[_imageID]));
 	speed = _speed;

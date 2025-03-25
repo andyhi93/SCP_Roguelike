@@ -13,6 +13,7 @@
 #include "Enemies/SCP1048_C.hpp"
 #include "Enemies/SCP553.hpp"
 #include "Enemies/SCP049.hpp"
+#include "Enemies/SCP743.hpp"
 #include "Table.hpp"
 #include "Trap.hpp"
 #include "Item.hpp"
@@ -304,10 +305,12 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
     m_Transform.translation = { 0,1380 };
 
 
-    auto Boss = std::make_shared<SCP049>();
+    std::shared_ptr<Enemy> Boss;
+    if(_BossType==RoomSCP049) Boss = std::make_shared<SCP049>();
+    else Boss = std::make_shared<SCP743>();
     Boss->Start();
-    Boss->m_Transform.translation = { -1068,1056 };
-    Boss->m_WorldCoord = { -1068,1056 };
+    Boss->m_Transform.translation = { 0,1500 };
+    Boss->m_WorldCoord = { 0,1500 };
     Boss->SetZIndex(this->GetZIndex() + 0.5f);
     Boss->isCameraOn = true;
     this->AddChild(Boss);

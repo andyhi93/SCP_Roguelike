@@ -2,7 +2,7 @@
 #define SCP049_HPP
 
 #include "Enemy.hpp"
-class SCP049 : public Enemy {
+class SCP049 : public Enemy, public IBoss {
 public:
     SCP049();
     void Start() override;
@@ -14,8 +14,7 @@ public:
     void Behavior();
     void SetPlayer(std::weak_ptr<Player> _player) override;
 
-    std::shared_ptr<Object> summon();
-    bool isSummon = false;
+    std::vector<std::shared_ptr<Object>> summon() override;
 protected:
 private:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
