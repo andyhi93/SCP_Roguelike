@@ -104,17 +104,19 @@ float App::GetDeltaTime() {
 void App::Update() {
     m_Root.Update();
     m_Menu->Update();
+    m_BGM->SetVolume(m_Menu->GetSoundPercent()*100);
+    m_BGM->Play();
     //std::cout << "Ref count: " << m_Player.use_count() << std::endl;
     if (isInitMap && !isStop) {
         ColliderManager::GetInstance().Update();
         m_Player->Update();
         m_LevelManager->Update();
     }
-    if (!isSwitchScrence && !currentGameState == StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
-        isSwitchScrence = true;
+    if (!isSwitchScene && !currentGameState == StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
+        isSwitchScene = true;
         m_Player->isElevate = false;
     }
-    if (isSwitchScrence) {
+    if (isSwitchScene) {
         float currentTime = SDL_GetTicks() / 1000.0f;
         if (currentGameState == MobFloor) {
             if (!m_Menu->GetIsFading() && !m_Menu->GetIsFullDark()) {
@@ -126,7 +128,7 @@ void App::Update() {
                 FreeMobMap();
                 InitBossMap();
                 m_Menu->FadeOut();
-                isSwitchScrence = false;
+                isSwitchScene = false;
             }
         }
         else if (currentGameState == Boss) {
@@ -139,7 +141,7 @@ void App::Update() {
                 FreeBossMap();
                 InitMobMap();
                 m_Menu->FadeOut();
-                isSwitchScrence = false;
+                isSwitchScene = false;
             }
         }
     }

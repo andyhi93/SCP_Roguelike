@@ -62,7 +62,7 @@ void Actor::MoveX(float amount) {
             m_collider->position.x += sign;
             if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 if (xRemainder * OtherActor->xRemainder <= 0 && abs(xRemainder) > abs(OtherActor->xRemainder) && OtherActor->canPushableX) {
-                    OtherActor->MoveY(xRemainder);
+                    OtherActor->MoveX(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
                 }
                 else {
@@ -146,7 +146,7 @@ void Actor::MoveY(float amount) {
             m_collider->position.y += sign;
             if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 if (yRemainder * OtherActor->yRemainder <= 0 && abs(yRemainder) > abs(OtherActor->yRemainder) &&OtherActor->canPushableY) {
-                    OtherActor->MoveY(yRemainder);
+                    OtherActor->MoveY(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
                 }
                 else {

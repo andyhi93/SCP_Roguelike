@@ -58,12 +58,15 @@ private:
     };
     GameState currentGameState = StartMenu;
     bool isSetMenu = false;
-    bool isSwitchScrence = false;
+    bool isSwitchScene = false;
 
     bool isStop = false;
 
     int floor = 1;
     float m_LastDarkTime = 0;
+
+    std::shared_ptr<Util::SFX> m_BGM = std::make_shared<Util::SFX>(RESOURCE_DIR "/sound/title.mp3");
+    std::vector<std::string> m_BGMPath = { RESOURCE_DIR "/sound/title.mp3" };
 };
 
 #endif

@@ -163,9 +163,9 @@ std::vector<std::shared_ptr<Object>> SCP743::summon() {
 		mob->SetZIndex(GetZIndex() - 0.01f);
 		auto playerDirection = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 
-		mob->m_collider->position = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 };
-		mob->m_Transform.translation = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 };
-		mob->m_WorldCoord = m_WorldCoord + glm::vec2{ (i) ? 120 : -120,0 };
+		mob->m_collider->position = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 + m_collider->offset.y/2 };
+		mob->m_Transform.translation = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 + m_collider->offset.y / 2 };
+		mob->m_WorldCoord = m_WorldCoord + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 + m_collider->offset.y / 2 };
 
 		objs.push_back(mob);
 	}
