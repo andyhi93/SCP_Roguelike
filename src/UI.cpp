@@ -38,6 +38,7 @@ UI::UI(bool isBossRoom) {
     }
 
     setHealthUI();
+
 }
 void UI::setHealthUI() {
     DashUIImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/DashUI1.png"));

@@ -71,7 +71,7 @@ void Chest::Open(){
 void Chest::Update(){
 	if (isCameraOn) {
 		m_collider->position = m_Transform.translation + m_collider->offset;
-		std::cout << "pos: " << m_Transform.translation.x << ", " << m_Transform.translation.y << "\nColPos: " << m_collider->position.x << ", " << m_collider->position.y << "\n";
+		//std::cout << "pos: " << m_Transform.translation.x << ", " << m_Transform.translation.y << "\nColPos: " << m_collider->position.x << ", " << m_collider->position.y << "\n";
 		m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
 		UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
 		openArea->m_collider->position = m_Transform.translation;

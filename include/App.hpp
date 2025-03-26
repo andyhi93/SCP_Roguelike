@@ -58,10 +58,12 @@ private:
     };
     GameState currentGameState = StartMenu;
     bool isSetMenu = false;
+    bool isSwitchScrence = false;
 
     bool isStop = false;
 
     int floor = 1;
+    float m_LastDarkTime = 0;
 };
 
 #endif

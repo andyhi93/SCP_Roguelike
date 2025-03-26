@@ -11,6 +11,8 @@ public:
     glm::vec2 velocity;
     std::shared_ptr<BoxCollider> m_collider;
     float xRemainder=0, yRemainder=0;
+    bool canPushableX = false;
+    bool canPushableY = false;
     bool canFly = false;
 
     bool isDead = false;

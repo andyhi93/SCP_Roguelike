@@ -24,7 +24,16 @@ public:
     std::shared_ptr<Button> resumeButton;
     std::shared_ptr<Button> menuButton;
     std::shared_ptr<Util::Image> stopImage;
+
+    void FadeIn();
+    void FadeOut();
+    inline bool GetIsFullDark() { return isFullDark; }
+    inline bool GetIsFading() { return isFading; }
+    std::shared_ptr<Util::Animation> m_AnimationFade;
 private:
+    std::shared_ptr<Object> FadeImage = std::make_shared<Object>();
+    bool isFading = false;
+    bool isFullDark = false;
 };
 
 #endif

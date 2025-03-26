@@ -26,6 +26,16 @@ Menu::Menu(){
 	menuButton->isActive = false;
 	resumeButton->SetVisible(false);
 	menuButton->SetVisible(false);
+
+
+	//Fade
+	FadeImage->SetVisible(false);
+	m_AnimationFade = std::make_shared<Util::Animation>(std::vector<std::string>{RESOURCE_DIR "/UI/fade1.png", RESOURCE_DIR "/UI/fade2.png", RESOURCE_DIR "/UI/fade3.png",
+		RESOURCE_DIR "/UI/fade4.png", RESOURCE_DIR "/UI/fade5.png", RESOURCE_DIR "/UI/fade6.png", RESOURCE_DIR "/UI/fade7.png", }, false, 100, false, 100);
+	FadeImage->m_Transform.scale = { 4,4 };
+	FadeImage->SetZIndex(15);
+	FadeImage->SetDrawable(m_AnimationFade);
+	this->AddChild(FadeImage);
 }
 void Menu::OpenMenu() {
 	this->SetVisible(true);
@@ -53,15 +63,18 @@ void Menu::OpenMenu() {
 void Menu::CloseMenu() {
 	if (isStartMenu) {
 		startButton->isActive = false;
+		startButton->SetVisible(false);
 		exitButton->isActive = false;
+		exitButton->SetVisible(false);
 	}
 	else {
 		resumeButton->isActive = false;
+		resumeButton->SetVisible(false);
 		menuButton->isActive = false;
+		menuButton->SetVisible(false);
 	}
 	this->SetVisible(false);
 }
-
 void Menu::Update() {
 	if (isStartMenu) {
 		startButton->Update();
@@ -71,4 +84,33 @@ void Menu::Update() {
 		resumeButton->Update();
 		menuButton->Update();
 	}
+	//Fade
+	if (isFading) {
+		//std::cout << "FrameIndex: " << m_AnimationFade->GetCurrentFrameIndex()<<" State: " << int(m_AnimationFade->GetState()) << "\n";
+		if (m_AnimationFade->GetCurrentFrameIndex() == 3) {
+			isFading = false;
+			isFullDark = true;
+			m_AnimationFade->Pause();
+		}
+		if (m_AnimationFade->GetCurrentFrameIndex() == 6) {
+			isFading = false;
+			FadeImage->SetVisible(false);
+		}
+	}
+}
+void Menu::FadeIn() {
+	FadeImage->SetVisible(true);
+	std::cout << "FadeIn\n";
+	isFading = true;
+	m_AnimationFade->SetCurrentFrame(0);
+	m_AnimationFade->Play();
+	FadeImage->SetDrawable(m_AnimationFade);
+}
+void Menu::FadeOut() {
+	std::cout << "FadeOut\n";
+	isFullDark = false;
+	isFading = true;
+	m_AnimationFade->SetCurrentFrame(4);
+	m_AnimationFade->Play();
+	FadeImage->SetDrawable(m_AnimationFade);
 }

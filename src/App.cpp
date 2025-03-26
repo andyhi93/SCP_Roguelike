@@ -103,20 +103,51 @@ float App::GetDeltaTime() {
 }
 void App::Update() {
     m_Root.Update();
+    m_Menu->Update();
     //std::cout << "Ref count: " << m_Player.use_count() << std::endl;
     if (isInitMap && !isStop) {
         ColliderManager::GetInstance().Update();
         m_Player->Update();
         m_LevelManager->Update();
     }
-
-    m_Menu->Update();
+    if (!isSwitchScrence && !currentGameState == StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
+        isSwitchScrence = true;
+        m_Player->isElevate = false;
+    }
+    if (isSwitchScrence) {
+        float currentTime = SDL_GetTicks() / 1000.0f;
+        if (currentGameState == MobFloor) {
+            if (!m_Menu->GetIsFading() && !m_Menu->GetIsFullDark()) {
+                m_Menu->FadeIn();
+                m_LastDarkTime = currentTime;
+            }
+            if (m_Menu->GetIsFullDark() && currentTime - m_LastDarkTime >= 2) {
+                currentGameState = Boss;
+                FreeMobMap();
+                InitBossMap();
+                m_Menu->FadeOut();
+                isSwitchScrence = false;
+            }
+        }
+        else if (currentGameState == Boss) {
+            if (!m_Menu->GetIsFading() && !m_Menu->GetIsFullDark()) {
+                m_Menu->FadeIn();
+                m_LastDarkTime = currentTime;
+            }
+            if (m_Menu->GetIsFullDark() && currentTime-m_LastDarkTime>=2) {
+                currentGameState = MobFloor;
+                FreeBossMap();
+                InitMobMap();
+                m_Menu->FadeOut();
+                isSwitchScrence = false;
+            }
+        }
+    }
     if (isSetMenu) { 
         if (currentGameState == StartMenu) {
             if (m_Menu->startButton->isClick()) {
                 m_Player = std::make_shared<Player>();
                 m_Menu->CloseMenu();
-                m_Root.RemoveChild(m_Menu);
                 currentGameState = MobFloor;
                 m_Menu->isStartMenu = false;
                 isSetMenu = false;
@@ -131,7 +162,6 @@ void App::Update() {
             if (m_Menu->resumeButton->isClick()) {
                 isSetMenu = false;
                 m_Menu->CloseMenu();
-                m_Root.RemoveChild(m_Menu);
                 isStop = false;
             }
             if (m_Menu->menuButton->isClick()&& isInitMap) {
@@ -148,7 +178,6 @@ void App::Update() {
         if (currentGameState != StartMenu /* && !isSetMenu */ && Util::Input::IsKeyDown(Util::Keycode::ESCAPE)) {
             isSetMenu = true;
             m_Menu->OpenMenu();
-            m_Root.AddChild(m_Menu);
             isStop = true;
         }
     }
@@ -160,20 +189,7 @@ void App::Update() {
         isInitMap = false;
         FreeMobMap();
     }
-    if (!currentGameState==StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
-        if (currentGameState == MobFloor) {
-            m_Player->isElevate = false;
-            currentGameState = Boss;
-            FreeMobMap();
-            InitBossMap();
-        }
-        else if (currentGameState == Boss) {
-            m_Player->isElevate = false;
-            currentGameState = MobFloor;
-            FreeBossMap();
-            InitMobMap();
-        }
-    }
+    
     
     /*
      * Do not touch the code below as they serve the purpose for

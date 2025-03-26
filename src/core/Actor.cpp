@@ -33,11 +33,12 @@ void Actor::MoveX(float amount) {
             }
         }*/
     }
+    xRemainder += amount;
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
-    if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
-        if (glm::length(xRemainder) < glm::length(OtherActor->xRemainder)) {
+    /*if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
+        if (xRemainder * OtherActor->xRemainder < 0 && abs(xRemainder) < abs(OtherActor->xRemainder)) {
             float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
             if (diff > 0) {
                 m_Transform.translation.x += 1;
@@ -50,8 +51,7 @@ void Actor::MoveX(float amount) {
             m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
             return;
         }
-    }
-    xRemainder += amount;
+    }*/
     int move = (int)round(xRemainder);
     if (move != 0)
     {
@@ -61,23 +61,37 @@ void Actor::MoveX(float amount) {
         {
             m_collider->position.x += sign;
             if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
-                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                break;
+                if (xRemainder * OtherActor->xRemainder <= 0 && abs(xRemainder) > abs(OtherActor->xRemainder) && OtherActor->canPushableX) {
+                    OtherActor->MoveY(xRemainder);
+                    OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
+                }
+                else {
+                    sign = m_Transform.translation.x - OtherActor->m_Transform.translation.x > 0 ? 1 : -1;
+                    m_Transform.translation.x += sign;
+                    m_WorldCoord.x += sign;
+                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                    return; 
+                }
             }
-            else if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
+            if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
             {
+                canPushableX = true;
                 m_Transform.translation.x += sign;
                 m_WorldCoord.x += sign;
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 move -= sign;
             }
             else {
+                canPushableX = false;
                 m_Transform.translation.x -= sign;
                 m_WorldCoord.x -= sign;
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 break;
             }
         }
+    }
+    else {
+        canPushableX = true;
     }
 }
 
@@ -102,11 +116,12 @@ void Actor::MoveY(float amount) {
             }
         }*/
     }
+    yRemainder += amount;
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
-    if (!m_collider->isTrigger&&!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead) {
-        if (glm::length(yRemainder) < glm::length(OtherActor->yRemainder)) {
+    /*if (!m_collider->isTrigger && !playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead) {
+        if (yRemainder* OtherActor->yRemainder<0 && abs(yRemainder) < abs(OtherActor->yRemainder)) {
             float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
             if (diff > 0) {
                 m_Transform.translation.y += 1;
@@ -119,8 +134,7 @@ void Actor::MoveY(float amount) {
             m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
             return;
         }
-    }
-    yRemainder += amount;
+    }*/
     int move = (int)round(yRemainder);
     if (move != 0)
     {
@@ -128,25 +142,40 @@ void Actor::MoveY(float amount) {
         int sign = move > 0 ? 1 : -1;
         while (move != 0)
         {
+            //if ((xRemainder != 0 || yRemainder != 0)&& PlayerActor) std::cout << "Player xReminder: " << xRemainder << " Player yReminder: " << yRemainder << "\n";
             m_collider->position.y += sign;
             if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
-                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                break;
+                if (yRemainder * OtherActor->yRemainder <= 0 && abs(yRemainder) > abs(OtherActor->yRemainder) &&OtherActor->canPushableY) {
+                    OtherActor->MoveY(yRemainder);
+                    OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
+                }
+                else {
+                    sign = m_Transform.translation.y - OtherActor->m_Transform.translation.y > 0 ? 1 : -1;
+                    m_Transform.translation.y += sign;
+                    m_WorldCoord.y += sign;
+                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                    return; 
+                }
             }
-            else if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
+            if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
             {
+                canPushableY = true;
                 m_Transform.translation.y += sign;
                 m_WorldCoord.y += sign;
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 move -= sign;
             }
             else {
+                canPushableY = false;
                 m_Transform.translation.y -= sign;
                 m_WorldCoord.y -= sign;
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 break;
             }
         }
+    }
+    else {
+        canPushableY = true;
     }
 }
 

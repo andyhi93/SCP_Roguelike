@@ -30,6 +30,7 @@ public:
     void SetMap(std::vector<Room> _RoomData);
     void SetPlayer(std::weak_ptr<Player> _player);
 
+
     enum RoomType {
         //func
         StartRoom,
@@ -62,6 +63,7 @@ private:
     int m_Size;
     std::shared_ptr<UIText> m_healthText;
     std::shared_ptr<UIText> m_coinText;
+
 };
 
 #endif

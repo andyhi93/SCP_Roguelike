@@ -4,7 +4,7 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP743::SCP743() : Enemy(glm::vec2{ 50,100 }) {
+SCP743::SCP743() : Enemy(glm::vec2{ 100,100 }) {
 
 	m_collider->offset = { 0,-50 };
 	isDropCoin = true;
@@ -161,17 +161,12 @@ std::vector<std::shared_ptr<Object>> SCP743::summon() {
 		mob->isCameraOn = true;
 		mob->SetPlayer(m_Player);
 		mob->SetZIndex(GetZIndex() - 0.01f);
-		if(IsSummonUp){
-			mob->m_collider->position = m_Transform.translation + glm::vec2{ (i) ? 120 : -120,0 };
-			mob->m_Transform.translation = m_Transform.translation + glm::vec2{ (i) ? 120 : -120,0 };
-			mob->m_WorldCoord = m_WorldCoord + glm::vec2{ (i) ? 120 : -120,0 };
-		}
-		else{
-			mob->m_collider->position = m_Transform.translation + glm::vec2{ 0,(i) ? 120 : -120 };
-			mob->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,(i) ? 120 : -120 };
-			mob->m_WorldCoord = m_WorldCoord + glm::vec2{ 0,(i) ? 120 : -120 };
-		}
-		IsSummonUp = !IsSummonUp;
+		auto playerDirection = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+
+		mob->m_collider->position = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 };
+		mob->m_Transform.translation = m_Transform.translation + glm::vec2{ (i) ? playerDirection.x * 120 : playerDirection.x * -120 ,  (i) ? playerDirection.y * 120 : playerDirection.y * -120 };
+		mob->m_WorldCoord = m_WorldCoord + glm::vec2{ (i) ? 120 : -120,0 };
+
 		objs.push_back(mob);
 	}
 	IsSummonA = !IsSummonA;
