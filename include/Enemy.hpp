@@ -72,13 +72,15 @@ public:
         Die,
     };
     State state = Walk;
+    std::string m_throwSFX = RESOURCE_DIR "/sound/throw.mp3";
 protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationAttack;
     std::shared_ptr<Util::Animation> m_AnimationDie;
     void PlayDeadSE(std::string &path) {
-        SEPlayer->LoadMedia(path);
-        SEPlayer->Play();
+        std::cout << "Dead\n";
+        m_SFX->LoadMedia(path);
+        m_SFX->Play();
     }
 
     void FlipControl();

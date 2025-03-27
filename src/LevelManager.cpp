@@ -67,6 +67,9 @@ void LevelManager::Update(){
         if(!isEnterRoom && m_Player.lock()->m_WorldCoord.y > 800){
             std::cout << "=====================================enter room=====================================\n";
             isEnterRoom = true;
+            std::cout << "==============closeDoorSFX==================\n";
+            m_SFX->LoadMedia(m_closeSFX);
+            m_SFX->Play();
             for (auto& door : m_Tilemap->doors) door->DoorControl(false);
             isOpenCurrentDoor = false;
         }
@@ -128,6 +131,9 @@ void LevelManager::Update(){
                 }
             }
         }
+        std::cout << "============openDoorSFX============\n";
+        m_SFX->LoadMedia(m_openSFX);
+        m_SFX->Play();
         for (auto& door : m_Tilemap->doors) {
             door->DoorControl(true);
         }
@@ -159,6 +165,9 @@ void LevelManager::Update(){
                 }
             }
         }
+        std::cout << "============openDoorSFX============\n";
+        m_SFX->LoadMedia(m_openSFX);
+        m_SFX->Play();
         if (isMobFloor) {
             map[currentRoom.x][currentRoom.y].isClean = true;
             if (map[currentRoom.x][currentRoom.y].isClean) {

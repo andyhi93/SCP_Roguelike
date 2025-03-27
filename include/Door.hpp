@@ -19,6 +19,8 @@ public:
 protected:
 private:
     bool isTop = false;
+
+    std::string m_closeSFX = RESOURCE_DIR "/sound/CLOSE THE DOOR.mp3";
 };
 
 #endif

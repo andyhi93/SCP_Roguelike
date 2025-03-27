@@ -2,6 +2,7 @@
 #define OBJECT_HPP
 
 #include "Util/GameObject.hpp"
+#include <Util/SFX.hpp>
 
 class Object : public Util::GameObject {
 public:
@@ -32,6 +33,7 @@ public:
 
         return glm::vec2(cursor_x, cursor_y);
     }
+    std::shared_ptr<Util::SFX> m_SFX = std::make_shared<Util::SFX>("");
 };
 
 #endif

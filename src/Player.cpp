@@ -71,9 +71,11 @@ void Player::PlayerControl() {
 
     float currentTime = SDL_GetTicks() / 1000.0f;
     if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && (currentTime - m_LastShotTime >= m_ShotInterval)) {
+        m_SFX->LoadMedia(m_GunSFXpath);
+        m_SFX->Play();
         glm::vec2 bulletDirection = GetCursorPosition() - m_Transform.translation;
         std::shared_ptr<Bullet> bullet;
-        bullet = std::make_shared<Bullet>(m_Hand->m_Transform.translation + glm::vec2{ 0,-15 }, ammoDamage, CollisionLayer::Player, 10.0f, 0, bulletDirection);
+        bullet = std::make_shared<Bullet>(m_Hand->m_Transform.translation + glm::vec2{ 0,-15 }, ammoDamage>1? ammoDamage*0.9:1, CollisionLayer::Player, 10.0f, 0, bulletDirection);
         bullet->m_Transform.scale = { ammoDamage,ammoDamage };
         bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ 0,-15 };
         m_BulletBox->AddBullet(bullet);

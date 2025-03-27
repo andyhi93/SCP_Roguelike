@@ -104,8 +104,10 @@ float App::GetDeltaTime() {
 void App::Update() {
     m_Root.Update();
     m_Menu->Update();
-    m_BGM->SetVolume(m_Menu->GetSoundPercent()*100);
-    m_BGM->Play();
+    m_BGM->SetVolume(m_Menu->GetSoundPercent()*100); 
+    if (Mix_PlayingMusic() == 0) {
+        m_BGM->Play();
+    }
     //std::cout << "Ref count: " << m_Player.use_count() << std::endl;
     if (isInitMap && !isStop) {
         ColliderManager::GetInstance().Update();
@@ -148,6 +150,8 @@ void App::Update() {
     if (isSetMenu) { 
         if (currentGameState == StartMenu) {
             if (m_Menu->startButton->isClick()) {
+                m_BGM->LoadMedia(m_BattleBGMPath);
+                m_BGM->Play();
                 m_Player = std::make_shared<Player>();
                 m_Menu->CloseMenu();
                 currentGameState = MobFloor;
@@ -161,12 +165,19 @@ void App::Update() {
             }
         }
         else {
+            m_Player->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+            for (auto& object : m_LevelManager->currentObjects) {
+                auto enemy = std::dynamic_pointer_cast<Enemy>(object);
+                if(enemy) enemy->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+            }
             if (m_Menu->resumeButton->isClick()) {
                 isSetMenu = false;
                 m_Menu->CloseMenu();
                 isStop = false;
             }
             if (m_Menu->menuButton->isClick()&& isInitMap) {
+                m_BGM->LoadMedia(m_TitleBGMPath);
+                m_BGM->Play();
                 currentGameState = StartMenu;
                 m_Menu->isStartMenu = true;
                 m_Menu->OpenMenu();

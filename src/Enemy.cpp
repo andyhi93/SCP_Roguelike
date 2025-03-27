@@ -94,6 +94,8 @@ void IRangedAttack::Shoot() {
     }
     if (!isFire) {//Get Size tEST
         ownerEnemy.lock()->state = Enemy::State::Attack;
+        m_SFX->LoadMedia(ownerEnemy.lock()->m_throwSFX);
+        m_SFX->Play();
         isFire = true;
         isAnimDone = false;
         m_AnimationShoot.lock()->SetCurrentFrame(0);

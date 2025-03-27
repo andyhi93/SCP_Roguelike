@@ -52,6 +52,8 @@ private:
 
     bool isEnterRoom = false;//BossRoom
 
+    std::string m_openSFX = RESOURCE_DIR "/sound/OPENING THE DOOR.mp3";
+    std::string m_closeSFX = RESOURCE_DIR "/sound/CLOSE THE DOOR.mp3";
 };
 
 #endif

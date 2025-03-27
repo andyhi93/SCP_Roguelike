@@ -10,6 +10,7 @@
 #include "Core/ColliderManager.hpp"
 #include "Menu.hpp"
 #include "Core/Camera.hpp"
+#include <Util/BGM.hpp>
 
 class App {
 public:
@@ -65,8 +66,13 @@ private:
     int floor = 1;
     float m_LastDarkTime = 0;
 
-    std::shared_ptr<Util::SFX> m_BGM = std::make_shared<Util::SFX>(RESOURCE_DIR "/sound/title.mp3");
-    std::vector<std::string> m_BGMPath = { RESOURCE_DIR "/sound/title.mp3" };
+    std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR "/sound/title.mp3");
+    std::string m_TitleBGMPath = { RESOURCE_DIR "/sound/title.mp3" };
+    std::string m_BattleBGMPath = { RESOURCE_DIR "/sound/battle a.mp3" };
+    std::string m_SC049aBGMPath = { RESOURCE_DIR "/sound/SC049 a.mp3" };
+    std::string m_SC049bBGMPath = { RESOURCE_DIR "/sound/SC049 b.mp3" };
+    std::string m_SC743aBGMPath = { RESOURCE_DIR "/sound/SC743 a.mp3" };
+    std::string m_SC743bBGMPath = { RESOURCE_DIR "/sound/SC743 b.mp3" };
 };
 
 #endif

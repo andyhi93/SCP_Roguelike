@@ -33,6 +33,5 @@ public:
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids();
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors();
 
-    std::shared_ptr<Util::SFX> SEPlayer=std::make_shared<Util::SFX>("");
 };
 #endif

@@ -79,6 +79,8 @@ private:
     float invincibleTime = 1.5f;
     bool isInvincible = false;
     float lastHurtTime = 0.0f;
+
+    std::string m_GunSFXpath = RESOURCE_DIR "/sound/gun.mp3";
 };
 
 #endif
