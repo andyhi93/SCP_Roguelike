@@ -9,9 +9,9 @@ void BulletBox::Update(){
 	}
 }
 void BulletBox::FixedUpdate() {
-	for (auto& bullet : bullets) {
+	/*for (auto& bullet : bullets) {
 		bullet->FixedUpdate();
-	}
+	}*/
 }
 void BulletBox::AutoRemove() {
 	size_t beforeSize = bullets.size();

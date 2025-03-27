@@ -29,16 +29,17 @@ Menu::Menu(){
 
 	//sound
 	//glm::vec2 pos, glm::vec2 size, float scaleSize, std::vector<std::string> path
-	soundSlider = std::make_shared<Slider>(glm::vec2{ (soundRange[1] - soundRange[0])*0.3f+soundRange[0],0}, glm::vec2{50,50}, 4, std::vector<std::string>{ RESOURCE_DIR "/UI/SoundSlider.png" });
-	soundSlider->SetZIndex(15);//bug
+	soundSlider = std::make_shared<Slider>(glm::vec2{ (soundRange[1] - soundRange[0])*0.3f+soundRange[0],0}, glm::vec2{100,50}, 4, 
+		std::vector<std::string>{ RESOURCE_DIR "/UI/SoundSlider1.png", RESOURCE_DIR "/UI/SoundSlider2.png" });
+	soundSlider->SetZIndex(15);
 	this->AddChild(soundSlider);
 	soundFrame->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/SoundFrame.png"));
 	soundFrame->m_Transform.scale = { 4,4 };
-	soundFrame->SetZIndex(13);
+	soundFrame->SetZIndex(14);
 	this->AddChild(soundFrame);
 	soundBar->m_Transform.translation = { -479,0 };
 	soundBar->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/SoundBar.png"));
-	soundBar->SetZIndex(14);
+	soundBar->SetZIndex(13);
 	soundBar->m_Transform.scale = { 4 * soundPercent ,4 };
 	this->AddChild(soundBar);
 
@@ -66,7 +67,7 @@ void Menu::OpenMenu() {
 
 		soundBar->SetVisible(false);
 		soundFrame->SetVisible(false);
-		soundSlider->SetZIndex(false);
+		soundSlider->SetVisible(false);
 		soundSlider->isActive = false;
 	}
 	else {
@@ -79,7 +80,7 @@ void Menu::OpenMenu() {
 
 		soundBar->SetVisible(true);
 		soundFrame->SetVisible(true);
-		soundSlider->SetZIndex(true);
+		soundSlider->SetVisible(true);
 		soundSlider->isActive = true;
 
 		startButton->SetVisible(false);
@@ -101,7 +102,7 @@ void Menu::CloseMenu() {
 
 		soundBar->SetVisible(false);
 		soundFrame->SetVisible(false);
-		soundSlider->SetZIndex(false);
+		soundSlider->SetVisible(false);
 		soundSlider->isActive = false;
 	}
 	this->SetVisible(false);
@@ -120,9 +121,10 @@ void Menu::Update() {
 	if (soundSlider->isClicking()) {
 		if (GetCursorPosition().x >= soundRange[0] && GetCursorPosition().x <= soundRange[1]) {
 			soundSlider->m_Transform.translation.x = GetCursorPosition().x;
+			soundSlider->m_Transform.translation.x = GetCursorPosition().x;
 			soundPercent = (soundSlider->m_Transform.translation.x- soundRange[0]) /( soundRange[1] - soundRange[0]);
 			soundBar->m_Transform.scale = { 4 * soundPercent ,4 };
-			std::cout << "soundPercent: " << soundPercent << "\n";
+			//std::cout << "soundPercent: " << soundPercent << "\n";
 		}
 	}
 	//Fade

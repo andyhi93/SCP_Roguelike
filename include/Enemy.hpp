@@ -76,6 +76,10 @@ protected:
     std::shared_ptr<Util::Animation> m_AnimationWalk;
     std::shared_ptr<Util::Animation> m_AnimationAttack;
     std::shared_ptr<Util::Animation> m_AnimationDie;
+    void PlayDeadSE(std::string &path) {
+        SEPlayer->LoadMedia(path);
+        SEPlayer->Play();
+    }
 
     void FlipControl();
 
@@ -86,6 +90,8 @@ protected:
     float health = 10;
     float maxHealth;
     float damage = 1;
+
+    std::string dead_SEPath = RESOURCE_DIR "/sound/dead_bozz.mp3";
 };
 
 #endif

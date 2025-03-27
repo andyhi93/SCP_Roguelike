@@ -26,11 +26,13 @@ public:
             if (GetCursorPosition().x< m_Transform.translation.x + touchSize.x / 2 && GetCursorPosition().x > m_Transform.translation.x - touchSize.x / 2 &&
                 GetCursorPosition().y< m_Transform.translation.y + touchSize.y / 2 && GetCursorPosition().y > m_Transform.translation.y - touchSize.y / 2) {
                 if (!isTouch) {
+                    SetDrawable(std::make_shared<Util::Image>(imagePath[1]));
                     isTouch = true;
                 }
             }
             else {
                 if (isTouch) {
+                    SetDrawable(std::make_shared<Util::Image>(imagePath[0]));
                     isTouch = false;
                 }
             }
@@ -38,8 +40,7 @@ public:
     }
     bool isClicking() {
         if (isActive) {
-            if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && GetCursorPosition().x< m_Transform.translation.x + touchSize.x / 2 && GetCursorPosition().x > m_Transform.translation.x - touchSize.x / 2 &&
-                GetCursorPosition().y< m_Transform.translation.y + touchSize.y / 2 && GetCursorPosition().y > m_Transform.translation.y - touchSize.y / 2) {
+            if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB) && isTouch) {
                 return true;
             }
         }

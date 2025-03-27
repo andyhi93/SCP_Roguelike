@@ -5,6 +5,7 @@
 #include "ColliderManager.hpp"
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "Util/SFX.hpp"
 
 class Actor : public Object, public std::enable_shared_from_this<Actor> {
 public:
@@ -31,5 +32,7 @@ public:
 
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids();
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors();
+
+    std::shared_ptr<Util::SFX> SEPlayer=std::make_shared<Util::SFX>("");
 };
 #endif

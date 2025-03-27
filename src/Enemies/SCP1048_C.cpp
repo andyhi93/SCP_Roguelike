@@ -66,6 +66,7 @@ void SCP1048_C::Update() {
 	if (health <= 0 && !isDead) {
 		SetDrawable(m_AnimationDie);
 		SetDead();
+		PlayDeadSE(dead_SEPath);
 		SetActive(false);
 	}
 	if (!isDead) {

@@ -18,7 +18,7 @@ public:
 
     glm::vec2 GetCursorPosition() {
         int win_w, win_h;
-        SDL_GetWindowSize(SDL_GL_GetCurrentWindow(), &win_w, &win_h);
+        SDL_GL_GetDrawableSize(SDL_GL_GetCurrentWindow(), &win_w, &win_h);
 
         int mouse_x, mouse_y;
         SDL_GetMouseState(&mouse_x, &mouse_y);
