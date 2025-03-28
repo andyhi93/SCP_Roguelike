@@ -7,7 +7,7 @@ SCP610::SCP610() : Enemy(glm::vec2{ 30,80 }){
 	m_collider->offset = { 0,-10 };
 	isDropCoin = true;
 
-	health = 1;
+	health = 5;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP610/scp610_walk1.png", RESOURCE_DIR "/SCP610/scp610_walk2.png",

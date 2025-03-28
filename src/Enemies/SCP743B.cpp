@@ -6,7 +6,7 @@ SCP743B::SCP743B() : Enemy(glm::vec2{ 45,45 }) {
 	canFly = true;
 	isDropCoin = true;
 
-	health = 1;
+	health = 3;
 	speed = 2.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP743/SCP743B_fly1.png", RESOURCE_DIR "/SCP743/SCP743B_fly2.png", }, true, 50, true, 50);

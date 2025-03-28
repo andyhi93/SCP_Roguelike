@@ -7,7 +7,7 @@ SCP1048_C::SCP1048_C() : Enemy(glm::vec2{ 47,76 }) {
 
 	m_collider->SetTriggerCallback(std::make_shared<Trigger>());
 
-	health = 1;
+	health = 3;
 	speed = 1.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP1048/SCP1048_C_walk1.png", RESOURCE_DIR "/SCP1048/SCP1048_C_walk2.png", }, true, 50, true, 50);

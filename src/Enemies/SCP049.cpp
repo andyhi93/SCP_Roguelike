@@ -8,7 +8,7 @@ SCP049::SCP049() : Enemy(glm::vec2{ 50,200 }) {
 	m_collider->offset = { 0,-10 };
 	isDropCoin = true;
 
-	health = 20;
+	health = 10;
 	maxHealth = health;
 	speed = 2.0f; 
 	m_AnimationIdle = std::make_shared<Util::Animation>(
