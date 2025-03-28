@@ -81,6 +81,7 @@ private:
     float lastHurtTime = 0.0f;
 
     std::string m_GunSFXpath = RESOURCE_DIR "/sound/gun.mp3";
+    std::string m_DeadSFXpath = RESOURCE_DIR "/sound/playerDead.mp3";
 };
 
 #endif

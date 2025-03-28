@@ -52,7 +52,8 @@ void App::FreeMobMap() {
     ColliderManager::GetInstance().RegisterCollider(m_Player->m_collider);
 }
 void App::ResetGame() {
-    FreeMobMap();
+    if(currentGameState==MobFloor) FreeMobMap();
+    if (currentGameState == Boss) FreeBossMap();
     m_Player.reset();
     floor = 1;
 }
@@ -89,10 +90,10 @@ void App::FreeBossMap() {
     ColliderManager::GetInstance().RegisterCollider(m_Player->m_collider);
 }
 void App::FixedUpdate() {
-    if (isInitMap && !isStop) {
+    /*if (isInitMap && !isStop) {
         m_Player->FixedUpdate();
         m_LevelManager->FixedUpdate();
-    }
+    }*/
 }
 float App::GetDeltaTime() {
     static Uint32 lastTime = SDL_GetTicks(); 
@@ -100,6 +101,20 @@ float App::GetDeltaTime() {
     float deltaTime = (currentTime - lastTime) / 1000.0f; 
     lastTime = currentTime; 
     return deltaTime;
+}
+void App::BGM_AB_Play(std::string Apath, float Alength, std::string Bpath){
+    float currentTime = SDL_GetTicks() / 1000.0f;
+    if (currentBGMState==Stop) {
+        currentBGMState = A;
+        m_FirstPlayTime = currentTime;
+        m_BGM->LoadMedia(Apath);
+        m_BGM->Play();
+    }
+    else if (currentBGMState == A && currentTime - Alength >= m_FirstPlayTime) {
+        currentBGMState = B;
+        m_BGM->LoadMedia(Bpath);
+        m_BGM->Play();
+    }
 }
 void App::Update() {
     m_Root.Update();
@@ -117,6 +132,17 @@ void App::Update() {
     if (!isSwitchScene && !currentGameState == StartMenu && (m_Player->isElevate || Util::Input::IsKeyUp(Util::Keycode::B) && isInitMap)) {
         isSwitchScene = true;
         m_Player->isElevate = false;
+    }
+    if (currentGameState == Boss) {
+        if (floor == 1 || floor == 3) {
+            BGM_AB_Play(m_SC049aBGMPath, 38, m_SC049bBGMPath);
+        }
+        else {
+            BGM_AB_Play(m_SC743aBGMPath, 15, m_SC743bBGMPath);
+        }
+    }
+    else{
+        currentBGMState = Stop;
     }
     if (isSwitchScene) {
         float currentTime = SDL_GetTicks() / 1000.0f;
@@ -139,6 +165,8 @@ void App::Update() {
                 m_LastDarkTime = currentTime;
             }
             if (m_Menu->GetIsFullDark() && currentTime-m_LastDarkTime>=2) {
+                m_BGM->LoadMedia(m_BattleBGMPath);
+                m_BGM->Play();
                 currentGameState = MobFloor;
                 FreeBossMap();
                 InitMobMap();
@@ -167,6 +195,7 @@ void App::Update() {
         else {
             m_Player->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
             for (auto& object : m_LevelManager->currentObjects) {
+                if (object->layer != Object::CollisionLayer::Enemy) continue;
                 auto enemy = std::dynamic_pointer_cast<Enemy>(object);
                 if(enemy) enemy->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
             }
@@ -178,12 +207,12 @@ void App::Update() {
             if (m_Menu->menuButton->isClick()&& isInitMap) {
                 m_BGM->LoadMedia(m_TitleBGMPath);
                 m_BGM->Play();
-                currentGameState = StartMenu;
                 m_Menu->isStartMenu = true;
                 m_Menu->OpenMenu();
                 isInitMap = false;
                 isStop = false;
-                FreeMobMap();
+                ResetGame();
+                currentGameState = StartMenu;
             }
         }
     }
@@ -213,13 +242,13 @@ void App::Update() {
         m_CurrentState = State::END;
     }*/
     //FixedUpdate
-    float deltaTime = GetDeltaTime(); 
+    /*float deltaTime = GetDeltaTime();
     m_AccumulatedTime += deltaTime;
 
     while (m_AccumulatedTime >= m_FixedDeltaTime) {
         FixedUpdate(); 
         m_AccumulatedTime -= m_FixedDeltaTime; 
-    }
+    }*/
 }
 
 void App::End() { // NOLINT(this method will mutate members in the future)

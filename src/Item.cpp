@@ -180,6 +180,7 @@ std::vector<float> Item::pickUp() {
 		price,
 	};
 	isPick = true;
+	this->SetVisible(false);
 	if(hasDescripting) SetPickUI();
 	return packageValue;
 }
@@ -194,6 +195,10 @@ void Item::Update() {
 		if(descriptionBackgroundImage)descriptionBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,-50 };
 		m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
 		UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
+		m_collider->position = m_Transform.translation + m_collider->offset;
+	}
+	if (ItemIndex == int(ItemType::bloodPill)) {
+		std::cout << "redpill pos: " << m_Transform.translation.x << ", " << m_Transform.translation.y << "\n";
 	}
 }
 void Item::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {

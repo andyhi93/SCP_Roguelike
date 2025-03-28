@@ -164,6 +164,8 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
 }
 void Player::Damage(float damage) {
     if (currentState != Hurt && currentHealth>0 && !isDashing && !isInvincible) {
+        m_SFX->LoadMedia(m_DeadSFXpath);
+        m_SFX->Play();
         SetHealth(GetCurrentHealth() - damage);
         currentState = Hurt;
     }
@@ -255,7 +257,6 @@ void Player::HandControl() {
     //std::cout << glm::degrees(m_Hand->m_Transform.rotation) << std::endl;
 }
 void Player::FixedUpdate() {
-    m_BulletBox->FixedUpdate();
 }
 void Player::Update() {
     //std::cout << "WorldCoord: " << m_WorldCoord.x << " ," << m_WorldCoord.y << "\n"<<"PlayerPos: "<<m_Transform.translation.x<<" ,"<<m_Transform.translation.y<<"\n";
@@ -263,6 +264,8 @@ void Player::Update() {
     m_BulletBox->Update();
     //std::cout << "Reference Count: " << shared_from_this().use_count() << std::endl;
     if (currentHealth < 1 && currentState != Die) {
+        m_SFX->LoadMedia(m_DeadSFXpath);
+        m_SFX->Play();
         currentState = Die;
         this->RemoveChild(m_Hand);
     }

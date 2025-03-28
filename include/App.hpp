@@ -69,10 +69,19 @@ private:
     std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR "/sound/title.mp3");
     std::string m_TitleBGMPath = { RESOURCE_DIR "/sound/title.mp3" };
     std::string m_BattleBGMPath = { RESOURCE_DIR "/sound/battle a.mp3" };
-    std::string m_SC049aBGMPath = { RESOURCE_DIR "/sound/SC049 a.mp3" };
-    std::string m_SC049bBGMPath = { RESOURCE_DIR "/sound/SC049 b.mp3" };
-    std::string m_SC743aBGMPath = { RESOURCE_DIR "/sound/SC743 a.mp3" };
-    std::string m_SC743bBGMPath = { RESOURCE_DIR "/sound/SC743 b.mp3" };
+    std::string m_SC049aBGMPath = { RESOURCE_DIR "/sound/SCP049 a.mp3" };
+    std::string m_SC049bBGMPath = { RESOURCE_DIR "/sound/SCP049 b.mp3" };
+    std::string m_SC743aBGMPath = { RESOURCE_DIR "/sound/SCP743 a.mp3" };
+    std::string m_SC743bBGMPath = { RESOURCE_DIR "/sound/SC7P43 b.mp3" };
+
+    void BGM_AB_Play(std::string Apath,float Alength,std::string Bpath);
+    float m_FirstPlayTime = 0;
+    enum BGMState {
+        Stop,
+        A,
+        B,
+    };
+    BGMState currentBGMState = Stop;
 };
 
 #endif

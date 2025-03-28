@@ -325,6 +325,14 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
     chest->Start();
     objs.push_back(chest);
 
+    auto redPill = std::make_shared<Item>(glm::vec2{ -250,2576 },Item::ItemType::bloodPill);
+    redPill->isCameraOn = true;
+    redPill->m_WorldCoord = glm::vec2{ -250,2576 };
+    redPill->SetZIndex(this->GetZIndex() + 0.1f);
+    this->AddChild(redPill);
+    redPill->Start();
+    objs.push_back(redPill);
+
     auto elevator = std::make_shared<Elevator>(glm::vec2{ -239,2907 }, glm::vec2{ 100,100 });
     elevator->m_WorldCoord = glm::vec2{ -239,2915 };
     elevator->isCameraOn = true;
