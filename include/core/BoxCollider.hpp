@@ -19,7 +19,9 @@ public:
 };
 
 class BoxCollider: public std::enable_shared_from_this<BoxCollider> {
-public:
+public: 
+    static int counter;  // 靜態計數器，用來生成唯一的 ID
+    int id;
     bool isTrigger = false;
     bool isSolid = false;//wall
     glm::vec2 position;

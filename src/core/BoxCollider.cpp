@@ -1,6 +1,7 @@
 #include "Core/BoxCollider.hpp"
 #include "Core/ColliderManager.hpp"
     
+int BoxCollider::counter=0;
 BoxCollider::BoxCollider(glm::vec2 _pos, glm::vec2 _size) : position(_pos), size(_size) {
 }
 void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//需要用到Trigger系列函式使用

@@ -88,15 +88,17 @@ void LevelManager::Update(){
         for (auto& obj : tempObjects) {
             if (!obj) continue;
             auto bossSummon = std::dynamic_pointer_cast<IBoss>(obj);
-            auto boss = std::dynamic_pointer_cast<Enemy>(obj);
+            auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
             if(!bossSummon || (bossSummon && isEnterRoom)) obj->Update();
-            if (bossSummon) {
-                for (auto& bullet : boss->m_IRangedAttack->m_BulletBox->bullets) {
+            if (enemy && enemy->m_IRangedAttack) {
+                for (auto& bullet : enemy->m_IRangedAttack->m_BulletBox->bullets) {
                     if (bullet && !bullet->isInCamera) {
                         bullet->isInCamera = true;
                         m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
                     }
                 }
+            }
+            if (bossSummon) {
                 if (bossSummon->isSummon) {
                     auto mobs = bossSummon->summon();
                     for (auto& mob : mobs) {
