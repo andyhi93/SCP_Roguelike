@@ -103,6 +103,7 @@ void IRangedAttack::Shoot() {
         m_AnimationShoot.lock()->Play();
         glm::vec2 bulletDirection = ownerEnemy.lock()->m_Player.lock()->m_Transform.translation - ownerEnemy.lock()->m_Transform.translation;
         auto bullet = std::make_shared<Bullet>(ownerEnemy.lock()->m_Transform.translation, BulletDamage, CollisionLayer::Enemy, 10.0f, ammoIndex, bulletDirection);
+        bullet->m_WorldCoord = ownerEnemy.lock()->m_WorldCoord;
         bullet->m_Transform.translation = ownerEnemy.lock()->m_Transform.translation;
         m_BulletBox->AddBullet(bullet);
     }
