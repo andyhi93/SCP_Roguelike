@@ -123,7 +123,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     if (!isDashing && currentState != Hurt) {
         if (other->tag == "Trap") {
             std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(other->parentActor.lock());
-            if(trap->isOpen) Damage(1.0f);
+            if (trap && trap->isOpen) Damage(1.0f);
         }
     }
     if (other->tag == "Item") {

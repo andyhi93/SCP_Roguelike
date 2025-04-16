@@ -6,19 +6,30 @@
 #include <memory>
 #include "BoxCollider.hpp"
 
-// 用於哈希的結構體
 struct BoxColliderHasher {
-    std::size_t operator()(const std::shared_ptr<BoxCollider>& collider) const {
-        return std::hash<int>{}(collider->id);  // 假設每個 BoxCollider 有唯一的 id
+    std::size_t operator()(const std::weak_ptr<BoxCollider>& collider) const {
+        auto sharedCollider = collider.lock();  // 嘗試轉換為 shared_ptr
+        if (sharedCollider) {
+            return std::hash<int>{}(sharedCollider->id);  // 假設每個 BoxCollider 有唯一的 id
+        }
+        return 0;  // 如果無法轉換為 shared_ptr，則返回 0
+    }
+};
+// 用於比較的結構體
+struct BoxColliderEqual {
+    bool operator()(const std::weak_ptr<BoxCollider>& lhs, const std::weak_ptr<BoxCollider>& rhs) const {
+        auto left = lhs.lock();
+        auto right = rhs.lock();
+
+        // 檢查 lock 是否成功
+        if (left && right) {
+            return left->id == right->id;  // 假設有 id 屬性
+        }
+
+        return false;  // 如果任一方是空指標，則視為不相等
     }
 };
 
-// 用於比較的結構體
-struct BoxColliderEqual {
-    bool operator()(const std::shared_ptr<BoxCollider>& lhs, const std::shared_ptr<BoxCollider>& rhs) const {
-        return lhs->id == rhs->id;  // 假設有 id 屬性
-    }
-};
 
 class ColliderManager {
 public:
@@ -27,6 +38,7 @@ public:
     void RegisterCollider(std::shared_ptr<BoxCollider> collider);
     void UnregisterCollider(std::shared_ptr<BoxCollider> collider);
     void RefreshCurrentColliders();
+    void DebugCheckDuplicates();
     void UpdateCollisions();
     void Update();
 
@@ -40,8 +52,9 @@ public:
     void ClearCollider();
 
 private:
-    // 使用 unordered_set 存儲唯一的 BoxCollider
-    std::unordered_set<std::shared_ptr<BoxCollider>, BoxColliderHasher, BoxColliderEqual> currentColliders;
+    // 使用 unordered_set 存儲弱引用的 BoxCollider
+    std::unordered_set<std::weak_ptr<BoxCollider>, BoxColliderHasher, BoxColliderEqual> currentColliders;
+
     std::vector<std::shared_ptr<BoxCollider>> colliders;
     bool isReset = true;
 

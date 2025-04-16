@@ -1,7 +1,8 @@
-#include "Core/ColliderManager.hpp"
+ï»¿#include "Core/ColliderManager.hpp"
 #include <Core/Solid.hpp>
 #include "Player.hpp"
 #include <iostream>
+#include <Util/Input.hpp>
 
 ColliderManager& ColliderManager::GetInstance() {
     static ColliderManager instance;
@@ -17,29 +18,80 @@ void ColliderManager::UnregisterCollider(std::shared_ptr<BoxCollider> collider) 
 }
 
 void ColliderManager::RefreshCurrentColliders() {
-    currentColliders.clear();  // ²MªÅ²{¦³ªº colliders
+    // ç§»é™¤ä¸æ´»èºçš„ collider
+    for (auto it = currentColliders.begin(); it != currentColliders.end(); ) {
+        auto sharedCol = it->lock();  // å˜—è©¦å¾ weak_ptr è½‰æ›ç‚º shared_ptr
+        if (!sharedCol || !sharedCol->isActive) {
+            it = currentColliders.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 
+    // åŠ å…¥æ–°çš„æ´»èº collider
     for (const auto& col : colliders) {
         if (col && col->isActive) {
-            currentColliders.insert(col);  // ¥u¥[¤J¤£­«½Æªº collider
+            // ç¢ºä¿å°‡æœ‰æ•ˆçš„ weak_ptr æ·»åŠ åˆ°é›†åˆä¸­
+            currentColliders.insert(col);  // æ·»åŠ  weak_ptr
         }
     }
 }
 
+void ColliderManager::DebugCheckDuplicates() {
+    std::unordered_map<int, std::vector<std::shared_ptr<BoxCollider>>> idMap;
+
+    for (const auto& col : currentColliders) {
+        auto sharedCol = col.lock();  // ç¢ºä¿ col æ˜¯æœ‰æ•ˆçš„ shared_ptr
+        if (sharedCol) {
+            idMap[sharedCol->id].push_back(sharedCol);
+        }
+    }
+
+    std::cout << "\n[Debug] === Duplicate Collider Check ===\n";
+    for (const auto& [id, colliders] : idMap) {
+        std::cout << "ID: " << id << ", Count: " << colliders.size();
+        if (!colliders.empty()) {
+            std::cout << ", Tag: " << colliders.front()->tag;
+        }
+        std::cout << "\n";
+
+        if (colliders.size() > 1) {
+            std::cout << "âš ï¸ Duplicate detected for ID " << id << "\n";
+            for (const auto& col : colliders) {
+                std::cout << "  -> Ptr: " << col.get() << ", Tag: " << col->tag << "\n";
+            }
+        }
+    }
+
+    std::cout << "Total unique IDs: " << idMap.size() << "\n";
+    std::cout << "Total colliders in currentColliders: " << currentColliders.size() << "\n";
+    int wallCount = 0;
+    for (const auto& col : currentColliders) {
+        auto sharedCol = col.lock();
+        if (sharedCol && sharedCol->tag == "Wall") {
+            ++wallCount;
+        }
+    }
+    std::cout << "Total Wall colliders: " << wallCount << "\n";
+}
+
 void ColliderManager::UpdateCollisions() {
+    //std::cout << currentColliders.size() << "\n";
     for (auto it1 = currentColliders.begin(); it1 != currentColliders.end(); ++it1) {
+        auto col1 = it1->lock();
+        if (!col1 || !col1->isActive) continue;
+
         auto it2 = it1;
         ++it2;
         for (; it2 != currentColliders.end(); ++it2) {
+            auto col2 = it2->lock();
+            if (!col2 || !col2->isActive) continue;
+
             if (!isReset) {
                 isReset = true;
                 break;
             }
-
-            auto& col1 = *it1;
-            auto& col2 = *it2;
-
-            if (!col1->isActive || !col2->isActive) continue;
 
             std::shared_ptr<Player> PlayerActor = nullptr;
             if (col1->tag == "Player") {
@@ -50,10 +102,10 @@ void ColliderManager::UpdateCollisions() {
                 col2->tag == "Door2" || col2->tag == "Door3" || col2->tag == "Table");
 
             if (PlayerActor && PlayerActor->GetIsInvincible() && isDoorOrTable) {
-                continue; // ª±®aµL¼Äª¬ºA¡A¤£Ä²µo¸I¼²
+                continue; // ç©å®¶ç„¡æ•µç‹€æ…‹ï¼Œä¸è§¸ç™¼ç¢°æ’
             }
 
-            // ¥¿±`¸I¼²³B²z
+            // æ­£å¸¸ç¢°æ’è™•ç†
             col1->HandleCollision(col2);
             col2->HandleCollision(col1);
         }
@@ -63,6 +115,9 @@ void ColliderManager::UpdateCollisions() {
 void ColliderManager::Update() {
     RefreshCurrentColliders();
     UpdateCollisions();
+    if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
+        DebugCheckDuplicates();
+    }
     auto SolidCols = GetWallColliders();
     for (auto solidCol : SolidCols) {
         std::shared_ptr<Solid> solid = std::dynamic_pointer_cast<Solid>(solidCol->parentActor.lock());
@@ -71,12 +126,13 @@ void ColliderManager::Update() {
         }
     }
 }
+
 void ColliderManager::ClearCollider() {
     for (auto& collider : colliders) {
         collider.reset();
     }
     colliders.clear();
-    std::cout << "ColliderManager size: " << colliders.size() << "\n";
+    std::cout << "clear ColliderManager size: " << colliders.size() << "\n";
 }
 
 std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetSolidColliders() {

@@ -2,14 +2,13 @@
 #include "Core/ColliderManager.hpp"
     
 int BoxCollider::counter=0;
-BoxCollider::BoxCollider(glm::vec2 _pos, glm::vec2 _size) : position(_pos), size(_size) {
+BoxCollider::BoxCollider(glm::vec2 _pos, glm::vec2 _size) : id(counter++), position(_pos), size(_size) {
 }
 void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//需要用到Trigger系列函式使用
     triggerCallback = callback;
 }
 bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
-    if (!other) return false;
-    return (position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
+    return other&&(position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
         position.x + size.x / 2 > other->position.x - other->size.x / 2 &&
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
         position.y + size.y / 2 > other->position.y - other->size.y / 2);
