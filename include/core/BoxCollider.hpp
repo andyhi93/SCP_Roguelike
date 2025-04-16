@@ -7,6 +7,7 @@
 #include <iostream>
 #include <unordered_set>
 #include "Object.hpp"
+#include <Util/Image.hpp>
 class BoxCollider;
 
 class Trigger {
@@ -49,6 +50,7 @@ public:
     virtual void OnCollisionExit(std::shared_ptr<BoxCollider> other) {};
 private:
     std::unordered_set<std::shared_ptr<BoxCollider>> currentCollisions;
+    std::shared_ptr<Object> boxImage;
 };
 
 

@@ -18,10 +18,9 @@ void ColliderManager::UnregisterCollider(std::shared_ptr<BoxCollider> collider) 
 }
 
 void ColliderManager::RefreshCurrentColliders() {
-    // 移除不活躍的 collider
+    // 移除失效或不活躍的 collider
     for (auto it = currentColliders.begin(); it != currentColliders.end(); ) {
-        auto sharedCol = it->lock();  // 嘗試從 weak_ptr 轉換為 shared_ptr
-        if (!sharedCol || !sharedCol->isActive) {
+        if (!(*it) || !(*it)->isActive) {
             it = currentColliders.erase(it);
         }
         else {
@@ -32,19 +31,18 @@ void ColliderManager::RefreshCurrentColliders() {
     // 加入新的活躍 collider
     for (const auto& col : colliders) {
         if (col && col->isActive) {
-            // 確保將有效的 weak_ptr 添加到集合中
-            currentColliders.insert(col);  // 添加 weak_ptr
+            currentColliders.insert(col);  // shared_ptr 直接用
         }
     }
 }
+
 
 void ColliderManager::DebugCheckDuplicates() {
     std::unordered_map<int, std::vector<std::shared_ptr<BoxCollider>>> idMap;
 
     for (const auto& col : currentColliders) {
-        auto sharedCol = col.lock();  // 確保 col 是有效的 shared_ptr
-        if (sharedCol) {
-            idMap[sharedCol->id].push_back(sharedCol);
+        if (col) {
+            idMap[col->id].push_back(col);
         }
     }
 
@@ -68,8 +66,7 @@ void ColliderManager::DebugCheckDuplicates() {
     std::cout << "Total colliders in currentColliders: " << currentColliders.size() << "\n";
     int wallCount = 0;
     for (const auto& col : currentColliders) {
-        auto sharedCol = col.lock();
-        if (sharedCol && sharedCol->tag == "Wall") {
+        if (col && col->tag == "Wall") {
             ++wallCount;
         }
     }
@@ -77,15 +74,14 @@ void ColliderManager::DebugCheckDuplicates() {
 }
 
 void ColliderManager::UpdateCollisions() {
-    //std::cout << currentColliders.size() << "\n";
     for (auto it1 = currentColliders.begin(); it1 != currentColliders.end(); ++it1) {
-        auto col1 = it1->lock();
+        auto col1 = *it1;
         if (!col1 || !col1->isActive) continue;
 
         auto it2 = it1;
         ++it2;
         for (; it2 != currentColliders.end(); ++it2) {
-            auto col2 = it2->lock();
+            auto col2 = *it2;
             if (!col2 || !col2->isActive) continue;
 
             if (!isReset) {
@@ -132,6 +128,7 @@ void ColliderManager::ClearCollider() {
         collider.reset();
     }
     colliders.clear();
+    currentColliders.clear();
     std::cout << "clear ColliderManager size: " << colliders.size() << "\n";
 }
 

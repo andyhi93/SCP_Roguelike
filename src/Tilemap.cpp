@@ -38,25 +38,25 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
         mobWalls.push_back(tempWall);
     }
 
-
+    // Room1048_610, Room3119_553, Room049_2_1048, Room553_610_743ant,
     std::vector<std::shared_ptr<Enemy>> EnemyObjs;
     std::vector<glm::vec2> EnemyObjPos;
     std::random_device rd;
     std::mt19937 gen(rd());
     int enemyCount = 0;
-    if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610) {
+    if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610 || _RoomType== Room553_610_743ant) {
         for (int i = 0; i < 4 && enemyCount<= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP610>());
             enemyCount++;
         }
     }
-    if (_RoomType == Room049_2 || _RoomType == Room610_049_2 || _RoomType== Room1048_049_2) {
+    if (_RoomType == Room049_2 || _RoomType == Room610_049_2 || _RoomType== Room1048_049_2 || _RoomType== Room049_2_1048) {
         for (int i = 0; i < 4 && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP049_2>());
             enemyCount++;
         }
     }
-    if (_RoomType == Room743ant || _RoomType== Room1048_743) {
+    if (_RoomType == Room743ant || _RoomType== Room1048_743 || _RoomType== Room553_610_743ant) {
         std::uniform_int_distribution<int> dis(0, 4);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum && enemyCount <= maxEnemyAmount; i++) {
@@ -68,7 +68,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             enemyCount++;
         }
     }
-    if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610) {
+    if (_RoomType == Room1048 || _RoomType== Room1048_743 || _RoomType== Room1048_049_2 || _RoomType== Room1048_610 || _RoomType== Room049_2_1048) {
         std::uniform_int_distribution<int> dis(0, 2);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum && enemyCount <= maxEnemyAmount; i++) {
@@ -80,7 +80,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             enemyCount++;
         }
     }
-    if (_RoomType == Room553 || _RoomType == Room553_610) {
+    if (_RoomType == Room553 || _RoomType == Room553_610 || _RoomType== Room553_610_743ant || _RoomType== Room3119_553) {
         maxEnemyAmount += 2;
         for (int i = 0; i < 6 && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP553>());

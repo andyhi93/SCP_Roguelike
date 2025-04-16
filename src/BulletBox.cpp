@@ -19,6 +19,7 @@ void BulletBox::AutoRemove() {
 		[this](const std::shared_ptr<Bullet>& bullet) {
 			if (!bullet->GetIslive()) {
 				ColliderManager::GetInstance().UnregisterCollider(bullet->m_collider);
+				bullet->m_collider->isActive = false;
 				this->RemoveChild(bullet); 
 				return true;
 			}
@@ -35,9 +36,10 @@ void BulletBox::ChangeRoom() {
 }
 void BulletBox::RemoveAll() {
 	for (auto& bullet : bullets) {
+		bullet->m_collider->isActive = false;
 		this->RemoveChild(bullet);
-		bullets.clear();
 	}
+	bullets.clear();
 }
 void BulletBox::AddBullet(std::shared_ptr<Bullet> bullet) {
 	bullet->Start();
