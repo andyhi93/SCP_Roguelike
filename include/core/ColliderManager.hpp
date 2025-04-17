@@ -19,7 +19,7 @@ struct BoxColliderEqual {
 };
 
 
-class ColliderManager {
+class ColliderManager: public Object{
 public:
     static ColliderManager& GetInstance();
 

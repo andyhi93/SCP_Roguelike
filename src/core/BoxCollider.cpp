@@ -14,10 +14,24 @@ void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//»Ý­n¥
 }
 bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
     boxImage->m_Transform.translation = position;
+    //DebugColliderSize();
     return other&&(position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
         position.x + size.x / 2 > other->position.x - other->size.x / 2 &&
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
         position.y + size.y / 2 > other->position.y - other->size.y / 2);
+}
+
+void BoxCollider::DebugColliderSize() {
+    if (!isBoxImageVisible && isActive) {
+        auto parent = parentActor.lock();
+        if (parent) parent->AddChild(boxImage);
+        isBoxImageVisible = true;
+    }
+    else if (isBoxImageVisible && !isActive) {
+        auto parent = parentActor.lock();
+        if (parent)parentActor.lock()->RemoveChild(boxImage);
+        isBoxImageVisible = false;
+    }
 }
 bool BoxCollider::CheckCollisionEdge(std::shared_ptr<BoxCollider> other) {
     return (position.x - size.x / 2 <= other->position.x + other->size.x / 2 &&

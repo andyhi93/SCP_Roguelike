@@ -21,6 +21,7 @@ void ColliderManager::RefreshCurrentColliders() {
     // 移除失效或不活躍的 collider
     for (auto it = currentColliders.begin(); it != currentColliders.end(); ) {
         if (!(*it) || !(*it)->isActive) {
+            this->RemoveChild(std::static_pointer_cast<Util::GameObject>((*it)->boxImage));
             it = currentColliders.erase(it);
         }
         else {
@@ -31,11 +32,11 @@ void ColliderManager::RefreshCurrentColliders() {
     // 加入新的活躍 collider
     for (const auto& col : colliders) {
         if (col && col->isActive) {
+            this->AddChild(col->boxImage);
             currentColliders.insert(col);  // shared_ptr 直接用
         }
     }
 }
-
 
 void ColliderManager::DebugCheckDuplicates() {
     std::unordered_map<int, std::vector<std::shared_ptr<BoxCollider>>> idMap;

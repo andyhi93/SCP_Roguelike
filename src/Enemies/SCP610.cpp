@@ -2,9 +2,9 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP610::SCP610() : Enemy(glm::vec2{ 30,80 }){
+SCP610::SCP610() : Enemy(glm::vec2{ 30,150 }){
 
-	m_collider->offset = { 0,-10 };
+	m_collider->offset = { 0,0 };
 	isDropCoin = true;
 
 	health = 5;

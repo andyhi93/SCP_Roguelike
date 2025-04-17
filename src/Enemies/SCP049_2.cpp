@@ -2,8 +2,8 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,80 }){
-	m_collider->offset = { 0,-10 };
+SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,150 }){
+	m_collider->offset = { 0,0 };
 	isDropCoin = true;
 
 	std::random_device rd;  // 隨機數種子
