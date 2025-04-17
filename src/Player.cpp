@@ -267,6 +267,7 @@ void Player::Update() {
         m_SFX->LoadMedia(m_DeadSFXpath);
         m_SFX->Play();
         currentState = Die;
+        isDead = true;
         this->RemoveChild(m_Hand);
     }
     if (currentState != Die) {

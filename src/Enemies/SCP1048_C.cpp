@@ -36,9 +36,11 @@ void SCP1048_C::Behavior() {
 	Shootable();
 	m_meleeTrigger->FlipTrigger();
 
-	glm::vec2 direction = normalize( m_Player.lock()->m_Transform.translation - m_Transform.translation);
-	MoveX(direction.x * speed);
-	MoveY(direction.y * speed);
+	if (!m_Player.lock()->isDead) {
+		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+		MoveX(direction.x * speed);
+		MoveY(direction.y * speed);
+	}
 }
 void SCP1048_C::FixedUpdate() {
 	m_IRangedAttack->m_BulletBox->FixedUpdate();

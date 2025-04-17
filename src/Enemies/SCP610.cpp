@@ -32,9 +32,11 @@ void SCP610::SetActive(bool isActive) {
 	if (!isActive && m_IRangedAttack) m_IRangedAttack->m_BulletBox->ChangeRoom();
 }
 void SCP610::Behavior() {
-	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
-	MoveX(direction.x * speed);
-	MoveY(direction.y * speed);
+	if (!m_Player.lock()->isDead) {
+		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+		MoveX(direction.x * speed);
+		MoveY(direction.y * speed);
+	}
 	m_IRangedAttack->Shoot();
 }
 void SCP610::Start() {
