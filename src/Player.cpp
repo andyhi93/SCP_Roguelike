@@ -76,7 +76,7 @@ void Player::PlayerControl() {
         glm::vec2 bulletDirection = GetCursorPosition() - m_Transform.translation;
         std::shared_ptr<Bullet> bullet;
         bullet = std::make_shared<Bullet>(m_Hand->m_Transform.translation + glm::vec2{ 0,-15 }, ammoDamage>1? ammoDamage*0.9:1, CollisionLayer::Player, 10.0f, 0, bulletDirection);
-        bullet->m_Transform.scale = { ammoDamage,ammoDamage };
+        bullet->m_Transform.scale = { 1+ammoDamage*0.2,1+ammoDamage*0.2 };
         bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ 0,-15 };
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;
