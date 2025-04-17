@@ -41,9 +41,11 @@ void SCP743A::Start() {
 void SCP743A::Behavior() {
 	m_meleeTrigger->FlipTrigger();
 
-	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
-	MoveX(direction.x * speed);
-	MoveY(direction.y * speed);
+	if (!m_Player.lock()->isDead) {
+		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+		MoveX(direction.x * speed);
+		MoveY(direction.y * speed);
+	}
 }
 void SCP743A::Update() {
 	if (health <= 0 && !isDead) {

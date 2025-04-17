@@ -34,9 +34,11 @@ void SCP743B::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
 }
 void SCP743B::Behavior() {
-	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - this->m_Transform.translation);
-	MoveX(direction.x * speed);
-	MoveY(direction.y * speed);
+	if (!m_Player.lock()->isDead) {
+		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+		MoveX(direction.x * speed);
+		MoveY(direction.y * speed);
+	}
 	m_IRangedAttack->Shoot();
 }
 void SCP743B::FixedUpdate() {

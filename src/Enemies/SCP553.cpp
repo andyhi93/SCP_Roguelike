@@ -42,9 +42,11 @@ void SCP553::OnCollisionEnter(std::shared_ptr<BoxCollider> other) {
 	}
 }
 void SCP553::Behavior() {
-	glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
-	MoveX(direction.x*speed);
-	MoveY(direction.y* speed);
+	if (!m_Player.lock()->isDead) {
+		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
+		MoveX(direction.x * speed);
+		MoveY(direction.y * speed);
+	}
 
 	m_meleeTrigger->FlipTrigger();
 }
