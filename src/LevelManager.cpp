@@ -10,6 +10,7 @@
 #include "Item.hpp"
 #include <Chest.hpp>
 #include <Enemies/SCP743.hpp>
+#include <Enemies/SCP3199.hpp>
 
 LevelManager::LevelManager(bool _isMobFloor,int floor) {
     this->floor = floor;
@@ -158,6 +159,30 @@ void LevelManager::Update(){
     for (auto& coin : newCoins) {
         currentObjects.push_back(coin);
     }
+    std::vector<std::shared_ptr<Object>> tempObjects = currentObjects;
+    for (auto& obj : tempObjects) {
+        if (!obj) continue;
+        auto scp3199 = std::dynamic_pointer_cast<SCP3199>(obj);
+        if (scp3199) {
+            if (scp3199->isDead) {
+                printf("summonPrepare");
+                if (!scp3199->isSummonDone && scp3199->m_AnimationDie->GetCurrentFrameIndex() == 7) {
+                    scp3199->isSummonDone = true;
+                    scp3199->isSummon = true;
+                    printf("summon");
+                }
+            }
+            if (scp3199->isSummon) {
+                auto mobs = scp3199->summon();
+                for (auto& mob : mobs) {
+                    if (mob) {
+                        currentObjects.push_back(mob);  // 用另一個 vector 暫存
+                        map[currentRoom.x][currentRoom.y].roomobjs.push_back(mob);
+                    }
+                }
+            }
+        }
+    }
     if (!isOpenCurrentDoor) {
         if (!map[currentRoom.x][currentRoom.y].isClean) {
             for (auto& obj : currentObjects) {
@@ -256,6 +281,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         }
         else if (trap) {
             trap->isOpen = false;
+            trap->m_collider->isActive = false;
         }
         else if (elevator) {
             elevator->SetActive(false);

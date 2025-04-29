@@ -65,6 +65,11 @@ public:
     std::shared_ptr<IRangedAttack> m_IRangedAttack;
     std::weak_ptr<Player> m_Player;
 
+
+    std::shared_ptr<Util::Animation> m_AnimationWalk;
+    std::shared_ptr<Util::Animation> m_AnimationAttack;
+    std::shared_ptr<Util::Animation> m_AnimationDie;
+
     enum State
     {
         Walk,
@@ -74,9 +79,6 @@ public:
     State state = Walk;
     std::string m_throwSFX = RESOURCE_DIR "/sound/throw.mp3";
 protected:
-    std::shared_ptr<Util::Animation> m_AnimationWalk;
-    std::shared_ptr<Util::Animation> m_AnimationAttack;
-    std::shared_ptr<Util::Animation> m_AnimationDie;
     void PlayDeadSE(std::string &path) {
         std::cout << "Dead\n";
         m_SFX->LoadMedia(path);

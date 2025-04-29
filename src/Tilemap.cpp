@@ -14,6 +14,7 @@
 #include "Enemies/SCP553.hpp"
 #include "Enemies/SCP049.hpp"
 #include "Enemies/SCP743.hpp"
+#include "Enemies/SCP3199.hpp"
 #include "Table.hpp"
 #include "Trap.hpp"
 #include "Item.hpp"
@@ -44,7 +45,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
     std::random_device rd;
     std::mt19937 gen(rd());
     int enemyCount = 0;
-    if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610 || _RoomType== Room553_610_743ant) {
+    if (_RoomType == Room610 || _RoomType == Room553_610 || _RoomType== Room610_049_2 || _RoomType== Room1048_610 || _RoomType== Room3119_610) {
         for (int i = 0; i < 4 && enemyCount<= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP610>());
             enemyCount++;
@@ -56,7 +57,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             enemyCount++;
         }
     }
-    if (_RoomType == Room743ant || _RoomType== Room1048_743 || _RoomType== Room553_610_743ant) {
+    if (_RoomType == Room743ant || _RoomType== Room1048_743 || _RoomType== Room3119_743ant) {
         std::uniform_int_distribution<int> dis(0, 4);
         int rdnum = dis(gen);
         for (int i = 0; i < rdnum && enemyCount <= maxEnemyAmount; i++) {
@@ -80,10 +81,16 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitRoom(RoomType _RoomType, int e
             enemyCount++;
         }
     }
-    if (_RoomType == Room553 || _RoomType == Room553_610 || _RoomType== Room553_610_743ant || _RoomType== Room3119_553) {
+    if (_RoomType == Room553 || _RoomType == Room553_610) {
         maxEnemyAmount += 2;
         for (int i = 0; i < 6 && enemyCount <= maxEnemyAmount; i++) {
             EnemyObjs.push_back(std::make_shared<SCP553>());
+            enemyCount++;
+        }
+    }
+    if (_RoomType == Room3119_610 || _RoomType == Room3119_743ant) {
+        for (int i = 0; i < 2 && enemyCount <= maxEnemyAmount; i++) {
+            EnemyObjs.push_back(std::make_shared<SCP3199>());
             enemyCount++;
         }
     }
