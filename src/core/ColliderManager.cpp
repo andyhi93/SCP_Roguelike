@@ -98,9 +98,9 @@ void ColliderManager::UpdateCollisions() {
             bool isDoorOrTable = (col2->tag == "Item" || col2->tag == "Door0" || col2->tag == "Door1" ||
                 col2->tag == "Door2" || col2->tag == "Door3" || col2->tag == "Table");
 
-            /*if (PlayerActor && (PlayerActor->GetIsInvincible() && isDoorOrTable)) {
+            if (PlayerActor && (!isDoorOrTable && PlayerActor->GetIsInvincible() )) {
                 continue; // 玩家無敵狀態，不觸發碰撞
-            }*/
+            }
 
             // 正常碰撞處理
             col1->HandleCollision(col2);

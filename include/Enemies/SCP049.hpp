@@ -13,6 +13,11 @@ public:
 
     void Behavior();
     void SetPlayer(std::weak_ptr<Player> _player) override;
+    void valueMul(float rate) override {
+        health *= rate;
+        maxHealth = health;
+        damage *= rate;
+    }
 
     std::vector<std::shared_ptr<Object>> summon() override;
 protected:

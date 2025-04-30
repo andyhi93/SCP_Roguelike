@@ -49,6 +49,7 @@ void SCP743A::Behavior() {
 }
 void SCP743A::Update() {
 	if (health <= 0 && !isDead) {
+		m_meleeTrigger->m_collider->isActive = false;
 		SetDrawable(m_AnimationDie);
 		SetDead();
 		SetActive(false);

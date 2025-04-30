@@ -8,7 +8,7 @@ SCP049::SCP049() : Enemy(glm::vec2{ 50,200 }) {
 	m_collider->offset = { 0,-10 };
 	isDropCoin = true;
 
-	health = 10;
+	health = 20;
 	maxHealth = health;
 	speed = 2.0f; 
 	m_AnimationIdle = std::make_shared<Util::Animation>(
@@ -115,6 +115,7 @@ void SCP049::FixedUpdate() {
 void SCP049::Update() {
 	m_IRangedAttack->m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
+		if(m_meleeTrigger) m_meleeTrigger->m_collider->isActive = false;
 		SetDrawable(m_AnimationDie);
 		SetDead();
 		SetActive(false);

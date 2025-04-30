@@ -69,6 +69,7 @@ void SCP1048_B::FixedUpdate() {
 void SCP1048_B::Update() {
 	m_IRangedAttack->m_BulletBox->Update();
 	if (health <= 0 && !isDead) {
+		m_meleeTrigger->m_collider->isActive = false;
 		SetDrawable(m_AnimationDie);
 		SetDead();
 		PlayDeadSE(dead_SEPath);

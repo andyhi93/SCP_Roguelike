@@ -9,7 +9,7 @@ SCP743::SCP743() : Enemy(glm::vec2{ 100,100 }) {
 	m_collider->offset = { 0,-50 };
 	isDropCoin = true;
 
-	health = 10;
+	health = 30;
 	maxHealth = health;
 	speed = 2.0f;
 	m_AnimationIdle = std::make_shared<Util::Animation>(

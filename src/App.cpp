@@ -120,6 +120,14 @@ void App::Update() {
     m_Root.Update();
     m_Menu->Update();
     m_BGM->SetVolume(m_Menu->GetSoundPercent()*100); 
+    if(m_Player) m_Player->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+    if (m_LevelManager) {
+        for (auto& obj : m_LevelManager->currentObjects) {
+            if (obj) {
+                if (obj->m_SFX) obj->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+            }
+        }
+    }
     if (Mix_PlayingMusic() == 0) {
         m_BGM->Play();
     }

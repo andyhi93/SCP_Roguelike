@@ -49,7 +49,9 @@ void SCP3199::Behavior() {
 		m_AnimationDie->SetCurrentFrame(0);
 		m_meleeTrigger->m_collider->isActive = false;
 		currentState = eggIdle;
-		m_collider->size = glm::vec2{ 50,80 };
+		m_collider->size = glm::vec2{ 50,50 };
+		m_collider->offset = glm::vec2{ 0,-50 };
+		m_collider->position = m_Transform.translation + m_collider->offset;
 		SetDrawable(m_AnimationEggIdle);
 		health = childHealth;
 		startSpawnTime= SDL_GetTicks() / 1000.0f;
@@ -61,6 +63,9 @@ void SCP3199::Behavior() {
 		}
 		currentTime = SDL_GetTicks() / 1000.0f;
 		if (currentTime - startSpawnTime >= 5) {
+			m_collider->size = glm::vec2{ 50,80 };
+			m_collider->offset = glm::vec2{ 0,0 };
+			m_collider->position = m_Transform.translation + m_collider->offset;
 			currentState = eggBorn;
 			health = childHealth;
 			SetDrawable(m_AnimationEggBorn);
@@ -76,7 +81,10 @@ void SCP3199::Behavior() {
 		speed = 6;
 	}
 	else if (currentState == childWalk) {
-		if (health <= 0) currentState = childDie;
+		if (health <= 0) {
+			currentState = childDie;
+			SetDrawable(m_AnimationChildDie);
+		}
 		currentTime = SDL_GetTicks() / 1000.0f;
 		if (currentTime - startGrowTime >= 5) {
 			speed = 4;
@@ -96,8 +104,8 @@ void SCP3199::Behavior() {
 }
 void SCP3199::Update() {
 	if (currentState==childDie) {
+		m_meleeTrigger->m_collider->isActive = false;
 		m_collider->isActive = false;
-		SetDrawable(m_AnimationDie);
 		SetDead();
 		SetActive(false);
 	}

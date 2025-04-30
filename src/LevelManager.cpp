@@ -35,7 +35,7 @@ void LevelManager::InitBossRoom() {
     else objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP743);
     for (auto& obj : objs) {
         auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
-        if (enemy) enemy->valueMul(floor / 2 * 0.1 + 1);
+        if (enemy) enemy->valueMul(floor / 2 * 0.2 + 1);
         currentObjects.push_back(obj);
         m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(obj));
     }

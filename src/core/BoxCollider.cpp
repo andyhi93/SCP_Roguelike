@@ -14,7 +14,7 @@ void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//»Ý­n¥
 }
 bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
     boxImage->m_Transform.translation = position;
-    //DebugColliderSize();
+    DebugColliderSize();
     return other&&(position.x - size.x / 2 < other->position.x + other->size.x / 2 &&
         position.x + size.x / 2 > other->position.x - other->size.x / 2 &&
         position.y - size.y / 2 < other->position.y + other->size.y / 2 &&
@@ -22,6 +22,7 @@ bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
 }
 
 void BoxCollider::DebugColliderSize() {
+    boxImage->m_Transform.scale = size;
     if (!isBoxImageVisible && isActive) {
         auto parent = parentActor.lock();
         if (parent) parent->AddChild(boxImage);
