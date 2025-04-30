@@ -55,6 +55,11 @@ public:
     void SetHealth(float _health) { health = _health; }
     inline float GetHealth() { return health; }
     void Damage(float damage) { SetHealth(GetHealth() - damage); }
+
+    virtual void valueMul(float rate) {
+        health *= rate;
+        damage *= rate;
+    }
     bool isDropCoin = false;
     bool isGiveCoin = false;
     std::shared_ptr<Item> GetCoin();

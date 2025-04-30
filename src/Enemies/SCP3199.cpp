@@ -1,12 +1,11 @@
 #include "Enemies/SCP3199.hpp"
-#include "Enemies/SCP3199_2.hpp"
 #include "Player.hpp"
 #include <iostream>
 #include <random>
 SCP3199::SCP3199() : Enemy(glm::vec2{ 80,150 }) {
 	isDropCoin = true;
 
-	health = 7;
+	health = 5;
 	speed = 4.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP3199/SCP3199_walk1.png", RESOURCE_DIR "/SCP3199/SCP3199_walk2.png", }, true, 100, true, 100);
@@ -15,9 +14,8 @@ SCP3199::SCP3199() : Enemy(glm::vec2{ 80,150 }) {
 		std::vector<std::string>{RESOURCE_DIR "/SCP3199/SCP3199_die1.png", RESOURCE_DIR "/SCP3199/SCP3199_die2.png"
 		, RESOURCE_DIR "/SCP3199/SCP3199_die3.png", RESOURCE_DIR "/SCP3199/SCP3199_die4.png"
 		, RESOURCE_DIR "/SCP3199/SCP3199_die5.png", RESOURCE_DIR "/SCP3199/SCP3199_die6.png",
-		RESOURCE_DIR "/die_animation1.png", RESOURCE_DIR "/die_animation2.png"}, true, 50, true, 50);
+		RESOURCE_DIR "/die_animation1.png", RESOURCE_DIR "/die_animation2.png"}, true, 250, false,250);
 	SetDrawable(m_AnimationWalk);
-	m_AnimationDie->SetLooping(false);
 	m_AnimationWalk->Play();
 	m_Transform.scale = { 3,3 };
 }
@@ -42,6 +40,54 @@ void SCP3199::Start() {
 void SCP3199::Behavior() {
 	m_meleeTrigger->FlipTrigger();
 
+	if (currentState == walk && health <= 0) {
+		SetDrawable(m_AnimationDie);
+		currentState = die;
+		speed = 0;
+	}
+	else if (currentState == die && m_AnimationDie->GetCurrentFrameIndex() == 7) {
+		m_AnimationDie->SetCurrentFrame(0);
+		m_meleeTrigger->m_collider->isActive = false;
+		currentState = eggIdle;
+		m_collider->size = glm::vec2{ 50,80 };
+		SetDrawable(m_AnimationEggIdle);
+		health = childHealth;
+		startSpawnTime= SDL_GetTicks() / 1000.0f;
+	}
+	else if (currentState == eggIdle) {
+		if (health <= 0) {
+			currentState = childDie;
+			SetDrawable(m_AnimationEggBorn);
+		}
+		currentTime = SDL_GetTicks() / 1000.0f;
+		if (currentTime - startSpawnTime >= 5) {
+			currentState = eggBorn;
+			health = childHealth;
+			SetDrawable(m_AnimationEggBorn);
+			startGrowTime = currentTime;
+		}
+	}
+	else if (currentState == eggBorn && m_AnimationEggBorn->GetCurrentFrameIndex()==3) {
+		m_meleeTrigger->m_collider->isActive = true;
+		m_meleeTrigger->m_collider->size = m_collider->size + glm::vec2{ 20,20 };
+		currentState = childWalk;
+		SetDrawable(m_AnimationChildWalk);
+		health = childHealth;
+		speed = 6;
+	}
+	else if (currentState == childWalk) {
+		if (health <= 0) currentState = childDie;
+		currentTime = SDL_GetTicks() / 1000.0f;
+		if (currentTime - startGrowTime >= 5) {
+			speed = 4;
+			currentState = walk;
+			SetDrawable(m_AnimationWalk);
+			health = adultHealth;
+			m_collider->size = glm::vec2{ 80,150 };
+			m_meleeTrigger->m_collider->size = m_collider->size+ glm::vec2{ 20,20 };
+		}
+	}
+
 	if (!m_Player.lock()->isDead) {
 		glm::vec2 direction = normalize(m_Player.lock()->m_Transform.translation - m_Transform.translation);
 		MoveX(direction.x * speed);
@@ -49,7 +95,8 @@ void SCP3199::Behavior() {
 	}
 }
 void SCP3199::Update() {
-	if (health <= 0 && !isDead) {
+	if (currentState==childDie) {
+		m_collider->isActive = false;
 		SetDrawable(m_AnimationDie);
 		SetDead();
 		SetActive(false);
@@ -58,15 +105,4 @@ void SCP3199::Update() {
 		FlipControl();
 		Behavior();
 	}
-}
-std::vector<std::shared_ptr<Object>> SCP3199::summon() {
-	isSummon = false;
-	auto scp3199_2 = std::make_shared<SCP3199_2>();
-	this->AddChild(scp3199_2);
-	scp3199_2->Start();
-	scp3199_2->SetPlayer(m_Player);
-	scp3199_2->SetZIndex(GetZIndex() + 0.01f);
-	scp3199_2->m_collider->position = m_Transform.translation;
-	scp3199_2->m_Transform.translation = m_Transform.translation;
-	return { scp3199_2 };
 }

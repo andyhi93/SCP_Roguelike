@@ -10,7 +10,6 @@
 #include "Item.hpp"
 #include <Chest.hpp>
 #include <Enemies/SCP743.hpp>
-#include <Enemies/SCP3199.hpp>
 
 LevelManager::LevelManager(bool _isMobFloor,int floor) {
     this->floor = floor;
@@ -35,6 +34,8 @@ void LevelManager::InitBossRoom() {
     if(isSCP049) objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
     else objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP743);
     for (auto& obj : objs) {
+        auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
+        if (enemy) enemy->valueMul(floor / 2 * 0.1 + 1);
         currentObjects.push_back(obj);
         m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(obj));
     }
@@ -158,30 +159,6 @@ void LevelManager::Update(){
     }
     for (auto& coin : newCoins) {
         currentObjects.push_back(coin);
-    }
-    std::vector<std::shared_ptr<Object>> tempObjects = currentObjects;
-    for (auto& obj : tempObjects) {
-        if (!obj) continue;
-        auto scp3199 = std::dynamic_pointer_cast<SCP3199>(obj);
-        if (scp3199) {
-            if (scp3199->isDead) {
-                printf("summonPrepare");
-                if (!scp3199->isSummonDone && scp3199->m_AnimationDie->GetCurrentFrameIndex() == 7) {
-                    scp3199->isSummonDone = true;
-                    scp3199->isSummon = true;
-                    printf("summon");
-                }
-            }
-            if (scp3199->isSummon) {
-                auto mobs = scp3199->summon();
-                for (auto& mob : mobs) {
-                    if (mob) {
-                        currentObjects.push_back(mob);  // 用另一個 vector 暫存
-                        map[currentRoom.x][currentRoom.y].roomobjs.push_back(mob);
-                    }
-                }
-            }
-        }
     }
     if (!isOpenCurrentDoor) {
         if (!map[currentRoom.x][currentRoom.y].isClean) {
@@ -500,6 +477,7 @@ void LevelManager::GenerateLevel() {
                     std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
                     std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(obj);
                     if (enemy) {
+                        enemy->valueMul(floor / 2 * 0.1 + 1);
                         enemy->SetPlayer(m_Player);
                         map[x][y].roomobjs.push_back(obj);
                     }
