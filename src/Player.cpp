@@ -1,4 +1,4 @@
-#include "Player.hpp"
+﻿#include "Player.hpp"
 
 #include "Util/Input.hpp"
 #include "Util/Transform.hpp"
@@ -34,6 +34,12 @@ Player::Player(): Actor(glm::vec2{ 45,60 }){
     m_AnimationIdle->Play();
     m_Transform.scale = { 4,4 };
     m_Hand = std::make_shared<Hand>();
+
+    m_cursor = std::make_shared<Object>();
+    m_cursor->m_Transform.scale = glm::vec2{ 0.5f,0.5f };
+    m_cursor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor.png"));
+    m_cursor->SetZIndex(100);
+    AddChild(m_cursor);
 }
 void Player::Start() {
     m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));//for trigger func
@@ -140,14 +146,14 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
         if (!item->isPick && item->isUnlocked) {
             auto itemData = item->pickUp();
             std::cout << "itemIspick: " << item->isPick<<"\n";
-            m_ShotInterval *= itemData[0];
-            speed *= itemData[1];
-            ammoDamage *= itemData[2];
+            m_ShotInterval *= 1+log2(itemData[0]);
+            speed *= 1+log2(itemData[1]);
+            ammoDamage *= 1.0 + log2(itemData[2]);
             if (itemData[2] != 1) {
                 float tempHealth = maxHealth * itemData[3];
                 tempHealth = tempHealth - maxHealth;
                 currentHealth += tempHealth;
-                maxHealth *= itemData[3];
+                maxHealth *= 1+log2(itemData[3]);
             }
             dashCooldown *= itemData[4];
             currentHealth = (currentHealth+ itemData[5])>maxHealth? maxHealth:currentHealth+ itemData[5];
@@ -182,7 +188,7 @@ void Player::Move(glm::vec2& velocity) {
         canDash = true;
     }
 
-    // �˴��O�_���U Shift �}�l Dash
+    // 檢測是否按下 Shift 開始 Dash
     if (Util::Input::IsKeyDown(Util::Keycode::LSHIFT) && !isDashing && canDash) {
         lastDashEndTime = currentTime;
         std::vector<std::shared_ptr<BoxCollider>> tables= ColliderManager::GetInstance().GetTableColliders();
@@ -198,7 +204,7 @@ void Player::Move(glm::vec2& velocity) {
         dashStartTime = currentTime;
     }
 
-    // �Y���b Dash�A�h���ɳt��
+    // 若正在 Dash，則提升速度
     if (isDashing) {
         velocity *= dashSpeedMultiplier;
         if (currentTime - dashStartTime >= dashTime) {
@@ -254,14 +260,46 @@ void Player::HandControl() {
     m_Hand->m_Transform.translation = m_Transform.translation + offset;
 
     glm::vec2 mousePos = GetCursorPosition();
+    m_cursor->m_Transform.translation = mousePos;
     glm::vec2 direction = mousePos - m_Transform.translation;
     float angle = isFaceRight ? atan2(direction.y, direction.x) : -atan2(direction.y, direction.x);
     m_Hand->m_Transform.rotation = isFaceRight ? angle + (glm::radians(90.0f)) : glm::radians(90.0f)- angle;
     //std::cout << glm::degrees(m_Hand->m_Transform.rotation) << std::endl;
 }
+void Player::DetectCursorPos() {
+    Uint32 mouseState = SDL_GetMouseState(NULL, NULL);
+    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+        int win_w, win_h;
+        SDL_GL_GetDrawableSize(SDL_GL_GetCurrentWindow(), &win_w, &win_h);
+
+        int mouse_x, mouse_y;
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+
+        // 把滑鼠座標轉換為以中心為原點的世界座標
+        float cursor_x = static_cast<float>(mouse_x) - static_cast<float>(win_w) / 2.0f;
+        float cursor_y = static_cast<float>(mouse_y) - static_cast<float>(win_h) / 2.0f;
+        cursor_y = -cursor_y;
+
+        glm::vec2 cursorWorldPos(cursor_x, cursor_y);
+
+        // 🔥 計算倍率 = 左上角 / 滑鼠位置
+        glm::vec2 target(-960.0f, 540.0f);
+
+        glm::vec2 scale;
+        scale.x = (cursorWorldPos.x != 0) ? (target.x / cursorWorldPos.x) : 1.0f;
+        scale.y = (cursorWorldPos.y != 0) ? (target.y / cursorWorldPos.y) : 1.0f;
+
+        Object::s_CursorScale = scale;
+        isDetectingCursor = false;
+
+        std::cout << "Scale set: " << scale.x << ", " << scale.y << std::endl;
+    }
+}
+
 void Player::FixedUpdate() {
 }
 void Player::Update() {
+    if(isDetectingCursor)DetectCursorPos();
     //std::cout << "WorldCoord: " << m_WorldCoord.x << " ," << m_WorldCoord.y << "\n"<<"PlayerPos: "<<m_Transform.translation.x<<" ,"<<m_Transform.translation.y<<"\n";
     m_Hand->Update();
     m_BulletBox->Update();
@@ -293,8 +331,10 @@ void Player::Update() {
             door->DoorControl(true);
         }
     }
+    if (Util::Input::IsKeyDown(Util::Keycode::C)) {
+        isDetectingCursor = true;
+    }
     AnimationControl();
-
     //Children object
 
 }

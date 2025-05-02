@@ -14,6 +14,7 @@ public:
     std::shared_ptr<Hand> m_Hand;
     std::shared_ptr<BulletBox> m_BulletBox;
     std::weak_ptr<LevelManager> m_LevelManager;
+    std::shared_ptr<Object> m_cursor;
 
     void SetLevelManager(std::weak_ptr<LevelManager> _LevelManager) { m_LevelManager = _LevelManager; }
     
@@ -43,6 +44,8 @@ public:
     inline bool getCanDash() { return canDash; }
 
     bool isElevate = false;
+
+    void DetectCursorPos();
 protected:
     std::shared_ptr<Util::Animation> m_AnimationIdle;
     std::shared_ptr<Util::Animation> m_AnimationWalk;
@@ -82,6 +85,8 @@ private:
 
     std::string m_GunSFXpath = RESOURCE_DIR "/sound/gun.mp3";
     std::string m_DeadSFXpath = RESOURCE_DIR "/sound/playerDead.mp3";
+
+    bool isDetectingCursor = false;
 };
 
 #endif

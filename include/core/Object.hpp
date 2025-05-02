@@ -6,6 +6,7 @@
 
 class Object : public Util::GameObject {
 public:
+    static glm::vec2 s_CursorScale;
     glm::vec2 m_WorldCoord = { 0,0 };
     bool isCameraOn = false;
     virtual void Update(){}
@@ -31,9 +32,12 @@ public:
         // 翻轉 Y 軸 (因為螢幕座標系統通常是左上角為 (0,0)，而遊戲座標系統是中心為 (0,0))
         cursor_y = -cursor_y;
 
+        cursor_x*= s_CursorScale.x;
+        cursor_y *= s_CursorScale.y;
         return glm::vec2(cursor_x, cursor_y);
     }
     std::shared_ptr<Util::SFX> m_SFX = std::make_shared<Util::SFX>("");
 };
 
 #endif
+

@@ -11,7 +11,7 @@ SCP743::SCP743() : Enemy(glm::vec2{ 100,100 }) {
 
 	health = 30;
 	maxHealth = health;
-	speed = 2.0f;
+	speed = 0.0f;
 	m_AnimationIdle = std::make_shared<Util::Animation>(
 		std::vector<std::string>{
 		RESOURCE_DIR "/SCP743/SCP743Idle1.png", RESOURCE_DIR "/SCP743/SCP743Idle2.png", RESOURCE_DIR "/SCP743/SCP743Idle3.png", RESOURCE_DIR "/SCP743/SCP743Idle4.png", }, true, 500, true, 500);
@@ -131,7 +131,7 @@ void SCP743::Shootable() {
 			}
 			else {
 				std::shared_ptr<Bullet> bullet;
-				m_IRangedAttack->shootSpeed = 1.2f;
+				m_IRangedAttack->shootSpeed = secondIndex%2? 0.5f:0.25f;
 				bullet = std::make_shared<Bullet>(m_Transform.translation + glm::vec2{ 50 * (isFaceRight ? -1 : 1),0 } + glm::vec2{ bulletDirection[secondIndex].x * -150, bulletDirection[secondIndex].y * -150 }
 					, damage, CollisionLayer::Enemy, 15, 4, m_Player.lock()->m_Transform.translation - m_Transform.translation);
 				bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ 50 * (isFaceRight ? -1 : 1),0 } + glm::vec2{ bulletDirection[secondIndex].x * -150, bulletDirection[secondIndex].y * -150 };

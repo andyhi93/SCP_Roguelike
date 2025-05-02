@@ -11,8 +11,8 @@ public:
 
     void Behavior();
     void valueMul(float rate) override {
-        health *= rate;
-        adultHealth = health;
+        adultHealth *= rate;
+        health = adultHealth;
         childHealth = adultHealth / 2 + 2;
         damage *= rate;
     }
@@ -39,7 +39,7 @@ private:
     };
     scp3199State currentState = walk;
 
-    float adultHealth;
+    float adultHealth=8;
     float childHealth;
     float currentTime = 0;
     float startSpawnTime = 0.0f;

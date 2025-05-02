@@ -5,7 +5,7 @@
 SCP3199::SCP3199() : Enemy(glm::vec2{ 80,150 }) {
 	isDropCoin = true;
 
-	health = 5;
+	health = adultHealth;
 	speed = 4.0f;
 	m_AnimationWalk = std::make_shared<Util::Animation>(
 		std::vector<std::string>{RESOURCE_DIR "/SCP3199/SCP3199_walk1.png", RESOURCE_DIR "/SCP3199/SCP3199_walk2.png", }, true, 100, true, 100);

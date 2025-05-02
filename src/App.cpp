@@ -62,7 +62,7 @@ void App::InitBossMap() {
     m_Player->m_WorldCoord = { 0,0 };
     m_LevelManager = std::make_shared<LevelManager>(false,2);
     m_LevelManager->setPlayer(m_Player);
-    if (floor == 1 || floor == 3) m_LevelManager->isSCP049 = true;
+    if (floor%2==1) m_LevelManager->isSCP049 = true;
     else m_LevelManager->isSCP049 = false;
     m_LevelManager->InitBossRoom();
     std::shared_ptr<Object> empty;
@@ -142,7 +142,7 @@ void App::Update() {
         m_Player->isElevate = false;
     }
     if (currentGameState == Boss) {
-        if (floor == 1 || floor == 3) {
+        if (floor%2==1) {
             BGM_AB_Play(m_SC049aBGMPath, 38, m_SC049bBGMPath);
         }
         else {
