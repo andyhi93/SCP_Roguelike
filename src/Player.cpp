@@ -40,6 +40,11 @@ Player::Player(): Actor(glm::vec2{ 45,60 }){
     m_cursor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor.png"));
     m_cursor->SetZIndex(100);
     AddChild(m_cursor);
+    cursorUIScreen->m_Transform.scale = glm::vec2{ 5,5 };
+    cursorUIScreen->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor_screen.png"));
+    cursorUIScreen->SetZIndex(100);
+    cursorUIScreen->SetVisible(false);
+    AddChild(cursorUIScreen);
 }
 void Player::Start() {
     m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));//for trigger func
@@ -147,7 +152,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
             auto itemData = item->pickUp();
             std::cout << "itemIspick: " << item->isPick<<"\n";
             m_ShotInterval *= 1+log2(itemData[0]);
-            speed *= 1+log2(itemData[1]);
+            speed *= 1-log2(itemData[1]);
             ammoDamage *= 1.0 + log2(itemData[2]);
             if (itemData[2] != 1) {
                 float tempHealth = maxHealth * itemData[3];
@@ -293,6 +298,7 @@ void Player::DetectCursorPos() {
         isDetectingCursor = false;
 
         std::cout << "Scale set: " << scale.x << ", " << scale.y << std::endl;
+        cursorUIScreen->SetVisible(false);
     }
 }
 
@@ -332,6 +338,7 @@ void Player::Update() {
         }
     }
     if (Util::Input::IsKeyDown(Util::Keycode::C)) {
+        cursorUIScreen->SetVisible(true);
         isDetectingCursor = true;
     }
     AnimationControl();

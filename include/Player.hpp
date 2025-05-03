@@ -68,9 +68,9 @@ private:
     float m_LastShotTime=0;
     float m_ShotInterval=1;
     float ammoDamage = 1;
-    float maxHealth = 10;
+    float maxHealth = 7;
     float currentHealth = maxHealth;
-    int coinAmount = 15;
+    int coinAmount = 0;
 
     float dashTime = 0.4f;  
     float dashCooldown = 2.0f;  
@@ -87,6 +87,7 @@ private:
     std::string m_DeadSFXpath = RESOURCE_DIR "/sound/playerDead.mp3";
 
     bool isDetectingCursor = false;
+    std::shared_ptr<Object> cursorUIScreen=std::make_shared<Object>();
 };
 
 #endif
