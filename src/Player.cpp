@@ -36,7 +36,7 @@ Player::Player(): Actor(glm::vec2{ 45,60 }){
     m_Hand = std::make_shared<Hand>();
 
     m_cursor = std::make_shared<Object>();
-    m_cursor->m_Transform.scale = glm::vec2{ 0.5f,0.5f };
+    m_cursor->m_Transform.scale = glm::vec2{ 1,1 };
     m_cursor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor.png"));
     m_cursor->SetZIndex(100);
     AddChild(m_cursor);
@@ -180,7 +180,7 @@ void Player::Damage(float damage) {
     if (currentState != Hurt && currentHealth>0 && !isDashing && !isInvincible) {
         m_SFX->LoadMedia(m_DeadSFXpath);
         m_SFX->Play();
-        SetHealth(GetCurrentHealth() - damage);
+        if(!isCheating) SetHealth(GetCurrentHealth() - damage);
         currentState = Hurt;
     }
 }

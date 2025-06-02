@@ -11,6 +11,7 @@
 
 class Player : public Actor, public Trigger{
 public:
+    bool isCheating = false;
     std::shared_ptr<Hand> m_Hand;
     std::shared_ptr<BulletBox> m_BulletBox;
     std::weak_ptr<LevelManager> m_LevelManager;

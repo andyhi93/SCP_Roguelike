@@ -1,6 +1,7 @@
 #include "App.hpp"
 
 #include "Util/Image.hpp"
+#include "core/BoxCollider.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
@@ -231,14 +232,21 @@ void App::Update() {
             isStop = true;
         }
     }
-    if (Util::Input::IsKeyUp(Util::Keycode::I) && !isInitMap) {
+    if (Util::Input::IsKeyUp(Util::Keycode::V)) {
+        BoxCollider::hitboxVisible = !BoxCollider::hitboxVisible;
+    }
+    if (Util::Input::IsKeyUp(Util::Keycode::H) && m_Player) {
+        isCheating = !isCheating;
+        m_Player->isCheating = isCheating;
+    }
+    /*if (Util::Input::IsKeyUp(Util::Keycode::I) && !isInitMap) {
         isInitMap = true;
         InitMobMap();
     }
     if (Util::Input::IsKeyUp(Util::Keycode::O) && isInitMap) {
         isInitMap = false;
         FreeMobMap();
-    }
+    }*/ 
     
     
     /*

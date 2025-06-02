@@ -22,6 +22,7 @@ public:
 class BoxCollider: public std::enable_shared_from_this<BoxCollider> {
 public: 
     static int counter;  // 靜態計數器，用來生成唯一的 ID
+    static bool hitboxVisible;
     int id;
     bool isTrigger = false;
     bool isSolid = false;//wall

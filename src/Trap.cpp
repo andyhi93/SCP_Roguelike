@@ -15,6 +15,8 @@ Trap::Trap(glm::vec2 pos, glm::vec2 size) : Solid(pos, size) {
     m_collider->isSolid = true;
 	m_collider->isTrigger = true;
 	m_collider->isActive = false;
+	m_collider->offset = glm::vec2{ 0,-20 };
+	m_collider->position = m_Transform.translation + m_collider->offset;
 }
 void Trap::Update(){
 	if (isOpen) {

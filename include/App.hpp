@@ -82,6 +82,7 @@ private:
         B,
     };
     BGMState currentBGMState = Stop;
+    bool isCheating = false;
 };
 
 #endif

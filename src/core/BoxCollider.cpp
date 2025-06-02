@@ -2,6 +2,7 @@
 #include "Core/ColliderManager.hpp"
     
 int BoxCollider::counter=0;
+bool BoxCollider::hitboxVisible = false;
 BoxCollider::BoxCollider(glm::vec2 _pos, glm::vec2 _size) : id(counter++), position(_pos), size(_size) {
     boxImage = std::make_shared<Object>();
     boxImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/pixel.png"));
@@ -23,12 +24,12 @@ bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
 
 void BoxCollider::DebugColliderSize() {
     boxImage->m_Transform.scale = size;
-    if (!isBoxImageVisible && isActive) {
+    if (hitboxVisible&&(!isBoxImageVisible && isActive)) {
         auto parent = parentActor.lock();
         if (parent) parent->AddChild(boxImage);
         isBoxImageVisible = true;
     }
-    else if (isBoxImageVisible && !isActive) {
+    else if (!hitboxVisible||(isBoxImageVisible && !isActive)) {
         auto parent = parentActor.lock();
         if (parent)parentActor.lock()->RemoveChild(boxImage);
         isBoxImageVisible = false;
