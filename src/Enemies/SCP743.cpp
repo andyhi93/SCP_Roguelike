@@ -41,6 +41,7 @@ SCP743::SCP743() : Enemy(glm::vec2{ 100,100 }) {
 	HealthNameImage->m_Transform.scale = { 3,3 };
 	HealthNameImage->SetZIndex(10.3f);
 	this->AddChild(HealthNameImage);
+
 }
 void SCP743::SetPlayer(std::weak_ptr<Player> _player) {
 	m_Player = _player;
@@ -60,6 +61,9 @@ void SCP743::Start() {
 	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack, 1);
 	m_IRangedAttack->shootSpeed = 0.7f;
 	this->AddChild(m_IRangedAttack->m_BulletBox);
+	HealthBackground->SetVisible(isActive);
+	HealthBarImage->SetVisible(isActive);
+	HealthNameImage->SetVisible(isActive);
 }
 void SCP743::FixedUpdate() {
 	if (m_IRangedAttack) m_IRangedAttack->m_BulletBox->FixedUpdate();
@@ -75,6 +79,9 @@ void SCP743::Update() {
 		HealthNameImage->SetVisible(false);
 	}
 	if (!isDead) {
+		HealthBackground->SetVisible(isActive);
+		HealthBarImage->SetVisible(isActive);
+		HealthNameImage->SetVisible(isActive);
 		HealthBarImage->m_Transform.scale = { 3 * health / maxHealth,3 };
 		//FlipControl();
 		Behavior();

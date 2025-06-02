@@ -43,7 +43,6 @@ Menu::Menu(){
 	soundBar->m_Transform.scale = { 4 * soundPercent ,4 };
 	this->AddChild(soundBar);
 
-
 	//Fade
 	FadeImage->SetVisible(false);
 	m_AnimationFade = std::make_shared<Util::Animation>(std::vector<std::string>{RESOURCE_DIR "/UI/fade1.png", RESOURCE_DIR "/UI/fade2.png", RESOURCE_DIR "/UI/fade3.png",
@@ -52,6 +51,13 @@ Menu::Menu(){
 	FadeImage->SetZIndex(16);
 	FadeImage->SetDrawable(m_AnimationFade);
 	this->AddChild(FadeImage);
+
+	tutorialImage->SetVisible(false);
+	tutorialImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/UI/tutorial.png"));
+	tutorialImage->m_Transform.scale= { 3,3 };
+	tutorialImage->m_Transform.translation = { -250,-50 };
+	tutorialImage->SetZIndex(16);
+	this->AddChild(tutorialImage);
 }
 void Menu::OpenMenu() {
 	this->SetVisible(true);
@@ -69,6 +75,7 @@ void Menu::OpenMenu() {
 		soundFrame->SetVisible(false);
 		soundSlider->SetVisible(false);
 		soundSlider->isActive = false;
+		tutorialImage->SetVisible(false);
 	}
 	else {
 		std::cout << "stop menu\n";
@@ -77,6 +84,7 @@ void Menu::OpenMenu() {
 		resumeButton->isActive = true;
 		menuButton->isActive = true;
 		SetDrawable(stopImage);
+		tutorialImage->SetVisible(true);
 
 		soundBar->SetVisible(true);
 		soundFrame->SetVisible(true);
@@ -85,6 +93,7 @@ void Menu::OpenMenu() {
 
 		startButton->SetVisible(false);
 		exitButton->SetVisible(false);
+
 	}
 }
 void Menu::CloseMenu() {
@@ -104,6 +113,7 @@ void Menu::CloseMenu() {
 		soundFrame->SetVisible(false);
 		soundSlider->SetVisible(false);
 		soundSlider->isActive = false;
+		tutorialImage->SetVisible(false);
 	}
 	this->SetVisible(false);
 }

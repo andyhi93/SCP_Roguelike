@@ -60,6 +60,7 @@ public:
         health *= rate;
         damage *= rate;
     }
+    bool isActive = true;
     bool isDropCoin = false;
     bool isGiveCoin = false;
     std::shared_ptr<Item> GetCoin();

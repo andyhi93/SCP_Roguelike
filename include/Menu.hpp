@@ -40,6 +40,7 @@ public:
     std::shared_ptr<Util::Animation> m_AnimationFade;
 private:
     std::shared_ptr<Object> FadeImage = std::make_shared<Object>();
+    std::shared_ptr<Object> tutorialImage = std::make_shared<Object>();
     bool isFading = false;
     bool isFullDark = false;
     float soundPercent = 0.3f;

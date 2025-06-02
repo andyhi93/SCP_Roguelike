@@ -15,6 +15,7 @@ public:
     bool canPushableX = false;
     bool canPushableY = false;
     bool canFly = false;
+    bool isBoss = false;
 
     bool isDead = false;
     Actor(glm::vec2 size);

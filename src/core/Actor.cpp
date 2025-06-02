@@ -22,6 +22,10 @@ void Actor::MoveX(float amount) {
             m_collider->position.x = m_Transform.translation.x;
             m_WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
         }
+
+        if (!PlayerActor && (m_WorldCoord.x > 1145 || m_WorldCoord.x < -1145)) {
+            m_WorldCoord.x = m_WorldCoord.x > 1145 ? 1140 : -1140;
+        }
         /*if (OtherSolid && (OtherSolidCol->tag == "Wall" ||
             OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3")) {
             int sign = (m_Transform.translation.x-OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
@@ -76,7 +80,7 @@ void Actor::MoveX(float amount) {
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 break;
             }
-            if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
+            if (!isBoss && !playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 if (xRemainder * OtherActor->xRemainder <= 0 && abs(xRemainder) > abs(OtherActor->xRemainder) && OtherActor->canPushableX) {
                     OtherActor->MoveX(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
@@ -105,6 +109,9 @@ void Actor::MoveY(float amount) {
             m_Transform.translation.y = m_Transform.translation.y > 354 ? 300 : -373;
             m_collider->position.y = m_Transform.translation.y;
             m_WorldCoord.y = m_Transform.translation.y > 354 ? 300 : -373;
+        }
+        if (!PlayerActor && (m_WorldCoord.y > 1650 || m_WorldCoord.y < 775)) {
+            m_WorldCoord.y = m_WorldCoord.y > 1650 ? 1648 : 776;
         }
         /*if (OtherSolid && ((OtherSolidCol->tag == "Wall" ||
             OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4"))){
@@ -161,7 +168,7 @@ void Actor::MoveY(float amount) {
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 break;
             }
-            if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
+            if (!isBoss && !playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
                 if (yRemainder * OtherActor->yRemainder <= 0 && abs(yRemainder) > abs(OtherActor->yRemainder) &&OtherActor->canPushableY) {
                     OtherActor->MoveY(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;

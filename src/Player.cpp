@@ -40,7 +40,7 @@ Player::Player(): Actor(glm::vec2{ 45,60 }){
     m_cursor->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor.png"));
     m_cursor->SetZIndex(100);
     AddChild(m_cursor);
-    cursorUIScreen->m_Transform.scale = glm::vec2{ 5,5 };
+    cursorUIScreen->m_Transform.scale = glm::vec2{ 4,4 };
     cursorUIScreen->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/cursor_screen.png"));
     cursorUIScreen->SetZIndex(100);
     cursorUIScreen->SetVisible(false);
@@ -92,6 +92,9 @@ void Player::PlayerControl() {
         m_BulletBox->AddBullet(bullet);
         m_LastShotTime = currentTime;
     }
+    /*if (Util::Input::IsKeyDown(Util::Keycode::MOUSE_RB)) {
+        std::cout <<"========================" << m_WorldCoord.x << "," << m_WorldCoord.y << "========================"<<std::endl;
+    }*/
 }
 void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
     if (other->tag == "Door0" && m_LevelManager.lock()->m_Tilemap->doors[0]->isOpen) {

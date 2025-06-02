@@ -38,7 +38,7 @@ public:
     std::vector<std::shared_ptr<Solid>> mobWalls;
 
 
-    enum BossType { RoomSCP049, RoomSCP743 };
+    enum BossType { RoomSCP049, RoomSCP743 ,Both};
     std::vector<std::shared_ptr<Object>> InitBossRoom(BossType _BossType);
     std::vector<std::shared_ptr<Solid>> bossWalls;
 private:

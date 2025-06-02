@@ -33,9 +33,10 @@ public:
     void InitBossRoom();
     std::shared_ptr<Camera> m_Camera;
     int floor = 0;
-    bool isSCP049 = true;
+    Tilemap::BossType bossType;
 private:
     bool isMobFloor;
+    bool isSummonBossB = false;
 
     UI::Room map[MAP_SIZE_WIDTH][MAP_SIZE_HEIGHT];
     glm::ivec2 startPos;

@@ -31,8 +31,9 @@ void LevelManager::InitBossRoom() {
     m_UI->SetZIndex(10);
     this->AddChild(m_Tilemap);
     std::vector<std::shared_ptr<Object>> objs;
-    if(isSCP049) objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
-    else objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP743);
+    if(bossType==Tilemap::BossType::RoomSCP049) objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP049);
+    else if (bossType == Tilemap::BossType::RoomSCP743) objs = m_Tilemap->InitBossRoom(Tilemap::BossType::RoomSCP743);
+    else objs = m_Tilemap->InitBossRoom(Tilemap::BossType::Both);
     for (auto& obj : objs) {
         auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
         if (enemy) enemy->valueMul(floor / 2 * 0.2 + 1);
@@ -44,8 +45,13 @@ void LevelManager::InitBossRoom() {
     else { std::cout << "nullptr Player\n"; }
     for (auto& wall : m_Tilemap->bossWalls) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(wall)); }
     for (auto& door : m_Tilemap->doors) { m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(door)); }
-    auto boss = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
-    boss->SetPlayer(m_Player);
+    for (auto& obj : objs) {
+        auto boss = std::dynamic_pointer_cast<IBoss>(obj);
+        if (boss) {
+            auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
+            enemy->SetPlayer(m_Player);
+        }
+    }
     m_Player.lock()->isCameraOn = true;
 }
 void LevelManager::setPlayer(std::weak_ptr<Player> _player) {
@@ -85,12 +91,32 @@ void LevelManager::Update(){
                 m_Camera->AddRelativePivotChild(std::weak_ptr<Object>(bullet));
             }
         }
+        if (!isSummonBossB && floor == 5) {
+            auto bossA = std::dynamic_pointer_cast<Enemy>(currentObjects[0]);
+            if (bossA && bossA->isDead) {
+                for (auto& obj : currentObjects) {
+                    auto enemy = std::dynamic_pointer_cast<SCP743>(obj);
+                    if (enemy) {
+                        isSummonBossB = true;
+                        enemy->isActive = true;
+                        enemy->m_collider->isActive = true;
+                        enemy->SetVisible(true);
+                        printf("=============================§ä¨ìboss============================");
+                    }
+                    else {
+
+                        printf("==============§ä¨ìboss===============");
+                    }
+                }
+            }
+        }
 
         std::vector<std::shared_ptr<Object>> tempObjects = currentObjects;
         for (auto& obj : tempObjects) {
             if (!obj) continue;
             auto bossSummon = std::dynamic_pointer_cast<IBoss>(obj);
             auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
+            if (!enemy || enemy->isDead ||!enemy->isActive) continue;
             if(!bossSummon || (bossSummon && isEnterRoom)) obj->Update();
             if (enemy && enemy->m_IRangedAttack) {
                 for (auto& bullet : enemy->m_IRangedAttack->m_BulletBox->bullets) {

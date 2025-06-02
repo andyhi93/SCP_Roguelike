@@ -17,6 +17,12 @@ void App::Start() {
     m_Menu->OpenMenu();
     m_Root.AddChild(m_Menu);
 
+    m_EndImage->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/escape.png"));
+    m_EndImage->SetVisible(false);
+    m_EndImage->SetZIndex(10);
+    m_EndImage->m_Transform.scale = { 4,4 };
+    m_Root.AddChild(m_EndImage);
+
     m_CurrentState = State::UPDATE;
 }
 void App::InitMobMap() {
@@ -57,14 +63,16 @@ void App::ResetGame() {
     if (currentGameState == Boss) FreeBossMap();
     m_Player.reset();
     floor = 1;
+    m_EndImage->SetVisible(false);
 }
 void App::InitBossMap() {
     m_Player->m_Transform.translation = { 0,0 };
     m_Player->m_WorldCoord = { 0,0 };
-    m_LevelManager = std::make_shared<LevelManager>(false,2);
+    m_LevelManager = std::make_shared<LevelManager>(false,floor);
     m_LevelManager->setPlayer(m_Player);
-    if (floor%2==1) m_LevelManager->isSCP049 = true;
-    else m_LevelManager->isSCP049 = false;
+    if(floor==5) m_LevelManager->bossType = Tilemap::BossType::Both;
+    else if (floor % 2 == 1) m_LevelManager->bossType = Tilemap::BossType::RoomSCP049;
+    else m_LevelManager->bossType = Tilemap::BossType::RoomSCP743;
     m_LevelManager->InitBossRoom();
     std::shared_ptr<Object> empty;
     std::vector<std::shared_ptr<Object>> Objects = { m_LevelManager, empty/*Enemy*/, m_Player };
@@ -133,7 +141,7 @@ void App::Update() {
         m_BGM->Play();
     }
     //std::cout << "Ref count: " << m_Player.use_count() << std::endl;
-    if (isInitMap && !isStop) {
+    if (floor!=6 && isInitMap && !isStop) {
         ColliderManager::GetInstance().Update();
         m_Player->Update();
         m_LevelManager->Update();
@@ -178,9 +186,16 @@ void App::Update() {
                 m_BGM->Play();
                 currentGameState = MobFloor;
                 FreeBossMap();
-                InitMobMap();
-                m_Menu->FadeOut();
-                isSwitchScene = false;
+                if(floor==6){
+                    m_Menu->FadeOut();
+                    m_EndImage->SetVisible(true);
+                    isSwitchScene = false;
+                }
+                else {
+                    InitMobMap();
+                    m_Menu->FadeOut();
+                    isSwitchScene = false;
+                }
             }
         }
     }
@@ -203,10 +218,12 @@ void App::Update() {
         }
         else {
             m_Player->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
-            for (auto& object : m_LevelManager->currentObjects) {
-                if (object->layer != Object::CollisionLayer::Enemy) continue;
-                auto enemy = std::dynamic_pointer_cast<Enemy>(object);
-                if(enemy) enemy->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+            if (m_LevelManager) {
+                for (auto& object : m_LevelManager->currentObjects) {
+                    if (object->layer != Object::CollisionLayer::Enemy) continue;
+                    auto enemy = std::dynamic_pointer_cast<Enemy>(object);
+                    if (enemy) enemy->m_SFX->SetVolume(m_Menu->GetSoundPercent() * 100);
+                }
             }
             if (m_Menu->resumeButton->isClick()) {
                 isSetMenu = false;

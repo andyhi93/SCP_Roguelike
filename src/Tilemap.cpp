@@ -315,14 +315,43 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
 
     std::shared_ptr<Enemy> Boss;
     if(_BossType==RoomSCP049) Boss = std::make_shared<SCP049>();
-    else Boss = std::make_shared<SCP743>();
-    Boss->Start();
-    Boss->m_Transform.translation = { 0,1500 };
-    Boss->m_WorldCoord = { 0,1500 };
-    Boss->SetZIndex(this->GetZIndex() + 0.5f);
-    Boss->isCameraOn = true;
-    this->AddChild(Boss);
-    objs.push_back(Boss);
+    else if(_BossType == RoomSCP743) Boss = std::make_shared<SCP743>();
+    else {
+        std::shared_ptr<Enemy> BossA;
+        BossA = std::make_shared<SCP049>();
+        BossA->Start();
+        BossA->m_Transform.translation = { 0,1500 };
+        BossA->m_WorldCoord = { 0,1500 };
+        BossA->SetZIndex(this->GetZIndex() + 0.5f);
+        BossA->isCameraOn = true;
+        BossA->isBoss = true;
+        this->AddChild(BossA);
+        objs.push_back(BossA);
+        
+
+        Boss = std::make_shared<SCP743>();
+        Boss->isActive = false;
+        Boss->Start();
+        Boss->m_Transform.translation = { 0,1000 };
+        Boss->m_WorldCoord = { 0,1000 };
+        Boss->SetZIndex(this->GetZIndex() + 0.5f);
+        Boss->isCameraOn = true;
+        this->AddChild(Boss);
+        objs.push_back(Boss);
+
+        Boss->m_collider->isActive = false;
+        Boss->SetVisible(false);
+    }
+    if (_BossType != Both) {
+        Boss->Start();
+        Boss->m_Transform.translation = { 0,1500 };
+        Boss->m_WorldCoord = { 0,1500 };
+        Boss->SetZIndex(this->GetZIndex() + 0.5f);
+        Boss->isCameraOn = true;
+        if(_BossType==RoomSCP049) Boss->isBoss = true;
+        this->AddChild(Boss);
+        objs.push_back(Boss);
+    }
 
     auto chest = std::make_shared<Chest>(glm::vec2{ 0,2576 }, glm::vec2{ 150,100 });
     chest->isCameraOn = true;

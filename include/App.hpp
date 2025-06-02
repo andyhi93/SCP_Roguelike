@@ -38,6 +38,7 @@ private:
     std::shared_ptr<Player> m_Player;
     std::shared_ptr<LevelManager> m_LevelManager;
     std::shared_ptr<Menu> m_Menu;
+    std::shared_ptr<Object> m_EndImage = std::make_shared<Object>();
 
     void InitMobMap();
     void FreeMobMap();
@@ -63,7 +64,7 @@ private:
 
     bool isStop = false;
 
-    int floor = 1;
+    int floor = 5;
     float m_LastDarkTime = 0;
 
     std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR "/sound/title.mp3");
