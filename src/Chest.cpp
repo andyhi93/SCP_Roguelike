@@ -32,6 +32,7 @@ void Chest::OnTriggerExit(std::shared_ptr<BoxCollider> other) {
 	}
 }
 void Chest::Start() {
+
 	openArea->m_collider->parentActor = std::dynamic_pointer_cast<Object>(shared_from_this());
 
 	openArea->m_collider->SetTriggerCallback(std::dynamic_pointer_cast<Trigger>(shared_from_this()));

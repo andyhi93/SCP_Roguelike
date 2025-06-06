@@ -101,21 +101,25 @@ void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
         m_LevelManager.lock()->ChangeRoom(glm::ivec2(1, 0));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-793, -66);
+        m_collider->position = m_Transform.translation + m_collider->offset;
     }
     if (other->tag == "Door1" && m_LevelManager.lock()->m_Tilemap->doors[1]->isOpen) {
         m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, -1));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-6, 348);
+        m_collider->position = m_Transform.translation + m_collider->offset;
     }
     if (other->tag == "Door2" && m_LevelManager.lock()->m_Tilemap->doors[2]->isOpen) {
         m_LevelManager.lock()->ChangeRoom(glm::ivec2(-1, 0));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(802, -67);
+        m_collider->position = m_Transform.translation + m_collider->offset;
     }
     if (other->tag == "Door3" && m_LevelManager.lock()->m_Tilemap->doors[3]->isOpen) {
         m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, 1));
         m_BulletBox->ChangeRoom();
         m_Transform.translation = glm::vec2(-9, -397);
+        m_collider->position = m_Transform.translation + m_collider->offset;
     }
     if (other->tag == "Table") {
         std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor.lock());
@@ -155,7 +159,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
             auto itemData = item->pickUp();
             std::cout << "itemIspick: " << item->isPick<<"\n";
             m_ShotInterval *= 1+log2(itemData[0]);
-            speed *= 1-log2(itemData[1]);
+            speed *= 1+log2(itemData[1]);
             ammoDamage *= 1.0 + log2(itemData[2]);
             if (itemData[2] != 1) {
                 float tempHealth = maxHealth * itemData[3];

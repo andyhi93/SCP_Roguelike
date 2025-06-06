@@ -17,45 +17,24 @@ void Actor::MoveX(float amount) {
         auto OtherSolidCol = CheckCollisionWithSolids();
         auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (m_Transform.translation.x > 830 || m_Transform.translation.x < -830) {
-            std::cout << "Out of map\n";
+            std::cout << "Out of map OneX\n";
             m_Transform.translation.x = m_Transform.translation.x > 830 ? 800 : -800;
             m_collider->position.x = m_Transform.translation.x;
             m_WorldCoord.x = m_Transform.translation.x > 830 ? 800 : -800;
         }
-
+    }
+    else if (!m_collider->isTrigger && isCameraOn) {
+        auto OtherSolidCol = CheckCollisionWithSolids();
+        auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (!PlayerActor && (m_WorldCoord.x > 1145 || m_WorldCoord.x < -1145)) {
+            std::cout << "Out of mapX\n";
             m_WorldCoord.x = m_WorldCoord.x > 1145 ? 1140 : -1140;
         }
-        /*if (OtherSolid && (OtherSolidCol->tag == "Wall" ||
-            OtherSolidCol->tag == "Door0" || OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3")) {
-            int sign = (m_Transform.translation.x-OtherSolid->m_Transform.translation.x) < 0 ? -1 : 1;
-            while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
-                m_Transform.translation.x += sign;
-                m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-                m_WorldCoord.x += sign;
-                std::cout << "stuck wallX\n";
-            }
-        }*/
     }
     xRemainder += amount;
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
-    /*if (!playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead && !m_collider->isTrigger) {
-        if (xRemainder * OtherActor->xRemainder < 0 && abs(xRemainder) < abs(OtherActor->xRemainder)) {
-            float diff = (m_Transform.translation.x - OtherActor->m_Transform.translation.x);
-            if (diff > 0) {
-                m_Transform.translation.x += 1;
-                m_WorldCoord.x += 1;
-            }
-            else if (diff < 0) {
-                m_Transform.translation.x -= 1;
-                m_WorldCoord.x -= 1;
-            }
-            m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
-            return;
-        }
-    }*/
     int move = (int)round(xRemainder);
     if (move != 0)
     {
@@ -75,8 +54,15 @@ void Actor::MoveX(float amount) {
             }
             else {
                 canPushableX = false;
-                m_Transform.translation.x -= sign;
-                m_WorldCoord.x -= sign;
+                glm::vec2 target = FindNearestAvailablePosition(m_collider->position, sign);
+                int times = 0;
+                while (times < 100 && m_collider->position.x!= target.x && !CheckCollisionWithSolids()) {
+                    times++;
+                    int newSign = (m_collider->position.x - target.x) > 0 ? 1 : -1;
+                    if(!isCameraOn) m_Transform.translation.y -= m_Transform.translation.y > 0 ? 1 : 0;
+                    m_WorldCoord.x -= newSign;
+                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
+                }
                 m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 break;
             }
@@ -84,6 +70,7 @@ void Actor::MoveX(float amount) {
                 if (xRemainder * OtherActor->xRemainder <= 0 && abs(xRemainder) > abs(OtherActor->xRemainder) && OtherActor->canPushableX) {
                     OtherActor->MoveX(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
+                    m_collider->position.x = m_Transform.translation.x + m_collider->offset.x;
                 }
                 else {
                     sign = m_Transform.translation.x - OtherActor->m_Transform.translation.x > 0 ? 1 : -1;
@@ -96,7 +83,8 @@ void Actor::MoveX(float amount) {
         }
     }
     else {
-        canPushableX = true;
+        if(CheckCollisionWithSolids()) canPushableX = false;
+        else canPushableX = true;
     }
 }
 
@@ -106,43 +94,24 @@ void Actor::MoveY(float amount) {
         auto OtherSolidCol = CheckCollisionWithSolids();
         auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (!PlayerActor && (m_Transform.translation.y > 354 || m_Transform.translation.y < -420)) {
+            std::cout << "Out of map OneY\n";
             m_Transform.translation.y = m_Transform.translation.y > 354 ? 300 : -373;
             m_collider->position.y = m_Transform.translation.y;
             m_WorldCoord.y = m_Transform.translation.y > 354 ? 300 : -373;
         }
+    }
+    else if (!m_collider->isTrigger && isCameraOn) {
+        auto OtherSolidCol = CheckCollisionWithSolids();
+        auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (!PlayerActor && (m_WorldCoord.y > 1650 || m_WorldCoord.y < 775)) {
+            std::cout << "Out of mapY\n";
             m_WorldCoord.y = m_WorldCoord.y > 1650 ? 1648 : 776;
         }
-        /*if (OtherSolid && ((OtherSolidCol->tag == "Wall" ||
-            OtherSolidCol->tag == "Door1" || OtherSolidCol->tag == "Door2" || OtherSolidCol->tag == "Door3" || OtherSolidCol->tag == "Door4"))){
-            int sign = (m_Transform.translation.y - OtherSolid->m_Transform.translation.y) < 0 ? -1 : 1;
-            while (m_collider->CheckCollisionEdge(OtherSolidCol)) {
-                m_Transform.translation.y += sign;
-                m_WorldCoord.y += sign;
-                m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-                std::cout << "stuck wallY\n";
-            }
-        }*/
     }
     yRemainder += amount;
     auto OtherCollider = CheckCollisionWithActors();
     auto OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
     bool playerIsDashing = (PlayerActor && PlayerActor->isDashing) ? true : false;
-    /*if (!m_collider->isTrigger && !playerIsDashing && !CheckCollisionWithSolids() && OtherActor && !OtherActor->isDead) {
-        if (yRemainder* OtherActor->yRemainder<0 && abs(yRemainder) < abs(OtherActor->yRemainder)) {
-            float diff = (m_Transform.translation.y - OtherActor->m_Transform.translation.y);
-            if (diff > 0) {
-                m_Transform.translation.y += 1;
-                m_WorldCoord.y += 1;
-            }
-            else if (diff < 0) {
-                m_Transform.translation.y -= 1;
-                m_WorldCoord.y -= 1;
-            }
-            m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
-            return;
-        }
-    }*/
     int move = (int)round(yRemainder);
     if (move != 0)
     {
@@ -150,7 +119,6 @@ void Actor::MoveY(float amount) {
         int sign = move > 0 ? 1 : -1;
         while (move != 0)
         {
-            //if ((xRemainder != 0 || yRemainder != 0)&& PlayerActor) std::cout << "Player xReminder: " << xRemainder << " Player yReminder: " << yRemainder << "\n";
             m_collider->position.y += sign;
 
             if (!CheckCollisionWithSolids() || (m_collider->isTrigger && !(PlayerActor)))
@@ -163,8 +131,15 @@ void Actor::MoveY(float amount) {
             }
             else {
                 canPushableY = false;
-                m_Transform.translation.y -= sign;
-                m_WorldCoord.y -= sign;
+                glm::vec2 target = FindNearestAvailablePosition(m_collider->position,sign);
+                int times = 0;
+                while (times < 100 && m_collider->position.y != target.y && !CheckCollisionWithSolids()) {
+                    times++;
+                    int newSign = (m_collider->position.y - target.y) > 0 ? 1 : -1;
+                    if (!isCameraOn) m_Transform.translation.y -= m_Transform.translation.y > 0 ? 1 : 0;
+                    m_WorldCoord.y -= newSign;
+                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
+                }
                 m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 break;
             }
@@ -172,6 +147,7 @@ void Actor::MoveY(float amount) {
                 if (yRemainder * OtherActor->yRemainder <= 0 && abs(yRemainder) > abs(OtherActor->yRemainder) &&OtherActor->canPushableY) {
                     OtherActor->MoveY(move);
                     OtherActor = (OtherCollider) ? std::dynamic_pointer_cast<Actor>(OtherCollider->parentActor.lock()) : nullptr;
+                    m_collider->position.y = m_Transform.translation.y + m_collider->offset.y;
                 }
                 else {
                     sign = m_Transform.translation.y - OtherActor->m_Transform.translation.y > 0 ? 1 : -1;
@@ -184,10 +160,68 @@ void Actor::MoveY(float amount) {
         }
     }
     else {
-        canPushableY = true;
+        if(CheckCollisionWithSolids()) canPushableY = false;
+        else canPushableY = true;
     }
 }
+glm::vec2 Actor::FindNearestAvailablePosition(glm::vec2 origin, int searchDir) {
+    std::shared_ptr<BoxCollider> tempCollider = std::make_shared<BoxCollider>(origin, m_collider->size);
+    tempCollider->offset = m_collider->offset;
+    bool isTarget = false;
 
+    int radius = 3;
+    if (searchDir > 0) {
+        for (int i = radius; i > -(radius + 1); i--) {
+            for (int j = radius; j > -(radius + 1) ; j--) {
+                tempCollider->position = glm::vec2{ m_collider->position.x + i,m_collider->position.y + j };
+                if (!CheckCollisionWithSolids(tempCollider)) {
+                    origin = tempCollider->position;
+                    break;
+                }
+            }
+            if (!CheckCollisionWithSolids(tempCollider)) break;
+        }
+        if (!isTarget) {
+            radius = 5;
+            for (int i = radius; i < -(radius + 1); i++) {
+                for (int j = radius; j < -(radius + 1); j++) {
+                    tempCollider->position = glm::vec2{ m_collider->position.x + i,m_collider->position.y + j };
+                    if (!CheckCollisionWithSolids(tempCollider)) {
+                        origin = tempCollider->position;
+                        break;
+                    }
+                }
+                if (!CheckCollisionWithSolids(tempCollider)) break;
+            }
+        }
+    }
+    else {
+        for (int i = -radius; i < (radius + 1); i++) {
+            for (int j = -radius; j < (radius + 1); j++) {
+                tempCollider->position = glm::vec2{ m_collider->position.x + i,m_collider->position.y + j };
+                if (!CheckCollisionWithSolids(tempCollider)) {
+                    origin = tempCollider->position;
+                    break;
+                }
+            }
+            if (!CheckCollisionWithSolids(tempCollider)) break;
+        }
+        if (!isTarget) {
+            radius = 5;
+            for (int i = radius; i < -(radius + 1); i++) {
+                for (int j = radius; j < -(radius + 1); j++) {
+                    tempCollider->position = glm::vec2{ m_collider->position.x + i,m_collider->position.y + j };
+                    if (!CheckCollisionWithSolids(tempCollider)) {
+                        origin = tempCollider->position;
+                        break;
+                    }
+                }
+                if (!CheckCollisionWithSolids(tempCollider)) break;
+            }
+        }
+    }
+    return origin;
+}
 std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids() {
     std::vector<std::shared_ptr<BoxCollider>> solids;
     if(canFly) solids = ColliderManager::GetInstance().GetWallColliders();
@@ -195,6 +229,18 @@ std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids() {
     //std::cout << "solid size: " << solids.size() << std::endl;
     for (auto& solid : solids) {
         if (m_collider->CheckCollision(solid) && solid->isActive) {
+            return solid;
+        }
+    }
+    return nullptr;
+}
+std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids(std::shared_ptr<BoxCollider> boxCollider) {
+    std::vector<std::shared_ptr<BoxCollider>> solids;
+    if (canFly) solids = ColliderManager::GetInstance().GetWallColliders();
+    else solids = ColliderManager::GetInstance().GetSolidColliders();
+    //std::cout << "solid size: " << solids.size() << std::endl;
+    for (auto& solid : solids) {
+        if (boxCollider->CheckCollision(solid) && solid->isActive) {
             return solid;
         }
     }

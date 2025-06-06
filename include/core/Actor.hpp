@@ -32,7 +32,9 @@ public:
 
 
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids();
+    std::shared_ptr<BoxCollider> Actor::CheckCollisionWithSolids(std::shared_ptr<BoxCollider> boxCollider);
     std::shared_ptr<BoxCollider> Actor::CheckCollisionWithActors();
+    glm::vec2 Actor::FindNearestAvailablePosition(glm::vec2 origin, int searchDir);
 
 };
 #endif

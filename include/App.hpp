@@ -64,7 +64,7 @@ private:
 
     bool isStop = false;
 
-    int floor = 5;
+    int floor = 1;
     float m_LastDarkTime = 0;
 
     std::shared_ptr<Util::BGM> m_BGM = std::make_shared<Util::BGM>(RESOURCE_DIR "/sound/title.mp3");

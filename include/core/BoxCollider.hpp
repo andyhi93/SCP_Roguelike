@@ -41,7 +41,6 @@ public:
     void SetOffset(glm::vec2 offset);
 
     bool CheckCollision(std::shared_ptr<BoxCollider> other);
-    bool CheckCollision(std::shared_ptr<BoxCollider> other, int cmdxy);
     void DebugColliderSize();
     bool CheckCollisionEdge(std::shared_ptr<BoxCollider> other);
 

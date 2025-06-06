@@ -2,7 +2,7 @@
 #include "Player.hpp"
 #include <iostream>
 #include <random>
-SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,150 }){
+SCP049_2::SCP049_2() : Enemy(glm::vec2{ 30,140 }){
 	m_collider->offset = { 0,0 };
 	isDropCoin = true;
 

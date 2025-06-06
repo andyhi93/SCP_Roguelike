@@ -17,8 +17,8 @@ public:
     void OnTriggerExit(std::shared_ptr<BoxCollider> other) override;
 
     bool isOpen = false;
+    std::shared_ptr<Item> treasure;
 private:
-	std::shared_ptr<Item> treasure;
     std::shared_ptr<Actor> openArea;
 
 
