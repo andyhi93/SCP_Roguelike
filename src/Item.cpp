@@ -76,7 +76,7 @@ void Item::SetItemType(ItemType type) {
 		price = 1;
 		int cmd = dis(gen);
 		if (cmd == 1) {
-			price = 5;
+			price = 3;
 			m_Transform.scale = { 3,3 };
 		}
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/bloodCoin.png"));

@@ -71,7 +71,7 @@ private:
     float ammoDamage = 1;
     float maxHealth = 7;
     float currentHealth = maxHealth;
-    int coinAmount = 100;
+    int coinAmount = 0;
 
     float dashTime = 0.4f;  
     float dashCooldown = 2.0f;  

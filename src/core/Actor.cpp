@@ -4,6 +4,7 @@
 Actor::Actor(glm::vec2 size)
     : m_collider(std::make_shared<BoxCollider>(m_Transform.translation, size)) {
     ColliderManager::GetInstance().RegisterCollider(m_collider);
+    this->AddChild(m_collider->boxImage);
 }
 void Actor::SetDead() {
     isDead = true;
@@ -104,7 +105,7 @@ void Actor::MoveY(float amount) {
         auto OtherSolidCol = CheckCollisionWithSolids();
         auto OtherSolid = (OtherSolidCol) ? std::dynamic_pointer_cast<Solid>(OtherSolidCol->parentActor.lock()) : nullptr;
         if (!PlayerActor && (m_WorldCoord.y > 1650 || m_WorldCoord.y < 775)) {
-            std::cout << "Out of mapY\n";
+            //std::cout << "Out of mapY\n";
             m_WorldCoord.y = m_WorldCoord.y > 1650 ? 1648 : 776;
         }
     }

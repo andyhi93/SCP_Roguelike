@@ -11,6 +11,7 @@ Chest::Chest(glm::vec2 pos, glm::vec2 size) : Solid(pos,size){
 	treasure = std::make_shared<Item>(pos + glm::vec2{ 0,-150 }, static_cast<Item::ItemType>(dis(gen)));
 	treasure->Start();
 	treasure->m_collider->isActive = false;
+	treasure->SetZIndex(this->GetZIndex() + 0.1f);
 	this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/Box1.png"));
 
 	openArea = std::make_shared<Actor>(glm::vec2{ 200,200 });//levelmanager need open isActive
@@ -73,9 +74,11 @@ void Chest::Update(){
 	if (isCameraOn) {
 		m_collider->position = m_Transform.translation + m_collider->offset;
 		//std::cout << "pos: " << m_Transform.translation.x << ", " << m_Transform.translation.y << "\nColPos: " << m_collider->position.x << ", " << m_collider->position.y << "\n";
+		//std::cout << "==========================chest=================================\n";
 		m_UIeDescription->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
 		UIeBackgroundImage->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,113 };
 		openArea->m_collider->position = m_Transform.translation;
+		m_collider->position = m_Transform.translation+m_collider->offset;
 		if (treasure) {
 			treasure->isCameraOn = true;
 			treasure->m_Transform.translation = m_Transform.translation + glm::vec2{ 0,-150 };

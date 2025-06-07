@@ -106,7 +106,7 @@ void SCP049::Behavior() {
 void SCP049::Start() {
 	m_collider->parentActor = shared_from_this();
 	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack, 1);
-	m_IRangedAttack->shootSpeed = 0.7f;
+	m_IRangedAttack->shootSpeed = 1.0f;
 	this->AddChild(m_IRangedAttack->m_BulletBox);
 }
 void SCP049::FixedUpdate() {

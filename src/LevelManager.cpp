@@ -116,7 +116,7 @@ void LevelManager::Update(){
             if (!obj) continue;
             auto bossSummon = std::dynamic_pointer_cast<IBoss>(obj);
             auto enemy = std::dynamic_pointer_cast<Enemy>(obj);
-            if (!enemy || enemy->isDead ||!enemy->isActive) continue;
+            if (enemy && (enemy->isDead ||!enemy->isActive)) continue;
             if(!bossSummon || (bossSummon && isEnterRoom)) obj->Update();
             if (enemy && enemy->m_IRangedAttack) {
                 for (auto& bullet : enemy->m_IRangedAttack->m_BulletBox->bullets) {

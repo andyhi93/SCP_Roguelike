@@ -285,6 +285,7 @@ std::vector<std::shared_ptr<Object>> Tilemap::InitBossRoom(BossType _BossType){
         tempWall->Start();
         bossWalls.push_back(tempWall);
     }
+    //std::cout << "=========================" <<"Àð¾À¼Æ¶q¡G" << bossWalls.size() << "================================\n";
 
     std::vector<std::vector<glm::vec2>> doorData = { {{0,690},{60,69}} ,{{0,1685},{126, 150}} };
     for (int i = 0; i < 2; i++) {

@@ -59,7 +59,7 @@ void SCP743::Behavior() {
 void SCP743::Start() {
 	m_collider->parentActor = shared_from_this();
 	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack, 1);
-	m_IRangedAttack->shootSpeed = 0.7f;
+	m_IRangedAttack->shootSpeed = 1.0f;
 	this->AddChild(m_IRangedAttack->m_BulletBox);
 	HealthBackground->SetVisible(isActive);
 	HealthBarImage->SetVisible(isActive);
@@ -126,7 +126,7 @@ void SCP743::Shootable() {
 			if (health > maxHealth / 2) {
 				for (int i = 0; i < 12; i++) {
 					std::shared_ptr<Bullet> bullet;
-					m_IRangedAttack->shootSpeed = 0.7f;
+					m_IRangedAttack->shootSpeed = 1.0f;
 					bullet = std::make_shared<Bullet>(m_Transform.translation + glm::vec2{ bulletDirection[i].x * 5, bulletDirection[i].y * 5 }, damage, CollisionLayer::Enemy, 15.0f, 4, bulletDirection[i]);
 					bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ bulletDirection[i].x * 5, bulletDirection[i].y * 5 };
 

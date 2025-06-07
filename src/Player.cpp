@@ -203,14 +203,19 @@ void Player::Move(glm::vec2& velocity) {
     // 檢測是否按下 Shift 開始 Dash
     if (Util::Input::IsKeyDown(Util::Keycode::LSHIFT) && !isDashing && canDash) {
         lastDashEndTime = currentTime;
-        std::vector<std::shared_ptr<BoxCollider>> tables= ColliderManager::GetInstance().GetTableColliders();
+        /*std::vector<std::shared_ptr<BoxCollider>> tables = ColliderManager::GetInstance().GetTableColliders();
         for(auto& table : tables){
             if(table->tag=="Table") table->isTrigger = true;
         }
         std::vector<std::shared_ptr<BoxCollider>> enemies = ColliderManager::GetInstance().GetEnemyColliders();
         for (auto& enemy : enemies) {
             if (enemy->tag == "Enemy") enemy->isTrigger = true;
+        }*/
+        for (auto& door : m_LevelManager.lock()->m_Tilemap->doors) {
+            if(door->isOpen) door->m_collider->isTrigger = false;
         }
+        m_collider->isTrigger = true;
+        canFly = true;
         isDashing = true;
         canDash = false;
         dashStartTime = currentTime;
@@ -220,15 +225,20 @@ void Player::Move(glm::vec2& velocity) {
     if (isDashing) {
         velocity *= dashSpeedMultiplier;
         if (currentTime - dashStartTime >= dashTime) {
-            std::vector<std::shared_ptr<BoxCollider>> tables = ColliderManager::GetInstance().GetTableColliders();
+            /*std::vector<std::shared_ptr<BoxCollider>> tables = ColliderManager::GetInstance().GetTableColliders();
             for (auto& table : tables) {
                 if (table->tag == "Table") table->isTrigger = false;
             }
             std::vector<std::shared_ptr<BoxCollider>> enemies = ColliderManager::GetInstance().GetEnemyColliders();
             for (auto& enemy : enemies) {
                 if (enemy->tag == "Enemy") enemy->isTrigger = false;
+            }*/
+            for (auto& door : m_LevelManager.lock()->m_Tilemap->doors) {
+                if (door->isOpen) door->m_collider->isTrigger = true;
             }
+            m_collider->isTrigger = false;
             isDashing = false;
+            canFly = false;
         }
     }
     MoveX(velocity.x);

@@ -9,6 +9,7 @@ BoxCollider::BoxCollider(glm::vec2 _pos, glm::vec2 _size) : id(counter++), posit
     boxImage->m_Transform.scale = size;
     boxImage->m_Transform.translation = position;
     boxImage->SetZIndex(20);
+    boxImage->SetVisible(false);
 }
 void BoxCollider::SetTriggerCallback(std::shared_ptr<Trigger> callback) {//需要用到Trigger系列函式使用
     triggerCallback = callback;
@@ -26,13 +27,11 @@ bool BoxCollider::CheckCollision(std::shared_ptr<BoxCollider> other) {
 void BoxCollider::DebugColliderSize() {
     boxImage->m_Transform.scale = size;
     if (hitboxVisible&&(!isBoxImageVisible && isActive)) {
-        auto parent = parentActor.lock();
-        if (parent) parent->AddChild(boxImage);
+        boxImage->SetVisible(true);
         isBoxImageVisible = true;
     }
     else if (!hitboxVisible||(isBoxImageVisible && !isActive)) {
-        auto parent = parentActor.lock();
-        if (parent)parentActor.lock()->RemoveChild(boxImage);
+        boxImage->SetVisible(false);
         isBoxImageVisible = false;
     }
 }
