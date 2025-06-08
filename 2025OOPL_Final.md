@@ -51,7 +51,7 @@ Boss 房將出現以下其中一種 SCP：
   - 返回主選單
   - 左側顯示可用的所有按鍵與Debug 快捷鍵
 ### 遊戲畫面
-![遊戲主畫面](md_images_/cover.png)
+![遊戲主畫面](mdimages_/cover.png)
 ## 程式設計
 
 ### 程式架構
