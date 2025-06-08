@@ -106,7 +106,7 @@ void SCP049::Behavior() {
 void SCP049::Start() {
 	m_collider->parentActor = shared_from_this();
 	m_IRangedAttack = std::make_shared<IRangedAttack>(std::dynamic_pointer_cast<Enemy>(shared_from_this()), m_AnimationAttack, 1);
-	m_IRangedAttack->shootSpeed = 1.0f;
+	m_IRangedAttack->shootSpeed = 0.7f;
 	this->AddChild(m_IRangedAttack->m_BulletBox);
 }
 void SCP049::FixedUpdate() {
@@ -175,8 +175,8 @@ void SCP049::Shootable() {
 					bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ bulletDirection[i].x * 5, bulletDirection[i].y * 5 };
 				}
 				else {
-					bullet = std::make_shared<Bullet>(m_Transform.translation + glm::vec2{ 50 * (isFaceRight ? -1 : 1),0} + glm::vec2{ bulletDirection[i].x * -150, bulletDirection[i].y * -150 }, damage, CollisionLayer::Enemy, 25, 3, bulletDirection[i]);
-					bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ 50*(isFaceRight?-1:1),0} + glm::vec2{bulletDirection[i].x * -150, bulletDirection[i].y * -150};
+					bullet = std::make_shared<Bullet>(m_Transform.translation + glm::vec2{ 50* attack_side * (isFaceRight ? -1 : 1),0} + glm::vec2{ bulletDirection[i].x * -150, bulletDirection[i].y * -150 }, damage, CollisionLayer::Enemy, 25, 3, bulletDirection[i]);
+					bullet->m_WorldCoord = m_WorldCoord + glm::vec2{ 50* attack_side * (isFaceRight?-1:1),0} + glm::vec2{bulletDirection[i].x * -150, bulletDirection[i].y * -150};
 				}
 				
 				bullet->m_collider->size = { 10,10 };
@@ -184,6 +184,7 @@ void SCP049::Shootable() {
 				bullet->m_Transform.rotation = (angle - i * 30) * (M_PI / 180.0);
 				m_IRangedAttack->m_BulletBox->AddBullet(bullet);
 			}
+			attack_side *= -1;
 			m_IRangedAttack->isFire = true;
 		}
 		if (currentTime - m_FirstAttackTIme >= m_attackTime) {

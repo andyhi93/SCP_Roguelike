@@ -42,6 +42,7 @@ private:
     float m_LastAttackTime = 0;
     float m_FirstAttackTIme = 0;
     float m_attackTime = 5;
+    int attack_side = 1;
     std::vector<glm::vec2> patrolPoint = { {-954,1499},{-959,834},{945,832},{949,1503} };
     glm::vec2 targetPoint;
     std::vector<int> HealthQuarter = { 0,0,0 };//0:flase 1:moving 2:done

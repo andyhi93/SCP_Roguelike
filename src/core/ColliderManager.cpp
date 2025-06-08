@@ -147,7 +147,7 @@ std::vector<std::shared_ptr<BoxCollider>> ColliderManager::GetWallColliders() {
     std::vector<std::shared_ptr<BoxCollider>> solids;
     for (auto& col : colliders) {
         if (col->isActive && !col->isTrigger && col->isSolid &&
-            (col->tag == "Wall" || col->tag == "Door0" || col->tag == "Door1" || col->tag == "Door2" || col->tag == "Door3")) {
+            (col->tag == "Wall" || col->tag == "Door0" || col->tag == "Door1" || col->tag == "Door2" || col->tag == "Door3" || col->tag=="Chest")) {
             solids.push_back(col);
         }
     }
