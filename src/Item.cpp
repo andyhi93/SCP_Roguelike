@@ -90,47 +90,47 @@ void Item::SetItemType(ItemType type) {
 	if (type == ItemType::SCP023) {
 		nameText = "EYE OF SCP-023\nBLACK SHUCK";
 		effectText = "DAMAGE UP\nATTACK SPEED UP";
-		attackSpeedUp = 0.8f;
-		damageUp = 1.2f;
+		attackSpeedUp = 0.95f;
+		damageUp = 1.1f;
 		price = 10;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP023.png"));
 	}
 	if (type == ItemType::SCP682) {
 		nameText = "TOOTH OF SCP-682\nHARD-TO-DESTROY\nREPTILE";
 		effectText = "DAMAGE UP\nHEALTH UP";
-		healthUp = 1.4f;
-		damageUp = 1.4f;
+		healthUp = 1.25f;
+		damageUp = 1.25f;
 		price = 15;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP682.png"));
 	}
 	if (type == ItemType::SCP610) {
 		nameText = "SCP-610\nTHE FLESH THAT\nHATES";
 		effectText = "DAMAGE UP\nHEALTH UP";
-		healthUp = 1.2f;
-		damageUp = 1.2f;
+		healthUp = 1.15f;
+		damageUp = 1.15f;
 		price = 10;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP610.png"));
 	}
 	if (type == ItemType::SCP668) {
 		nameText = "SCP-668\n13- CHEF'S KNIFE";
 		effectText = "DAMAGE UP\nATTACK SPEED UP";
-		attackSpeedUp = 0.8f;
-		damageUp = 1.2f;
+		attackSpeedUp = 0.95f;
+		damageUp = 1.1f;
 		price = 10;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP668.png"));
 	}
 	if (type == ItemType::SCP063) {
 		nameText = "SCP-063\nTHE WORLD'S\nBEST TOTHBRUSH";
 		effectText = "DAMAGE UP";
-		damageUp = 1.3f;
+		damageUp = 1.15f;
 		price = 10;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP063.png"));
 	}
 	if (type == ItemType::SCP1016) {
 		nameText = "SCP-1016\nTHE BLOODY KEY";
 		effectText = "DAMAGE UP\nATTACK SPEED UP";
-		attackSpeedUp = 0.8f;
-		damageUp = 1.2f;
+		attackSpeedUp = 0.95f;
+		damageUp = 1.1f;
 		price = 10;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP1016.png"));
 	}
@@ -153,7 +153,7 @@ void Item::SetItemType(ItemType type) {
 	if (type == ItemType::SCP307) {
 		nameText = "SCP-307\nCARNIVOROUS IVY";
 		effectText = "DAMAGE UP\nATTACK SPEED UP";
-		attackSpeedUp = 0.8f;
+		attackSpeedUp = 0.9f;
 		damageUp = 1.2f;
 		price = 15;
 		this->SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/items/SCP307.png"));

@@ -26,6 +26,7 @@ void App::Start() {
     m_CurrentState = State::UPDATE;
 }
 void App::InitMobMap() {
+    m_Player->isCameraOn = false;
     m_Player->m_Transform.translation = { 0,0 };
     //Layer
     m_LevelManager = std::make_shared<LevelManager>(true,floor);
@@ -68,6 +69,7 @@ void App::ResetGame() {
 void App::InitBossMap() {
     m_Player->m_Transform.translation = { 0,0 };
     m_Player->m_WorldCoord = { 0,0 };
+    m_Player->isCameraOn = true;
     m_LevelManager = std::make_shared<LevelManager>(false,floor);
     m_LevelManager->setPlayer(m_Player);
     if(floor==5) m_LevelManager->bossType = Tilemap::BossType::Both;

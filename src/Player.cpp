@@ -97,33 +97,35 @@ void Player::PlayerControl() {
     }*/
 }
 void Player::OnTriggerEnter(std::shared_ptr<BoxCollider> other) {
-    if (other->tag == "Door0" && m_LevelManager.lock()->m_Tilemap->doors[0]->isOpen) {
-        m_LevelManager.lock()->ChangeRoom(glm::ivec2(1, 0));
-        m_BulletBox->ChangeRoom();
-        m_Transform.translation = glm::vec2(-793, -66);
-        m_collider->position = m_Transform.translation + m_collider->offset;
-    }
-    if (other->tag == "Door1" && m_LevelManager.lock()->m_Tilemap->doors[1]->isOpen) {
-        m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, -1));
-        m_BulletBox->ChangeRoom();
-        m_Transform.translation = glm::vec2(-6, 348);
-        m_collider->position = m_Transform.translation + m_collider->offset;
-    }
-    if (other->tag == "Door2" && m_LevelManager.lock()->m_Tilemap->doors[2]->isOpen) {
-        m_LevelManager.lock()->ChangeRoom(glm::ivec2(-1, 0));
-        m_BulletBox->ChangeRoom();
-        m_Transform.translation = glm::vec2(802, -67);
-        m_collider->position = m_Transform.translation + m_collider->offset;
-    }
-    if (other->tag == "Door3" && m_LevelManager.lock()->m_Tilemap->doors[3]->isOpen) {
-        m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, 1));
-        m_BulletBox->ChangeRoom();
-        m_Transform.translation = glm::vec2(-9, -397);
-        m_collider->position = m_Transform.translation + m_collider->offset;
-    }
-    if (other->tag == "Table") {
-        std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor.lock());
-        if(!table->isBroken) table->BreakTable();
+    if (!isCameraOn) {
+        if (other->tag == "Door0" && m_LevelManager.lock()->m_Tilemap->doors[0]->isOpen) {
+            m_LevelManager.lock()->ChangeRoom(glm::ivec2(1, 0));
+            m_BulletBox->ChangeRoom();
+            m_Transform.translation = glm::vec2(-793, -66);
+            m_collider->position = m_Transform.translation + m_collider->offset;
+        }
+        if (other->tag == "Door1" && m_LevelManager.lock()->m_Tilemap->doors[1]->isOpen) {
+            m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, -1));
+            m_BulletBox->ChangeRoom();
+            m_Transform.translation = glm::vec2(-6, 348);
+            m_collider->position = m_Transform.translation + m_collider->offset;
+        }
+        if (other->tag == "Door2" && m_LevelManager.lock()->m_Tilemap->doors[2]->isOpen) {
+            m_LevelManager.lock()->ChangeRoom(glm::ivec2(-1, 0));
+            m_BulletBox->ChangeRoom();
+            m_Transform.translation = glm::vec2(802, -67);
+            m_collider->position = m_Transform.translation + m_collider->offset;
+        }
+        if (other->tag == "Door3" && m_LevelManager.lock()->m_Tilemap->doors[3]->isOpen) {
+            m_LevelManager.lock()->ChangeRoom(glm::ivec2(0, 1));
+            m_BulletBox->ChangeRoom();
+            m_Transform.translation = glm::vec2(-9, -397);
+            m_collider->position = m_Transform.translation + m_collider->offset;
+        }
+        if (other->tag == "Table") {
+            std::shared_ptr<Table> table = std::dynamic_pointer_cast<Table>(other->parentActor.lock());
+            if (!table->isBroken) table->BreakTable();
+        }
     }
     if (other->tag == "Enemy") {
         std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(other->parentActor.lock());
@@ -184,7 +186,7 @@ void Player::OnTriggerStay(std::shared_ptr<BoxCollider> other) {
     }
 }
 void Player::Damage(float damage) {
-    if (currentState != Hurt && currentHealth>0 && !isDashing && !isInvincible) {
+    if (currentState!=Die && currentState != Hurt && currentHealth>0 && !isDashing && !isInvincible) {
         m_SFX->LoadMedia(m_DeadSFXpath);
         m_SFX->Play();
         if(!isCheating) SetHealth(GetCurrentHealth() - damage);

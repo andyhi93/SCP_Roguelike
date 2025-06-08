@@ -58,6 +58,7 @@ public:
 
     virtual void valueMul(float rate) {
         health *= rate;
+        maxHealth = health;
         damage *= rate;
     }
     bool isActive = true;

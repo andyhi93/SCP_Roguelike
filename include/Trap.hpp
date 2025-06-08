@@ -10,6 +10,7 @@ public:
 	void Start() override;
 	void SetActive();
 	bool isOpen = false;
+	bool isUp = false;
 	void OnTriggerEnter(std::shared_ptr<BoxCollider> other) override;
 private:
 	std::vector<std::string> trapImages;

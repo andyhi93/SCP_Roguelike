@@ -48,5 +48,6 @@ void Trap::Start(){
 }
 void Trap::SetActive() {
 	m_collider->isActive = !m_collider->isActive;
+	isUp = m_collider->isActive;
     SetDrawable(std::make_shared<Util::Image>(trapImages[m_collider->isActive]));
 }

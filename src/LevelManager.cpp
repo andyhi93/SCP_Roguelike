@@ -140,18 +140,21 @@ void LevelManager::Update(){
         }
     }
     //std::cout << "in fun(): sp.use_count() == " << m_MapUI.use_count()<< "\n";
-
-    map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
-        [this](const std::shared_ptr<Item>& item) {
-            if (!item->hasDescripting && item->isPick || (item->hasDescripting && !item->isDescripting)) {
-                this->RemoveChild(item);
-                std::cout << "remove item\n";
-                ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
-                return true;
-            }
-            return false;
-        }),
-        map[currentRoom.x][currentRoom.y].roomItems.end());
+    if (currentRoom.x >= 0 && currentRoom.x < MAP_SIZE_WIDTH &&
+        currentRoom.y >= 0 && currentRoom.y < MAP_SIZE_HEIGHT)
+    {
+        map[currentRoom.x][currentRoom.y].roomItems.erase(std::remove_if(map[currentRoom.x][currentRoom.y].roomItems.begin(), map[currentRoom.x][currentRoom.y].roomItems.end(),
+            [this](const std::shared_ptr<Item>& item) {
+                if (!item->hasDescripting && item->isPick || (item->hasDescripting && !item->isDescripting)) {
+                    this->RemoveChild(item);
+                    std::cout << "remove item\n";
+                    ColliderManager::GetInstance().UnregisterCollider(item->m_collider);
+                    return true;
+                }
+                return false;
+            }),
+            map[currentRoom.x][currentRoom.y].roomItems.end());
+    }
     if (!isMobFloor&&!isOpenCurrentDoor) {
         if (!map[currentRoom.x][currentRoom.y].isClean) {
             for (auto& obj : currentObjects) {
@@ -316,6 +319,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         else if (trap) {
             trap->Start();
             trap->isOpen = true;
+            if (trap->isUp) trap->m_collider->isActive = true;
         }
         else if (elevator) {
             if(floor!=1 || elevator->isBossRoom) elevator->SetActive(true);
@@ -330,11 +334,15 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         currentObjects.push_back(obj);
         this->AddChild(obj);
     }
-    for (auto& item : map[currentRoom.x][currentRoom.y].roomItems) {
-        if (!item) continue;
-        item->m_collider->isActive = true;
-        currentObjects.push_back(item);
-        this->AddChild(item);
+    if (currentRoom.x >= 0 && currentRoom.x < MAP_SIZE_WIDTH &&
+        currentRoom.y >= 0 && currentRoom.y < MAP_SIZE_HEIGHT)
+    {
+        for (auto& item : map[currentRoom.x][currentRoom.y].roomItems) {
+            if (!item || !item->m_collider) continue;
+            item->m_collider->isActive = true;
+            currentObjects.push_back(item);
+            this->AddChild(item);
+        }
     }
 }
 void LevelManager::GenerateLevel() {
@@ -504,7 +512,7 @@ void LevelManager::GenerateLevel() {
                     std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(obj);
                     std::shared_ptr<Item> item = std::dynamic_pointer_cast<Item>(obj);
                     if (enemy) {
-                        enemy->valueMul(floor / 2 * 0.1 + 1);
+                        enemy->valueMul(floor* 0.1 + 1);
                         enemy->SetPlayer(m_Player);
                         map[x][y].roomobjs.push_back(obj);
                     }
