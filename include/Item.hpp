@@ -2,10 +2,10 @@
 #define ITEM_HPP
 
 #include "pch.hpp"
-#include "Core/Actor.hpp"
+#include "Core/Solid.hpp"
 #include "UIText.hpp"
 
-class Item : public Actor,public Trigger {
+class Item : public Solid,public Trigger {
 public:
     enum ItemType {
         bloodCoin,//0

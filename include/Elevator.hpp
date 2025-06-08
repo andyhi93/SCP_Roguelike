@@ -1,9 +1,9 @@
 #ifndef ELEVATOR_HPP
 #define ELEVATOR_HPP
 
-#include "Core/Actor.hpp"
+#include "Core/Solid.hpp"
 
-class Elevator : public Actor {
+class Elevator : public Solid {
 public:
 	Elevator(glm::vec2 pos, glm::vec2 size);
 	void Update() override;

@@ -331,6 +331,7 @@ void LevelManager::ChangeRoom(glm::ivec2 direction){//eswn
         this->AddChild(obj);
     }
     for (auto& item : map[currentRoom.x][currentRoom.y].roomItems) {
+        if (!item) continue;
         item->m_collider->isActive = true;
         currentObjects.push_back(item);
         this->AddChild(item);

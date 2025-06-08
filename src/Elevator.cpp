@@ -4,7 +4,7 @@
 #include "random"
 #include <Enemy.hpp>
 
-Elevator::Elevator(glm::vec2 pos, glm::vec2 size) : Actor(size) {
+Elevator::Elevator(glm::vec2 pos, glm::vec2 size) : Solid(pos,size) {
 	SetDrawable(std::make_shared<Util::Image>(RESOURCE_DIR "/Room/elevator.png"));
 	m_Transform.translation = pos;
 	m_Transform.scale = { 4,4 };

@@ -4,7 +4,7 @@
 
 
 int Item::lastItemIndex = SCP2295;
-Item::Item(glm::vec2 pos, ItemType type) :Actor(glm::vec2{ 80,80 }) {
+Item::Item(glm::vec2 pos, ItemType type) :Solid(pos,glm::vec2{ 80,80 }) {
 	m_collider->isTrigger = true;
 	m_Transform.translation = pos;
 	m_collider->position = m_Transform.translation + m_collider->offset;

@@ -3,6 +3,7 @@
 
 #include "Item.hpp"
 #include "Core/Solid.hpp"
+#include "Core/Actor.hpp"
 
 class Chest : public Solid,public Trigger {
 public:
