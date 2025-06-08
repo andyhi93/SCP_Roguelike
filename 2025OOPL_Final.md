@@ -51,7 +51,40 @@ Boss 房將出現以下其中一種 SCP：
   - 返回主選單
   - 左側顯示可用的所有按鍵與Debug 快捷鍵
 ### 遊戲畫面
+
+---
+
+#### 🎮 遊戲主畫面
 ![遊戲主畫面](mdImages/cover.png)
+
+---
+
+#### 🧍 玩家出生點
+![玩家出生點](mdImages/lobby.png)
+
+---
+
+#### 👾 小怪展示
+- 小怪 1  
+  ![小怪1](mdImages/mob1.png)
+
+- 小怪 2  
+  ![小怪2](mdImages/mob2.png)
+
+---
+
+#### 🛒 商店畫面
+![商店](mdImages/shop.png)
+
+---
+
+#### 🧟 Boss 展示
+- Boss 1（SCP-049）  
+  ![Boss1](mdImages/boss1.png)
+
+- Boss 2（SCP-743）  
+  ![Boss2](mdImages/boss2.png)
+
 ## 程式設計
 
 ### 程式架構
