@@ -1,4 +1,4 @@
-# SCP Roguelike: Facility Escape
+# SCP Roguelike
 
 <div align="center">
   <img src="mdImages/cover.png" alt="Game Cover" width="800">
@@ -67,7 +67,7 @@
 * 利用 `std::weak_ptr` 解決 `Player` 與 `Enemy` 互相參照 (Circular Dependency) 的問題，有效防止記憶體洩漏 (Memory Leak)。
 
 ### 5. 類別架構圖 (Class Hierarchy)
-
+![Class Diagram](mdImages/mindmap.png)
 ---
 
 ## 📂 專案結構 (Project Structure)
@@ -94,3 +94,51 @@ SCP_Roguelike/
 │   └── ...            # 來自助教提供的底層庫 (負責視窗創建、基礎輸入)
 │
 └── mdImages/          # README 展示用圖片
+```
+## 🎨 美術與設計 (Art & Design)
+* **Solo Art:** 遊戲中所有角色、怪物、地圖 Tile 與 UI 皆使用 Aseprite 親自繪製。
+* **風格:** 採用 16-bit Pixel Art 風格，營造 SCP 基金會陰暗、壓抑的氛圍。
+
+---
+
+## 🚀 建置與執行 (Build & Run)
+
+本專案使用 CMake 進行建置管理。
+
+### 前置需求
+* C++ Compiler (支援 C++17)
+* CMake 3.10+
+* Visual Studio 2019/2022 (推薦)
+
+### 建置步驟
+
+1. **Clone 專案**
+   ```bash
+   git clone [https://github.com/andyhi93/SCP_Roguelike.git](https://github.com/andyhi93/SCP_Roguelike.git)
+   cd SCP_Roguelike
+   ```
+2. **使用 CMake 建置**
+
+ ```bash
+
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
+3. **執行遊戲**
+```
+Windows: 在 build/Debug 資料夾中執行 SCP_Roguelike.exe
+
+(或直接使用 Visual Studio 開啟專案資料夾，設為啟動專案後按 F5 執行)
+```
+## 📜 授權與致謝 (Credits)
+
+* **開發者:** 謝博任 - 程式實作 / 美術繪製 / 系統架構
+* **致敬與靈感 (Inspiration):**
+  本專案為 OOP 課程實作練習，核心玩法機制與地圖設計概念參考自 YouTuber [Ting的作品](https://youtu.be/NOAz5rXc370?si=NM8ff2w-BiioN3Nu)。
+  在此基礎上，我自行撰寫了所有 C++ 邏輯實作，並加入了部分原創的改動與延伸功能。
+* **底層框架:** [PTSD (Practical Tools for Simple Design)](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) - 課程助教提供
+* **素材來源 (Assets):**
+  * **美術:** 全數親自繪製 (Original Hand-drawn Pixel Art)。
+  * **音效:** 部分網路開源素材。
+  * **音樂:** 小立。
