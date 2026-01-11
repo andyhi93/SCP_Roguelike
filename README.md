@@ -1,86 +1,96 @@
-# Abstract
+# SCP Roguelike: Facility Escape
 
-遊戲名稱：SCP Roguelike(暫定)
+<div align="center">
+  <img src="mdImages/cover.png" alt="Game Cover" width="800">
 
-組員：
+  <br>
+  
+  <img src="https://img.shields.io/badge/Language-C++17-blue?logo=c%2B%2B" alt="C++">
+  <img src="https://img.shields.io/badge/Pattern-OOP-green" alt="OOP">
+  <img src="https://img.shields.io/badge/System-CMake-orange" alt="CMake">
+  <img src="https://img.shields.io/badge/Role-Solo%20Developer-red" alt="Solo Dev">
 
-- 112590052 謝博任
+  <p>
+    <b>一款基於 C++ 與物件導向設計 (OOP) 的 Roguelike 遊戲。</b><br>
+    獨立完成：程式架構 / 遊戲邏輯 / 像素美術 / 關卡設計
+  </p>
+</div>
 
-# Game Introduction
+---
 
-遊戲類型：俯視角、Roguelike、2d
+## 📖 專案簡介 (Introduction)
+**SCP Roguelike** 是一項 C++ OOP 課程的大型期末專案。玩家扮演一名被未知 SCP 寄生的 D 級人員，必須利用異能逃離隨機變化的收容設施。
 
-這款遊戲希望將 SCP 恐怖要素與 Roguelike 探索玩法結合，透過不斷變化的房間與夢境機制，營造出壓迫感與不確定性，讓玩家在每次遊玩時都能感受到不同的驚喜與挑戰。
+本專案展示了**從零建構遊戲系統**的能力，不僅使用了底層圖形庫 NTUT-PTSD 進行開發，更自行實作了物理碰撞、地圖生成演算法與 AI 行為樹等核心系統。
 
-劇情：
-一場未知的 SCP 現象導致基金會內部房間的排序不斷變化，甚至讓不該出現在此處的 SCP 亂入，造成極大的混亂。
-玩家扮演一名 D 級人員，在這場事件中被某個未知 SCP 寄生，獲得了異常的能力。他的目標是利用這股力量，逃離這座危機四伏的設施。
+## 🎮 遊玩畫面 (Gameplay)
 
-遊戲機制
-1. 房間隨機生成與異常區域
-設施內的房間順序會隨機變化，每次進入遊戲時地圖都不同。
-2. 主角能力
-基本攻擊：左鍵射擊子彈
-衝刺：可以躲避攻擊並且破壞桌子
-3. 商店
-可以透過打死SCP掉落的血塊，在商店房間進行交易，獲得物品
+| ⚔️ 戰鬥畫面 | 🛒 隨機商店系統 |
+| :---: | :---: |
+| <img src="mdImages/ants.gif" width="100%"> | <img src="mdImages/shop.gif" width="100%"> |
 
-關卡
-每層房間7~10間不等，總共有三層，在三層後存活即可獲勝
+### 💀 BOSS 戰役 (Boss Battles)
+針對不同 SCP 特性設計了獨特的 **狀態機 (State Machine)** 行為邏輯：
 
-美術風格
-pixel art
+| SCP-049 (瘟疫醫生) | SCP-743 (巧克力噴泉) |
+| :---: | :---: |
+| **召喚與飛刀**：<br>召喚殭屍並發射飛刀攻擊玩家 | **群體攻擊**：<br>操控大量螞蟻進行包圍戰術，並透過螞蟻推動自己 |
+| <img src="mdImages/scp049.gif" width="100%"> | <img src="mdImages/scp743.gif" width="100%"> |
 
-# Development timeline
+---
 
-- Week 1：準備素材
-  - [ ] 畫遊戲的素材(主角動畫)
-- Week 2：準備素材&處理遊戲的封面
-  - [ ] 畫遊戲的素材(主角動畫)
-  - [ ] 處理遊戲封面的素材
-  - [ ] 進行遊戲封面的設計
-- Week 3：遊戲機制編寫
-  - [ ] 角色的移動
-  - [ ] 畫遊戲的素材(場景)
-  - [ ] 碰撞箱設計(牆壁、主角、物品、敵人等)
-- Week 4：遊戲機制編寫
-  - [ ] 角色的攻擊機制和動畫
-  - [ ] 隨機房間演算法
-- Week 5：遊戲機制編寫
-  - [ ] 隨機房間演算法
-- Week 6：遊戲機制編寫
-  - [ ] 關卡管理器(每層的房間生成、物件位置、敵人位置)
-- Week 7：遊戲機制編寫
-  - [ ] 小怪AI (3~5個)
-  - [ ] 畫部分小怪素材(3~5個)
-- Week 8：遊戲機制編寫
-  - [ ] Boss AI (SCP-743)
-  - [ ] 畫Boss素材
-- Week 9：遊戲機制編寫
-  - [ ] Boss AI(scp-049)
-  - [ ] 畫部分Boss素材
-- Week 10：遊戲機制編寫
-  - [ ] 玩家血量
-  - [ ] 敵人血量
-  - [ ] 攻擊反饋
-- Week 11：遊戲機制編寫
-  - [ ] 客製化各個敵人、道具的能力
-- Week 12：遊戲機制編寫
-  - [ ] 設計殺死SCP掉落肉塊的機制
-  - [ ] 介面 UI 顯示數量
-- Week 13：遊戲機制編寫
-  - [ ] 設計死後關卡重置
-- Week 14：遊戲機制編寫
-  - [ ] 設計商店與交易系統
-- Week 15：遊戲機制編寫
-  - [ ] 調整難度曲線
-  - [ ] 調整 2D 像素風格，提升 SCP 的恐怖感
-- Week 16：內部測試與 Bug 修復
-  - [ ] 進行 Alpha 測試，檢測核心系統
-  - [ ] 修正遊戲內的重大 Bug
-- Week 17：最終測試與 Debug
-  - [ ] 進行完整的遊戲測試
-  - [ ] 修正最後的 Bug
-  - [ ] 確保劇情與遊戲機制運作正常
-- Week 18：準備期末展示
-  - [ ] 祈禱
+## 🛠 技術深度解析 (Technical Deep Dive)
+
+本專案嚴格遵循 **物件導向 (OOP)** 原則與 **現代 C++ (Smart Pointers)** 規範。
+
+### 1. 架構設計與設計模式 (Architecture & Patterns)
+* **多型與介面 (Polymorphism & Interfaces):**
+    * 建立 `Actor` 基類處理通用物理與渲染。
+    * 透過 `IBoss` 介面規範 Boss 行為（如 `Summon()`），並利用 `virtual functions` 實作不同敵人的 `Update()` 與 `Attack()` 邏輯。
+* **單例模式 (Singleton):**
+    * 應用於 `ColliderManager` 與 `LevelManager`，確保全域唯一的物理世界與關卡狀態管理，方便跨物件存取。
+* **組件化思維:**
+    * 將碰撞 (`BoxCollider`)、動畫 (`Animation`) 與數值 (`Health`) 封裝為獨立模組，提高程式碼重用性。
+
+### 2. 隨機地圖生成演算法 (Procedural Generation)
+位於 `LevelManager.cpp` 中的核心邏輯：
+* 採用 **隨機廣度優先搜尋 (Randomized BFS / Queue-based Generation)** 演算法。
+* 從起始點開始，利用 `std::queue` 與 `std::shuffle` 隨機決定房間延伸方向（上/下/左/右），生成不重複且連通的迷宮結構。
+* 自動識別「死路」與「最遠距離」，智慧放置 **Boss 房** 與 **寶箱房**。
+
+### 3. 自研物理碰撞系統 (Custom Physics)
+* 不依賴現成物理引擎，自行實作 **AABB (Axis-Aligned Bounding Box)** 碰撞檢測。
+* `ColliderManager` 統一管理所有碰撞體，支援 `OnTriggerEnter`, `OnTriggerStay`, `OnTriggerExit` 等回調函數 (Callbacks)，實現精準的攻擊判定與環境互動。
+
+### 4. 記憶體管理 (Memory Management)
+* 全面採用 C++ 智慧指標 (`std::shared_ptr`, `std::weak_ptr`) 取代傳統指標。
+* 利用 `std::weak_ptr` 解決 `Player` 與 `Enemy` 互相參照 (Circular Dependency) 的問題，有效防止記憶體洩漏 (Memory Leak)。
+
+### 5. 類別架構圖 (Class Hierarchy)
+
+---
+
+## 📂 專案結構 (Project Structure)
+
+本專案採用標準的分離式架構，清楚區分「自研邏輯」與「外部依賴」。
+
+```text
+SCP_Roguelike/
+├── include/           # [介面層] Header files (.hpp)
+│   ├── Core/          # 核心引擎功能 (Actor, BoxCollider, ColliderManager)
+│   ├── Enemies/       # 各類 SCP 敵人的具體定義
+│   └── ...            # Player, LevelManager 等定義
+│
+├── src/               # [實作層] Source code (.cpp)
+│   ├── LevelManager.cpp # 地圖生成與房間管理邏輯
+│   ├── Tilemap.cpp      # 處理圖塊繪製與敵人生成
+│   └── ...              # 遊戲核心迴圈實作
+│
+├── Resources/         # [美術資源] Art Assets
+│   ├── Images/        # 全部由我親自繪製的 Pixel Art 素材
+│   └── ...            # 音效與字型
+│
+├── PTSD/              # [外部框架] Practical Tools for Simple Design
+│   └── ...            # 來自助教提供的底層庫 (負責視窗創建、基礎輸入)
+│
+└── mdImages/          # README 展示用圖片
