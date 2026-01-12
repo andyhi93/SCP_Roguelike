@@ -1,144 +1,155 @@
+[![English](https://img.shields.io/badge/Language-English-blue)](README.md) [![Chinese](https://img.shields.io/badge/Language-繁體中文-gray)](README.zh-TW.md)
+
 # SCP Roguelike
 
 <div align="center">
   <img src="mdImages/cover.png" alt="Game Cover" width="800">
 
   <br>
-  
+
   <img src="https://img.shields.io/badge/Language-C++17-blue?logo=c%2B%2B" alt="C++">
   <img src="https://img.shields.io/badge/Pattern-OOP-green" alt="OOP">
   <img src="https://img.shields.io/badge/System-CMake-orange" alt="CMake">
   <img src="https://img.shields.io/badge/Role-Solo%20Developer-red" alt="Solo Dev">
 
   <p>
-    <b>一款基於 C++ 與物件導向設計 (OOP) 的 Roguelike 遊戲。</b><br>
-    獨立完成：程式架構 / 遊戲邏輯 / 像素美術 / 關卡設計
+    <b>A Roguelike game based on C++ and Object-Oriented Design (OOP).</b><br>
+    Solo Development: Program Architecture / Game Logic / Pixel Art
   </p>
 </div>
 
 ---
 
-## 📖 專案簡介 (Introduction)
-**SCP Roguelike** 是一項 C++ OOP 課程的大型期末專案。玩家扮演一名被未知 SCP 寄生的 D 級人員，必須利用異能逃離隨機變化的收容設施。
+## 📖 Introduction
+**SCP Roguelike** is a major final project for a C++ OOP course. Players take on the role of a Class-D personnel parasitized by an unknown SCP, using supernatural abilities to escape a randomly shifting containment facility.
 
-本專案展示了**從零建構遊戲系統**的能力，不僅使用了底層圖形庫 NTUT-PTSD 進行開發，更自行實作了物理碰撞、地圖生成演算法與 AI 行為樹等核心系統。
+This project demonstrates the ability to **build game systems from scratch**. It utilizes the low-level graphics library NTUT-PTSD and features self-implemented core systems, including physics collision, procedural map generation algorithms, and AI behavior trees.
 
-## 🎮 遊玩畫面 (Gameplay)
+> 🎬 **Watch Full Demo Video (with Sound)**: [YouTube Link](https://youtu.be/PVSwFwm1gOk)
 
-| ⚔️ 戰鬥畫面 | 🛒 隨機商店系統 |
+## 🎮 Gameplay Showcase
+
+| ⚔️ Combat | 🛒 Random Shop System |
 | :---: | :---: |
 | <img src="mdImages/ants.gif" width="100%"> | <img src="mdImages/shop.gif" width="100%"> |
 
-### 💀 BOSS 戰役 (Boss Battles)
-針對不同 SCP 特性設計了獨特的 **狀態機 (State Machine)** 行為邏輯：
+### 💀 Boss Battles
+Unique **State Machine** behavior logic designed for different SCP characteristics:
 
-| SCP-049 (瘟疫醫生) | SCP-743 (巧克力噴泉) |
+| SCP-049 (Plague Doctor) | SCP-743 (Chocolate Fountain) |
 | :---: | :---: |
-| **召喚與飛刀**：<br>召喚殭屍並發射飛刀攻擊玩家 | **群體攻擊**：<br>操控大量螞蟻進行包圍戰術，並透過螞蟻推動自己 |
+| **Summon & Daggers**: <br>Summons zombies and launches dagger attacks. | **Swarm Attack**: <br>Controls a massive ant swarm for encirclement tactics and uses ants for propulsion. |
 | <img src="mdImages/scp049.gif" width="100%"> | <img src="mdImages/scp743.gif" width="100%"> |
 
 ---
 
-## 🛠 技術深度解析 (Technical Deep Dive)
+## 🛠 Technical Deep Dive
 
-本專案嚴格遵循 **物件導向 (OOP)** 原則與 **現代 C++ (Smart Pointers)** 規範。
+This project strictly follows **Object-Oriented Programming (OOP)** principles and **Modern C++ (Smart Pointers)** standards.
 
-### 1. 架構設計與設計模式 (Architecture & Patterns)
-* **多型與介面 (Polymorphism & Interfaces):**
-    * 建立 `Actor` 基類處理通用物理與渲染。
-    * 透過 `IBoss` 介面規範 Boss 行為（如 `Summon()`），並利用 `virtual functions` 實作不同敵人的 `Update()` 與 `Attack()` 邏輯。
-* **單例模式 (Singleton):**
-    * 應用於 `ColliderManager` 與 `LevelManager`，確保全域唯一的物理世界與關卡狀態管理，方便跨物件存取。
-* **組件化思維:**
-    * 將碰撞 (`BoxCollider`)、動畫 (`Animation`) 與數值 (`Health`) 封裝為獨立模組，提高程式碼重用性。
+### 1. Architecture & Design Patterns
+* **Polymorphism & Interfaces:**
+    * Established an `Actor` base class to handle common physics and rendering.
+    * Defined Boss behaviors via the `IBoss` interface (e.g., `Summon()`) and used `virtual functions` to implement distinct `Update()` and `Attack()` logic for different enemies.
+* **Singleton Pattern:**
+    * Applied to `ColliderManager` and `LevelManager` to ensure globally unique physics worlds and level state management, facilitating cross-object access.
+* **Component-Based Thinking:**
+    * Encapsulated Collision (`BoxCollider`), Animation (`Animation`), and Stats (`Health`) into independent modules for code reusability.
 
-### 2. 隨機地圖生成演算法 (Procedural Generation)
-位於 `LevelManager.cpp` 中的核心邏輯：
-* 採用 **隨機廣度優先搜尋 (Randomized BFS / Queue-based Generation)** 演算法。
-* 從起始點開始，利用 `std::queue` 與 `std::shuffle` 隨機決定房間延伸方向（上/下/左/右），生成不重複且連通的迷宮結構。
-* 自動識別「死路」與「最遠距離」，智慧放置 **Boss 房** 與 **寶箱房**。
+### 2. Procedural Map Generation
+Core logic located in `LevelManager.cpp`:
+* Adopts **Randomized Breadth-First Search (BFS) / Queue-based Generation** algorithms.
+* Starts from the origin, utilizing `std::queue` and `std::shuffle` to determine room expansion directions (Up/Down/Left/Right), generating a non-repetitive and fully connected maze structure.
+* Automatically identifies "dead ends" and "farthest distance" to intelligently place **Boss Rooms** and **Treasure Rooms**.
 
-### 3. 自研物理碰撞系統 (Custom Physics)
-* 不依賴現成物理引擎，自行實作 **AABB (Axis-Aligned Bounding Box)** 碰撞檢測。
-* `ColliderManager` 統一管理所有碰撞體，支援 `OnTriggerEnter`, `OnTriggerStay`, `OnTriggerExit` 等回調函數 (Callbacks)，實現精準的攻擊判定與環境互動。
+### 3. Custom Physics System
+* Does not rely on existing physics engines; implemented **AABB (Axis-Aligned Bounding Box)** collision detection from scratch.
+* `ColliderManager` unifies all colliders, supporting callbacks like `OnTriggerEnter`, `OnTriggerStay`, and `OnTriggerExit` for precise attack detection and environmental interaction.
 
-### 4. 記憶體管理 (Memory Management)
-* 全面採用 C++ 智慧指標 (`std::shared_ptr`, `std::weak_ptr`) 取代傳統指標。
-* 利用 `std::weak_ptr` 解決 `Player` 與 `Enemy` 互相參照 (Circular Dependency) 的問題，有效防止記憶體洩漏 (Memory Leak)。
+### 4. Memory Management
+* Fully adopted C++ Smart Pointers (`std::shared_ptr`, `std::weak_ptr`) instead of raw pointers.
+* Used `std::weak_ptr` to resolve Circular Dependency issues between `Player` and `Enemy`, effectively preventing Memory Leaks.
 
-### 5. 類別架構圖 (Class Hierarchy)
-![Class Diagram](mdImages/mindmap.png)
 ---
 
-## 📂 專案結構 (Project Structure)
+## 📂 Project Structure
 
-本專案採用標準的分離式架構，清楚區分「自研邏輯」與「外部依賴」。
+The project uses a standard separation of concerns, distinguishing between "Custom Logic" and "External Dependencies".
 
 ```text
 SCP_Roguelike/
-├── include/           # [介面層] Header files (.hpp)
-│   ├── Core/          # 核心引擎功能 (Actor, BoxCollider, ColliderManager)
-│   ├── Enemies/       # 各類 SCP 敵人的具體定義
-│   └── ...            # Player, LevelManager 等定義
+├── include/           # [Interface Layer] Header files (.hpp)
+│   ├── Core/          # Core engine functions (Actor, BoxCollider, ColliderManager)
+│   ├── Enemies/       # Specific definitions for SCP enemies
+│   └── ...            # Definitions for Player, LevelManager, etc.
 │
-├── src/               # [實作層] Source code (.cpp)
-│   ├── LevelManager.cpp # 地圖生成與房間管理邏輯
-│   ├── Tilemap.cpp      # 處理圖塊繪製與敵人生成
-│   └── ...              # 遊戲核心迴圈實作
+├── src/               # [Implementation Layer] Source code (.cpp)
+│   ├── LevelManager.cpp # Map generation and room management logic
+│   ├── Tilemap.cpp      # Tile rendering and enemy spawning
+│   └── ...              # Game core loop implementation
 │
-├── Resources/         # [美術資源] Art Assets
-│   ├── Images/        # 全部由我親自繪製的 Pixel Art 素材
-│   └── ...            # 音效與字型
+├── Resources/         # [Art Assets]
+│   ├── Images/        # All Pixel Art assets drawn by me
+│   └── ...            # Sound effects and fonts
 │
-├── PTSD/              # [外部框架] Practical Tools for Simple Design
-│   └── ...            # 來自助教提供的底層庫 (負責視窗創建、基礎輸入)
+├── PTSD/              # [External Framework] Practical Tools for Simple Design
+│   └── ...            # Low-level library provided by the TA (Window creation, basic input)
 │
-└── mdImages/          # README 展示用圖片
+└── mdImages/          # Images for README display
+
 ```
-## 🎨 美術與設計 (Art & Design)
-* **Solo Art:** 遊戲中所有角色、怪物、地圖 Tile 與 UI 皆使用 Aseprite 親自繪製。
-* **風格:** 採用 16-bit Pixel Art 風格，營造 SCP 基金會陰暗、壓抑的氛圍。
+
+## 🎨 Art & Design
+
+* **Solo Art:** All characters, monsters, map tiles, and UI were hand-drawn using Aseprite.
+* **Style:** 16-bit Pixel Art style to create the dark, oppressive atmosphere of the SCP Foundation.
 
 ---
 
-## 🚀 建置與執行 (Build & Run)
+## 🚀 Build & Run
 
-本專案使用 CMake 進行建置管理。
+This project uses CMake for build management.
 
-### 前置需求
-* C++ Compiler (支援 C++17)
+### Prerequisites
+
+* C++ Compiler (Supports C++17)
 * CMake 3.10+
-* Visual Studio 2019/2022 (推薦)
+* Visual Studio 2019/2022 (Recommended)
 
-### 建置步驟
+### Build Steps
 
-1. **Clone 專案**
-   ```bash
-   git clone [https://github.com/andyhi93/SCP_Roguelike.git](https://github.com/andyhi93/SCP_Roguelike.git)
-   cd SCP_Roguelike
-   ```
-2. **使用 CMake 建置**
+1. **Clone the Repository**
+```bash
+git clone [https://github.com/andyhi93/SCP_Roguelike.git](https://github.com/andyhi93/SCP_Roguelike.git)
+cd SCP_Roguelike
 
- ```bash
+```
 
+
+2. **Build with CMake**
+```bash
 mkdir build && cd build
 cmake ..
 cmake --build .
-```
-3. **執行遊戲**
-```
-Windows: 在 build/Debug 資料夾中執行 SCP_Roguelike.exe
 
-(或直接使用 Visual Studio 開啟專案資料夾，設為啟動專案後按 F5 執行)
 ```
-## 📜 授權與致謝 (Credits)
 
-* **開發者:** 謝博任 - 程式實作 / 美術繪製 / 系統架構
-* **致敬與靈感 (Inspiration):**
-  本專案為 OOP 課程實作練習，核心玩法機制與地圖設計概念參考自 YouTuber [Ting的作品](https://youtu.be/NOAz5rXc370?si=NM8ff2w-BiioN3Nu)。
-  在此基礎上，我自行撰寫了所有 C++ 邏輯實作，並加入了部分原創的改動與延伸功能。
-* **底層框架:** [PTSD (Practical Tools for Simple Design)](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) - 課程助教提供
-* **素材來源 (Assets):**
-  * **美術:** 全數親自繪製 (Original Hand-drawn Pixel Art)。
-  * **音效:** 部分網路開源素材。
-  * **音樂:** 小立。
+
+3. **Run the Game**
+* **Windows:** Execute `SCP_Roguelike.exe` in the `build/Debug` folder.
+* (Or open the project folder directly in Visual Studio, set as Startup Project, and press F5).
+
+
+
+---
+
+## 📜 Credits & Acknowledgments
+
+* **Developer:** Po-Jen Hsieh (Andy) - Programming / Art / System Architecture
+* **Inspiration & References:**
+This project is an implementation exercise for an OOP course. Core gameplay mechanics and map design concepts were referenced from YouTuber [Ting's work](https://youtu.be/NOAz5rXc370?si=NM8ff2w-BiioN3Nu). On this foundation, I self-authored all C++ logic implementation and added original modifications and extended features.
+* **Underlying Framework:** [PTSD (Practical Tools for Simple Design)](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) - Provided by Course TA.
+* **Assets Source:**
+* **Art:** All Original Hand-drawn Pixel Art.
+* **Sound Effects:** Partially from open-source web resources.
+* **Music:** Xiao Li (小立).
