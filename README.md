@@ -23,7 +23,7 @@
 ## 📖 Introduction
 **SCP Roguelike** is a major final project for a C++ OOP course. Players take on the role of a Class-D personnel parasitized by an unknown SCP, using supernatural abilities to escape a randomly shifting containment facility.
 
-This project demonstrates the ability to **build game systems from scratch**. It utilizes the low-level graphics library NTUT-PTSD and features self-implemented core systems, including physics collision, procedural map generation algorithms, and AI behavior trees.
+This project demonstrates the ability to **build game systems from scratch**. It utilizes the low-level graphics library NTUT-PTSD and features self-implemented core systems, including physics collision, procedural map generation algorithms.
 
 > 🎬 **Watch Full Demo Video (with Sound)**: [YouTube Link](https://youtu.be/PVSwFwm1gOk)
 
